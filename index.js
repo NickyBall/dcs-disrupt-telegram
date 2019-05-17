@@ -74,9 +74,10 @@ bot.onText(/\/command/, (msg) => {
     if (!state[msg.chat.id]) {
         state[msg.chat.id] = {
             id: msg.chat.id
-        }
+        };
     }
     state[msg.chat.id].state = "Start";
+    console.log(JSON.stringify(state));
     bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
         "reply_markup": {
             "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
