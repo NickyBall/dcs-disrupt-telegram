@@ -15,7 +15,7 @@ const token = '788876891:AAGJPvBNsE2EIFGaMUOUA82FV_M0ugoizXU';
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
 
-const state = {};
+var state = {};
 
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
@@ -39,15 +39,16 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 });
 
 bot.onText(/\/command/, (msg) => {
-    if (!state[msg.chat.id]) {
-        console.log("No state for " + msg.chat.id);
-        state[msg.chat.id] = {
-            id: msg.chat.id
+    const chatId = msg.chat.id;
+    if (!state[chatId]) {
+        console.log("No state for " + chatId);
+        state[chatId] = {
+            id: chatId
         };
     }
-    state[msg.chat.id].state = "Start";
+    state[chatId].state = "Start";
     console.log(JSON.stringify(state));
-    bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
+    bot.sendMessage(chatId, "เลือกคำสั่ง", {
         "reply_markup": {
             "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
         }
@@ -59,29 +60,31 @@ bot.onText(/\/command/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
-    console.log(JSON.stringify(msg));
-    console.log(JSON.stringify(state));
-    if (state[msg.chat.id].state == "Start") {
-        if (text.indexOf("สร้าง Blob Week") === 0) {
-            state[msg.chat.id].state = "Blob";
-            bot.sendMessage(msg.chat.id, "เลือกสี", {
-                "reply_markup": {
-                    "keyboard": [["Indigo"], ["Green"]]
+    if (state[chatId]) {
+        console.log(JSON.stringify(msg));
+        console.log(JSON.stringify(state));
+        if (state[chatId].state == "Start") {
+            if (text.indexOf("สร้าง Blob Week") === 0) {
+                state[chatId].state = "Blob";
+                bot.sendMessage(chatId, "เลือกสี", {
+                    "reply_markup": {
+                        "keyboard": [["Indigo"], ["Green"]]
+                    }
+                });
+            } else if (text.indexOf("ลบงาน") === 0) {
+                
+            }
+        } else if (state[chatId].state == "Blob") {
+            var queueMsg = {
+                Command: "Blob",
+                ListenerName: text
+            };
+            queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
+                if (!error) {
+                    // Message inserted
                 }
             });
-        } else if (text.indexOf("ลบงาน") === 0) {
-            
+            state[chatId].state = "Finish"
         }
-    } else if (state[msg.chat.id].state == "Blob") {
-        var queueMsg = {
-            Command: "Blob",
-            ListenerName: text
-        };
-        queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
-            if (!error) {
-                // Message inserted
-            }
-        });
-        state[msg.chat.id].state = "Finish"
     }
 });
