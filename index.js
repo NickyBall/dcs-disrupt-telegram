@@ -15,7 +15,7 @@ const token = '788876891:AAGJPvBNsE2EIFGaMUOUA82FV_M0ugoizXU';
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
 
-var state = {};
+const state = {};
 
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
