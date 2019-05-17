@@ -72,12 +72,24 @@ bot.on('message', (msg) => {
                     }
                 });
             } else if (text.indexOf("ลบงาน") === 0) {
-                
+                state[chatId].state = "Task";
+                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime");
             }
         } else if (state[chatId].state == "Blob") {
             var queueMsg = {
                 Command: "Blob",
-                ListenerName: text
+                Message: text
+            };
+            queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
+                if (!error) {
+                    // Message inserted
+                }
+            });
+            state[chatId].state = "Finish"
+        } else if (state[chatId].state == "Task") {
+            var queueMsg = {
+                Command: "Task",
+                Message: text
             };
             queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
                 if (!error) {
