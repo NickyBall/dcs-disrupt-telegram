@@ -32,13 +32,35 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 // messages.
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
+  var text = msg.text;
+
+  if (text.indexOf("สร้าง Blob Week") === 0) {
+    queueSvc.createMessage('disrupt', "Create Blob Week", function(error, results, response){
+        if(!error){
+          // Message inserted
+        }
+      });
+  } else if (text.indexOf("ลบงาน") === 0) {
+    queueSvc.createMessage('disrupt', "Remove Task", function(error, results, response){
+        if(!error){
+          // Message inserted
+        }
+      });
+  }
+  
   console.log(JSON.stringify(msg));
-  queueSvc.createMessage('disrupt', "Hello world!", function(error, results, response){
-    if(!error){
-      // Message inserted
-    }
-  });
+  
 
   // send a message to the chat acknowledging receipt of their message
   bot.sendMessage(chatId, 'Received your message');
+});
+
+bot.onText(/\/command/, (msg) => {
+    
+    bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
+    "reply_markup": {
+        "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
+        }
+    });
+    
 });
