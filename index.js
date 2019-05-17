@@ -1,3 +1,11 @@
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 3000
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
 const TelegramBot = require('node-telegram-bot-api');
 const azure = require('azure-storage');
 
@@ -7,7 +15,7 @@ const token = '788876891:AAGJPvBNsE2EIFGaMUOUA82FV_M0ugoizXU';
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
 
-var state = {};
+var state = '';
 
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
@@ -63,7 +71,12 @@ bot.on('message', (msg) => {
 });
 
 bot.onText(/\/command/, (msg) => {
-    state[msg.chat.id][state] = "Start";
+    if (!state[msg.chat.id]) {
+        state[msg.chat.id] = {
+            id: msg.chat.id
+        }
+    }
+    state[msg.chat.id].state = "Start";
     bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
         "reply_markup": {
             "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
