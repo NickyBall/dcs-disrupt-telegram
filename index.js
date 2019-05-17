@@ -63,7 +63,7 @@ bot.on('message', (msg) => {
 });
 
 bot.onText(/\/command/, (msg) => {
-    state[msg.chat.id].state = "Start";
+    state[msg.chat.id][state] = "Start";
     bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
         "reply_markup": {
             "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
