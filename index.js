@@ -38,6 +38,22 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
     bot.sendMessage(chatId, resp);
 });
 
+bot.onText(/\/command/, (msg) => {
+    if (!state[msg.chat.id]) {
+        console.log("No state for " + msg.chat.id);
+        state[msg.chat.id] = {
+            id: msg.chat.id
+        };
+    }
+    state[msg.chat.id].state = "Start";
+    console.log(JSON.stringify(state));
+    bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
+        "reply_markup": {
+            "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
+        }
+    });
+});
+
 // Listen for any kind of message. There are different kinds of
 // messages.
 bot.on('message', (msg) => {
@@ -68,20 +84,4 @@ bot.on('message', (msg) => {
         });
         state[msg.chat.id].state = "Finish"
     }
-});
-
-bot.onText(/\/command/, (msg) => {
-    if (!state[msg.chat.id]) {
-        console.log("No state for " + msg.chat.id);
-        state[msg.chat.id] = {
-            id: msg.chat.id
-        };
-    }
-    state[msg.chat.id].state = "Start";
-    console.log(JSON.stringify(state));
-    bot.sendMessage(msg.chat.id, "เลือกคำสั่ง", {
-        "reply_markup": {
-            "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
-        }
-    });
 });
