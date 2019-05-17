@@ -35,7 +35,8 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
-
+    console.log(JSON.stringify(msg));
+    console.log(JSON.stringify(state));
     if (state[msg.chat.id].state == "Start") {
         if (text.indexOf("สร้าง Blob Week") === 0) {
             state[msg.chat.id].state = "Blob";
