@@ -86,6 +86,7 @@ bot.on('message', (msg) => {
                 }
             });
             state[chatId].state = "Finish"
+            bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
         } else if (state[chatId].state == "Task") {
             var queueMsg = {
                 Command: "Task",
@@ -97,6 +98,7 @@ bot.on('message', (msg) => {
                 }
             });
             state[chatId].state = "Finish"
+            bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
         }
     }
 });
