@@ -72,6 +72,7 @@ bot.on('message', (msg) => {
 
 bot.onText(/\/command/, (msg) => {
     if (!state[msg.chat.id]) {
+        console.log("No state for " + msg.chat.id);
         state[msg.chat.id] = {
             id: msg.chat.id
         };
