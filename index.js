@@ -61,44 +61,44 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
     if (state[chatId]) {
-        console.log(JSON.stringify(msg));
         console.log(JSON.stringify(state));
         if (state[chatId].state == "Start") {
+
             if (text.indexOf("สร้าง Blob Week") === 0) {
                 state[chatId].state = "Blob";
-                bot.sendMessage(chatId, "เลือกสี", {
-                    "reply_markup": {
-                        "keyboard": [["Indigo"], ["Green"]]
-                    }
-                });
             } else if (text.indexOf("ลบงาน") === 0) {
                 state[chatId].state = "Task";
-                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime");
+                // bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime");
             }
-        } else if (state[chatId].state == "Blob") {
-            var queueMsg = {
-                Command: "Blob",
-                Message: text
-            };
-            queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
-                if (!error) {
-                    // Message inserted
+            bot.sendMessage(chatId, "เลือกสี", {
+                "reply_markup": {
+                    "keyboard": [["Indigo"], ["Green"]]
                 }
             });
-            state[chatId].state = "Finish"
-            bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
-        } else if (state[chatId].state == "Task") {
-            var queueMsg = {
-                Command: "Task",
-                Message: text
-            };
-            queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
-                if (!error) {
-                    // Message inserted
+        } else if (state[chatId].state == "Blob" || state[chatId].state == "Task") {
+
+            if (!state[chatId].listenerName) {
+                state[chatId].listenerName = text;
+                if (state[chatId].state == "Blob") {
+                    bot.sendMessage(chatId, "กรุณาระบุ วันที่เริ่มต้นสัปดาห์ ในรูปแบบ dd/mm/yyyy (หากไม่ระบุ จะใช้สัปดาห์ปัจจุบัน)");
+                } else if (state[chatId].state == "Task") {
+                    bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime");
                 }
-            });
-            state[chatId].state = "Finish"
-            bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
+            } else {
+                var queueMsg = {
+                    Command: state[chatId].state,
+                    ListenerName = state[chatId].listenerName,
+                    Message: text
+                };
+                queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
+                    if (!error) {
+                        // Message inserted
+                    }
+                });
+                state[chatId].state = "Finish"
+                bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
+            }
+
         }
     }
 });
