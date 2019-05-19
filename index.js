@@ -76,7 +76,7 @@ bot.on('message', (msg) => {
                 }
                 bot.sendMessage(chatId, "เลือกสี", {
                     "reply_markup": {
-                        "keyboard": [["Indigo"], ["Green"]]
+                        "keyboard": [["Indigo"], ["Grey"], ["Green"]]
                     }
                 });
             }
