@@ -87,7 +87,7 @@ bot.on('message', (msg) => {
             } else {
                 var queueMsg = {
                     Command: state[chatId].state,
-                    ListenerName = state[chatId].listenerName,
+                    ListenerName: state[chatId].listenerName,
                     Message: text
                 };
                 queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
