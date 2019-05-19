@@ -70,11 +70,17 @@ bot.on('message', (msg) => {
                 state[chatId].state = "Task";
                 // bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime");
             }
-            bot.sendMessage(chatId, "เลือกสี", {
-                "reply_markup": {
-                    "keyboard": [["Indigo"], ["Green"]]
+            if (state[chatId].state == "Blob" || state[chatId].state == "Task") {
+                if (state[chatId].listenerName) {
+                    state[chatId].listenerName = undefined;
                 }
-            });
+                bot.sendMessage(chatId, "เลือกสี", {
+                    "reply_markup": {
+                        "keyboard": [["Indigo"], ["Green"]]
+                    }
+                });
+            }
+            
         } else if (state[chatId].state == "Blob" || state[chatId].state == "Task") {
 
             if (!state[chatId].listenerName) {
