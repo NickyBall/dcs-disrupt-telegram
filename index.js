@@ -101,7 +101,8 @@ bot.on('message', (msg) => {
                 }, {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+                    },
+                    rejectUnauthorized: false
                 }).then(res => console.log(JSON.stringify(res))).catch(err => console.log(JSON.stringify(err)));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
