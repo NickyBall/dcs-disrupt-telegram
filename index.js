@@ -1,5 +1,7 @@
-const express = require('express')
+const express = require('express');
 const axios = require('axios');
+var https = require("https");
+https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const axios_cli = axios.create({
     baseURL: 'https://dcs-staging.southeastasia.cloudapp.azure.com:8817/'
 });
@@ -96,7 +98,11 @@ bot.on('message', (msg) => {
                     client_id: process.env.CLIENT_ID,
                     client_secret: process.env.CLIENT_SECRET,
                     grant_type: "client_credentials"
-                }, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(res => console.log(JSON.stringify(res))).catch(err => console.log(JSON.stringify(err)));
+                }, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(res => console.log(JSON.stringify(res))).catch(err => console.log(JSON.stringify(err)));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
         }
