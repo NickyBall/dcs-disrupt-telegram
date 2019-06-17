@@ -92,7 +92,7 @@ bot.on('message', (msg) => {
             if (text.indexOf("สร้าง Blob Week") === 0) {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
-                axios_cli.post("/connect/token", {
+                axios.post("https://dcs-staging.southeastasia.cloudapp.azure.com:8817/connect/token", {
                     client_id: process.env.CLIENT_ID,
                     client_secret: process.env.CLIENT_SECRET,
                     grant_type: "client_credentials"
