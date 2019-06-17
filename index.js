@@ -73,7 +73,7 @@ bot.onText(/\/\w+/, (msg) => {
         console.log(JSON.stringify(state));
         bot.sendMessage(chatId, "เลือกคำสั่ง", {
             "reply_markup": {
-                "keyboard": commands.map(c => [c.command])
+                "keyboard": commands
             }
         });
     }
