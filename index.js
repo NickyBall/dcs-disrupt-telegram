@@ -96,7 +96,7 @@ bot.on('message', (msg) => {
                     client_id: process.env.CLIENT_ID,
                     client_secret: process.env.CLIENT_SECRET,
                     grant_type: "client_credentials"
-                }).then(res => console.log(JSON.stringify(res))).catch(err => console.log(JSON.stringify(err)));
+                }, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(res => console.log(JSON.stringify(res))).catch(err => console.log(JSON.stringify(err)));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
         }
