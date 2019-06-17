@@ -85,10 +85,10 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
     if (state[chatId]) {
-        console.log(JSON.stringify(msg));
         console.log(JSON.stringify(state));
 
         if (state[chatId].state == "Start") {
+
             if (text.indexOf("สร้าง Blob Week") === 0) {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
