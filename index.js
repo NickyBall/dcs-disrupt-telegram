@@ -1,4 +1,8 @@
 const express = require('express')
+const axios = require('axios');
+const axios_cli = axios.create({
+    baseURL: 'https://dcs-staging.southeastasia.cloudapp.azure.com:8817/'
+});
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -16,6 +20,13 @@ const token = '788876891:AAGJPvBNsE2EIFGaMUOUA82FV_M0ugoizXU';
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
+const whiteLabels = ["indigo", "grey", "green"];
+const commands = [
+    ["ลบงาน"],
+    ["สร้าง Blob Week"],
+    ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
+    ["ติดตั้ง Cert"]
+];
 
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
@@ -38,21 +49,34 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
     bot.sendMessage(chatId, resp);
 });
 
-bot.onText(/\/command/, (msg) => {
+bot.onText(/\/\w+/, (msg) => {
     const chatId = msg.chat.id;
+    var text = msg.text;
+    console.log(JSON.stringify(text));
+
+    var whiteLabel = text.toLowerCase().substring(1);
+
     if (!state[chatId]) {
         console.log("No state for " + chatId);
         state[chatId] = {
             id: chatId
         };
     }
-    state[chatId].state = "Start";
-    console.log(JSON.stringify(state));
-    bot.sendMessage(chatId, "เลือกคำสั่ง", {
-        "reply_markup": {
-            "keyboard": [["ลบงาน"], ["สร้าง Blob Week"]]
-        }
-    });
+
+    if (!whiteLabels.includes(whiteLabel)) {
+        bot.sendMessage(chatId, "ไม่มีสีนี้ในระบบ");
+    } else {
+
+        state[chatId].state = "Start";
+        state[chatId].whiteLabel = whiteLabel;
+
+        console.log(JSON.stringify(state));
+        bot.sendMessage(chatId, "เลือกคำสั่ง", {
+            "reply_markup": {
+                "keyboard": commands.map(c => [c.command])
+            }
+        });
+    }
 });
 
 // Listen for any kind of message. There are different kinds of
@@ -63,42 +87,18 @@ bot.on('message', (msg) => {
     if (state[chatId]) {
         console.log(JSON.stringify(msg));
         console.log(JSON.stringify(state));
+
         if (state[chatId].state == "Start") {
             if (text.indexOf("สร้าง Blob Week") === 0) {
-                state[chatId].state = "Blob";
-                bot.sendMessage(chatId, "เลือกสี", {
-                    "reply_markup": {
-                        "keyboard": [["Indigo"], ["Green"]]
-                    }
-                });
             } else if (text.indexOf("ลบงาน") === 0) {
-                state[chatId].state = "Task";
-                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime");
+            } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
+                axios_cli.post("/connect/token", {
+                    client_id: process.env.CLIENT_ID,
+                    client_secret: process.env.CLIENT_SECRET,
+                    grant_type: "client_credentials"
+                }).then(res => console.log(JSON.stringify(res)));
+            } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
-        } else if (state[chatId].state == "Blob") {
-            var queueMsg = {
-                Command: "Blob",
-                Message: text
-            };
-            queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
-                if (!error) {
-                    // Message inserted
-                }
-            });
-            state[chatId].state = "Finish"
-            bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
-        } else if (state[chatId].state == "Task") {
-            var queueMsg = {
-                Command: "Task",
-                Message: text
-            };
-            queueSvc.createMessage('disrupt', JSON.stringify(queueMsg), function (error, results, response) {
-                if (!error) {
-                    // Message inserted
-                }
-            });
-            state[chatId].state = "Finish"
-            bot.sendMessage(chatId, "เสร็จเรียบร้อยแล้ว");
         }
     }
 });
