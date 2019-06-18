@@ -94,6 +94,7 @@ bot.on('message', (msg) => {
                 disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
                     var message = '';
                     res.contract.userInvalidateComputerContract.map(c => message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`);
+                    console.log(`message => ${message}`);
                     bot.sendMessage(chatId, message);
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
