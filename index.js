@@ -1,7 +1,7 @@
 const express = require('express');
 const disrupt = require('./disruptapi');
 var https = require("https");
-https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
+// https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -92,7 +92,9 @@ bot.on('message', (msg) => {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
-                    res.contract.userInvalidateComputerContract.map(c => await bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
+                    res.contract.userInvalidateComputerContract.map(async (c) => {
+                        await bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}`);
+                    });
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
