@@ -2,9 +2,6 @@ const express = require('express');
 const disrupt = require('./disruptapi');
 var https = require("https");
 https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
-const axios_cli = axios.create({
-    baseURL: 'https://dcs-staging.southeastasia.cloudapp.azure.com:8817/'
-});
 const app = express()
 const port = process.env.PORT || 3000
 
