@@ -91,6 +91,7 @@ bot.on('message', (msg) => {
             if (text.indexOf("สร้าง Blob Week") === 0) {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
+                console.log(`whiteLabel => ${state[chatId].whiteLabel}`);
                 disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
                     var message = '';
                     console.log(`message length => ${res.contract.userInvalidateComputerContract.length}`);
