@@ -1,5 +1,5 @@
 const express = require('express');
-const axios = require('axios');
+const disrupt = require('./disruptapi');
 var https = require("https");
 https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const axios_cli = axios.create({
@@ -94,16 +94,9 @@ bot.on('message', (msg) => {
             if (text.indexOf("สร้าง Blob Week") === 0) {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
-                axios.post("https://dcs-staging.southeastasia.cloudapp.azure.com:8817/connect/token", {
-                    client_id: process.env.CLIENT_ID,
-                    client_secret: process.env.CLIENT_SECRET,
-                    grant_type: "client_credentials"
-                }, {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    rejectUnauthorized: false
-                }).then(res => console.log(JSON.stringify(res))).catch(err => console.log(JSON.stringify(err)));
+                disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
+                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}`));
+                }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
         }
