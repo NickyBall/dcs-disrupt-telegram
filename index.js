@@ -92,23 +92,44 @@ bot.on('message', (msg) => {
 
         if (state[chatId].state === "Start") {
 
-            if (text.indexOf("สร้าง Blob Week") === 0) {
-            } else if (text.indexOf("ลบงาน") === 0) {
+            if ( text.indexOf("ลบงาน") === 0) {
+                console.log("DeletingWork1");
+                state[chatId].state = "DeletingWork";
+                bot.sendMessage(chatId, 'กรณีระบุ TaskIdentityKeyTim');
+            } else if (text.indexOf("สร้าง Blob Week") === 0) {
+
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
+                console.log("InstallCert1");
                 state[chatId].state = "InstallCert";
                 bot.sendMessage(chatId, 'กรณีระบุ Install Code');
             }
-        } else if (state[chatId].state === "InstallCert") {
-            // Do work
+        }
+        else if (state[chatId].state === "DeletingWork") {
+            console.log("DeletingWork2");
+            console.log(text);
+            // disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+            //     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
+            //     state[chatId].state = "Finish";
+            // }).catch(err => console.log(err));
 
-            
-            bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
-            state[chatId].state = "Finish";
+            // bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
+            // state[chatId].state = "Finish";
+        } 
+        else if (state[chatId].state === "InstallCert") {
+            console.log("InstallCert2");
+            console.log(text);
+            // disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), ).then(res => {
+            //     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
+            //     state[chatId].state = "Finish";
+            // }).catch(err => console.log(err));
+
+            // bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
+            // state[chatId].state = "Finish";
         }
     }
 });
