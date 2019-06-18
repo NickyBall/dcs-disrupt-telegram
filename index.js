@@ -99,7 +99,7 @@ bot.on('message', (msg) => {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     var message = '';
                     console.log(`message length => ${res.contract.userInvalidateComputerContract.length}`);
-                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(`${c.username}, ${c.computerName} => ${c.securityCode}\n`));
+                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
                     console.log(`message => ${message}`);
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
