@@ -35,6 +35,10 @@ queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
     }
 });
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
     // 'msg' is the received Message from Telegram
@@ -91,17 +95,12 @@ bot.on('message', (msg) => {
             if (text.indexOf("สร้าง Blob Week") === 0) {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
-                console.log(`whiteLabel => ${state[chatId].whiteLabel}`);
-                disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
+                console.log(`whiteLabel => ${capitalizeFirstLetter(state[chatId].whiteLabel)}`);
+                disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     var message = '';
                     console.log(`message length => ${res.contract.userInvalidateComputerContract.length}`);
-                    for (var i = 0; i < res.contract.userInvalidateComputerContract.length; i++) {
-                        var c = res.contract.userInvalidateComputerContract[i];
-                        message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`;
-                    }
-                    // res.contract.userInvalidateComputerContract.map(c => message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`);
+                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(`${c.username}, ${c.computerName} => ${c.securityCode}\n`));
                     console.log(`message => ${message}`);
-                    bot.sendMessage(chatId, message);
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
