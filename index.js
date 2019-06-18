@@ -92,9 +92,9 @@ bot.on('message', (msg) => {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
-                    res.contract.userInvalidateComputerContract.map(async (c) => {
-                        await bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}`);
-                    });
+                    var message = '';
+                    res.contract.userInvalidateComputerContract.map(c => message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`);
+                    bot.sendMessage(chatId, message);
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
             }
