@@ -122,14 +122,9 @@ bot.on('message', (msg) => {
         }
         else if (state[chatId].state === "InstallCert") {
             disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                console.log(res['resultCode']);
-                console.log(res['message']);
-                console.log(res['description']);
-                //res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
-                state[chatId].state = "Finish";
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
+                else bot.sendMessage(chatId, res['description']);
             }).catch(err => console.log(err));
-
-            bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
             state[chatId].state = "Finish";
         }
     }
