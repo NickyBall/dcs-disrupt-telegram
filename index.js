@@ -93,7 +93,11 @@ bot.on('message', (msg) => {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
                     var message = '';
-                    res.contract.userInvalidateComputerContract.map(c => message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`);
+                    for (var i = 0; i < res.contract.userInvalidateComputerContract.length; i++) {
+                        var c = res.contract.userInvalidateComputerContract[i];
+                        message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`;
+                    }
+                    // res.contract.userInvalidateComputerContract.map(c => message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`);
                     console.log(`message => ${message}`);
                     bot.sendMessage(chatId, message);
                 }).catch(err => console.log(err));
