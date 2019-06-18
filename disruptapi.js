@@ -34,13 +34,13 @@ module.exports.deleteWorkByTaskIdentityKeyTime = (whiteLabelName, taskIdentityKe
     });
 };
 
-module.exports.createBlobByWeekKeyTime = (whiteLabelName, weekIdentityKeyTime) => {
+module.exports.createBlobByWeekKeyTime = (whiteLabelName, weekKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/blob/create/week')
                         .send({
                             ListenerName: whiteLabelName,
-                            WeekIdentityKeyTime: weekIdentityKeyTime
+                            WeekKeyTime: weekKeyTime
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
