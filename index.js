@@ -90,16 +90,25 @@ bot.on('message', (msg) => {
     if (state[chatId]) {
         console.log(JSON.stringify(state));
 
-        if (state[chatId].state == "Start") {
+        if (state[chatId].state === "Start") {
 
             if (text.indexOf("สร้าง Blob Week") === 0) {
             } else if (text.indexOf("ลบงาน") === 0) {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
+                    state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
+                state[chatId].state = "InstallCert";
+                bot.sendMessage(chatId, 'กรณีระบุ Install Code');
             }
+        } else if (state[chatId].state === "InstallCert") {
+            // Do work
+
+            
+            bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
+            state[chatId].state = "Finish";
         }
     }
 });

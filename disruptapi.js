@@ -30,3 +30,20 @@ module.exports.getInvalidateComputer = (whiteLabelName) => {
         }).catch(err => reject(err));
     });
 };
+
+module.exports.installCert = (whiteLabelName, installCode) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post('https://dcs-staging.southeastasia.cloudapp.azure.com:8817/api/disrupt/security/installcert')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            SecurityCode: installCode
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => console.log(err));
+    });
+}
