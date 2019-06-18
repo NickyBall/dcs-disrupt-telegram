@@ -34,6 +34,23 @@ module.exports.deleteWorkByTaskIdentityKeyTime = (whiteLabelName, taskIdentityKe
     });
 };
 
+module.exports.createBlobByWeekKeyTime = (whiteLabelName, weekIdentityKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/blob/create/week')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            WeekIdentityKeyTime: weekIdentityKeyTime
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.getInvalidateComputer = (whiteLabelName) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
