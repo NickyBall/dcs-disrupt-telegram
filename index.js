@@ -93,6 +93,7 @@ bot.on('message', (msg) => {
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(state[chatId].whiteLabel).then(res => {
                     var message = '';
+                    console.log(`message length => ${res.contract.userInvalidateComputerContract.length}`);
                     for (var i = 0; i < res.contract.userInvalidateComputerContract.length; i++) {
                         var c = res.contract.userInvalidateComputerContract[i];
                         message = message + `${c.username}, ${c.computerName} => ${c.securityCode}\n`;
