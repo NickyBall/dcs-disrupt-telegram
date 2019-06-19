@@ -119,6 +119,7 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "CreatingBlobWeek") {
+            console.log("CreatingBlobWeek");
             if (text.indexOf("สร้างสัปดาห์ล่าสุด") === 0) {
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), "").then(res => {
