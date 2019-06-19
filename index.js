@@ -92,6 +92,9 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
+    console.log(chatId)
+    console.log(text);
+    console.log(state[chatId].state)
     if (state[chatId]) {
         console.log(JSON.stringify(state));
         console.log("state is exist")
