@@ -92,6 +92,8 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
+    console.log(state[chatId].state)
+    console.log(text)
     if (state[chatId]) {
         console.log(JSON.stringify(state));
 
@@ -129,11 +131,11 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("กรุณาระบุ WeekKeyTime(eg. 3091260600000000)") === 0){
                 bot.sendMessage(chatId, "ระบุ WeekKeyTime", {"reply_markup": removeKeyBoard});
-                state[chatId].state = "CreateingBlobWithWeekKeyTime";
+                state[chatId].state = "CreateingBlobWeekKeyTime";
             }
         }
-        else if(state[chatId].state === "CreateingBlobWithWeekKeyTime"){
-            console.log("CreateingBlobWithWeekKeyTime");
+        else if(state[chatId].state === "CreateingBlobWeekKeyTime"){
+            console.log("CreateingBlobWeekKeyTime");
             console.log(text);
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
