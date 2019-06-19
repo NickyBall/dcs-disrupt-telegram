@@ -28,7 +28,7 @@ const commands = [
 ];
 const blobcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
-const blobcommandbyweek = [[""],["กรุณาระบุ WeekKeyTime(eg.3091260600000000)"]];
+const blobcommandbyweek = [["กรุณาระบุ WeekKeyTime(eg.3091260600000000)"]];
 
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
@@ -132,7 +132,11 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 state[chatId].state = "WeekKeyTimeBlob";
-                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": blobcommandbyweek});
+                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {
+                    "reply_markup": {
+                        "keyboard": blobcommandbyweek
+                    }
+                });
                 // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
