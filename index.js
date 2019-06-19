@@ -120,18 +120,22 @@ bot.on('message', (msg) => {
         }
         else if (state[chatId].state === "CreatingBlobWeek") {
             if (text.indexOf("สร้างสัปดาห์ล่าสุด") === 0) {
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), "").then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
             }
-            else if (text.indexOf("ระบุ WeekKeyTime") === 0){
+            else if (text.indexOf("กรุณาระบุ WeekKeyTime(eg. 3091260600000000)") === 0){
                 bot.sendMessage(chatId, "ระบุ WeekKeyTime", {"reply_markup": removeKeyBoard});
                 state[chatId].state = "CreateingBlobWithWeekKeyTime";
             }
         }
         else if(state[chatId].state === "CreateingBlobWithWeekKeyTime"){
+            console.log("CreateingBlobWithWeekKeyTime");
+            console.log(text);
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
@@ -139,6 +143,7 @@ bot.on('message', (msg) => {
             state[chatId].state = "Finish";
         }
         else if (state[chatId].state === "DeletingWork") {
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.deleteWorkByTaskIdentityKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
@@ -146,6 +151,7 @@ bot.on('message', (msg) => {
             state[chatId].state = "Finish";
         }
         else if (state[chatId].state === "InstallCert") {
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
