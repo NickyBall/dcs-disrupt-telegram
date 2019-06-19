@@ -92,11 +92,9 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
-    console.log(state[chatId].state)
-    console.log(text)
     if (state[chatId]) {
         console.log(JSON.stringify(state));
-
+        console.log("state is exist")
         if (state[chatId].state === "Start") {
             if (text.indexOf("ลบงาน") === 0) {
                 state[chatId].state = "DeletingWork";
