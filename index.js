@@ -94,7 +94,7 @@ bot.on('message', (msg) => {
     var text = msg.text;
     console.log(chatId)
     console.log(text);
-    console.log(state[chatId].state)
+    console.log(JSON.stringify(state));
     if (state[chatId]) {
         console.log(JSON.stringify(state));
         console.log("state is exist")
