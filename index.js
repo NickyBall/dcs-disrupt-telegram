@@ -130,10 +130,10 @@ bot.on('message', (msg) => {
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
             }
-            else if (text.indexOf("กรุณาระบุ WeekKeyTime(eg. 3091260600000000)") === 0){
+            else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 console.log("กรุณาระบุ");
                 state[chatId].state = "WeekKeyTimeBlob";
-                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime", {"reply_markup": removeKeyBoard});
+                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime (eg.3091260600000000)", {"reply_markup": removeKeyBoard});
             }
         }
         else if(state[chatId].state === "WeekKeyTimeBlob"){
