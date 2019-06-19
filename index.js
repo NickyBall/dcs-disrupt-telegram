@@ -32,9 +32,7 @@ const blobcommand = [
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
-const hideKeyBoard = JSON.stringify({
-    hide_keyboard: true
-});
+
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
 queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
@@ -95,9 +93,7 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
-    console.log(chatId)
-    console.log(text);
-    console.log(JSON.stringify(state));
+
     if (state[chatId]) {
         console.log(JSON.stringify(state));
         console.log("state is exist")
@@ -125,10 +121,8 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "CreatingBlobWeek") {
-            console.log("CreatingBlobWeek");
+            console.log(text);
             if (text.indexOf("สร้างสัปดาห์ล่าสุด") === 0) {
-                console.log("สร้างสัปดาห์ล่าสุด");
-
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), "").then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
@@ -137,8 +131,6 @@ bot.on('message', (msg) => {
                 state[chatId].state = "Finish";
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
-                console.log("กรุณาระบุ");
-                console.log(text);
                 // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
