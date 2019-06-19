@@ -141,7 +141,7 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 console.log("ระบุ WeekKeyTime")
-                bot.sendMessage(chatId, "DeletingKeyBoard", reply_markup=ReplyKeyboardRemove());
+                bot.sendMessage(chatId, "DeletingKeyBoard", reply_markup = new ReplyKeyboardRemove());
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย');
                 //     else bot.sendMessage(chatId, res['description']);
