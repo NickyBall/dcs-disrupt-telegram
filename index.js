@@ -29,6 +29,20 @@ const commands = [
 const blobcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
 
+const opts = {
+"reply_markup": {
+            "inline_keyboard": [[
+                {
+                    "text": "A",
+                    "callback_data": "A1"            
+                }, 
+                {
+                    "text": "B",
+                    "callback_data": "C1"            
+                }]
+            ]
+        }
+}    
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
 queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
@@ -100,7 +114,7 @@ bot.on('message', (msg) => {
                 state[chatId].state = "CreatingBlobWeek";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {
                     "reply_markup": {
-                        "keyboard": blobcommand
+                        "keyboard": opts
                     }
                 });
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
@@ -127,7 +141,7 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 console.log("ระบุ WeekKeyTime")
-
+                bot.sendMessage
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย');
                 //     else bot.sendMessage(chatId, res['description']);
