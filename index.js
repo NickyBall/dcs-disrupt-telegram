@@ -130,11 +130,11 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("กรุณาระบุ WeekKeyTime(eg. 3091260600000000)") === 0){
                 bot.sendMessage(chatId, "ระบุ WeekKeyTime", {"reply_markup": removeKeyBoard});
-                state[chatId].state = "CreateingBlobWeekKeyTime";
+                state[chatId].state = "WeekKeyTimeBlob";
             }
         }
-        else if(state[chatId].state === "CreateingBlobWeekKeyTime"){
-            console.log("CreateingBlobWeekKeyTime");
+        else if(state[chatId].state === "WeekKeyTimeBlob"){
+            console.log("WeekKeyTimeBlob");
             console.log(text);
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
