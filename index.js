@@ -31,7 +31,10 @@ const blobcommand = [
 
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
-})
+});
+const hideKeyBoard = JSON.stringify({
+    hide_keyboard: true
+});
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
 queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
@@ -136,7 +139,7 @@ bot.on('message', (msg) => {
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 console.log("กรุณาระบุ");
                 state[chatId].state = "WeekKeyTimeBlob";
-                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime (eg.3091260600000000)", {"reply_markup": removeKeyBoard});
+                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime (eg.3091260600000000)", {"reply_markup": hideKeyBoard});
             }
         }
         else if(state[chatId].state === "WeekKeyTimeBlob"){
