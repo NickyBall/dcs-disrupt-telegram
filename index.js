@@ -112,11 +112,7 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, 'กรณีระบุ TaskIdentityKeyTime');
             } else if (text.indexOf("สร้าง Blob Week") === 0) {
                 state[chatId].state = "CreatingBlobWeek";
-                bot.sendMessage(chatId, "เลือกคำสั่ง", {
-                    "reply_markup": {
-                        "keyboard": opts
-                    }
-                });
+                bot.sendMessage(chatId,"Message text", opts);
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
