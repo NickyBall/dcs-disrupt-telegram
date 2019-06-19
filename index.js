@@ -112,7 +112,11 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, 'กรณีระบุ TaskIdentityKeyTime');
             } else if (text.indexOf("สร้าง Blob Week") === 0) {
                 state[chatId].state = "CreatingBlobWeek";
-                bot.sendMessage(chatId,"Message text", opts);
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {
+                    "reply_markup": {
+                        "keyboard": blobcommand
+                    }
+                });
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
@@ -137,7 +141,11 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 console.log("ระบุ WeekKeyTime")
-                bot.sendMessage
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {
+                    "reply_markdown": {
+                        "keyboard": commands
+                    }
+                });
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย');
                 //     else bot.sendMessage(chatId, res['description']);
