@@ -117,6 +117,7 @@ bot.on('message', (msg) => {
                         "keyboard": blobcommand
                     }
                 });
+
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
@@ -141,7 +142,11 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 console.log("ระบุ WeekKeyTime")
-                bot.sendMessage(chatId, "DeletingKeyBoard", reply_markup = new ReplyKeyboardRemove());
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {
+                    "reply_markup": JSON.stringify({
+                        remove_keyboard: true
+                    })
+                });
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย');
                 //     else bot.sendMessage(chatId, res['description']);
