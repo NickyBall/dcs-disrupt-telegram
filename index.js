@@ -29,20 +29,9 @@ const commands = [
 const blobcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
 
-const opts = {
-"reply_markup": {
-            "inline_keyboard": [[
-                {
-                    "text": "A",
-                    "callback_data": "A1"            
-                }, 
-                {
-                    "text": "B",
-                    "callback_data": "C1"            
-                }]
-            ]
-        }
-}    
+const removeKeyBoard = JSON.stringify({
+    remove_keyboard: true
+})
 // Azure Queue Service
 const queueSvc = azure.createQueueService();
 queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
@@ -120,51 +109,46 @@ bot.on('message', (msg) => {
 
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`));
+                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
+                    , {"reply_markup": removeKeyBoard}));
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
             } else if (text.indexOf("ติดตั้ง Cert") === 0) {
                 state[chatId].state = "InstallCert";
-                bot.sendMessage(chatId, 'กรณีระบุ Install Code');
+                bot.sendMessage(chatId, 'กรณีระบุ Install Code (eg. aBcd)',{"reply_markup": removeKeyBoard});
             }
         }
         else if (state[chatId].state === "CreatingBlobWeek") {
-            console.log("CreatingBlobWeek")
-            console.log(text)
             if (text.indexOf("สร้างสัปดาห์ล่าสุด") === 0) {
-                console.log("สร้างสัปดาห์ล่าสุด")
-
-                // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย');
-                //     else bot.sendMessage(chatId, res['description']);
-                // }).catch(err => console.log(err));
-                // state[chatId].state = "Finish";
+                disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), "").then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
-                console.log("ระบุ WeekKeyTime")
-                bot.sendMessage(chatId, "เลือกคำสั่ง", {
-                    "reply_markup": JSON.stringify({
-                        remove_keyboard: true
-                    })
-                });
-                // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย');
-                //     else bot.sendMessage(chatId, res['description']);
-                // }).catch(err => console.log(err));
-                // state[chatId].state = "Finish";
+                bot.sendMessage(chatId, "ระบุ WeekKeyTime", {"reply_markup": removeKeyBoard});
+                state[chatId].state = "CreateingBlobWithWeekKeyTime";
             }
+        }
+        else if(state[chatId].state === "CreateingBlobWithWeekKeyTime"){
+            disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
         }
         else if (state[chatId].state === "DeletingWork") {
             disrupt.deleteWorkByTaskIdentityKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย');
-                else bot.sendMessage(chatId, res['description']);
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
             state[chatId].state = "Finish";
         }
         else if (state[chatId].state === "InstallCert") {
             disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย');
-                else bot.sendMessage(chatId, res['description']);
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
             state[chatId].state = "Finish";
         }
