@@ -28,7 +28,7 @@ const commands = [
 ];
 const blobcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
-const empty = [[""]];
+const empty = "กรุณาระบุ WeekKeyTime(eg.3091260600000000)";
 
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
