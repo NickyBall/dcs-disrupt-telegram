@@ -96,7 +96,7 @@ module.exports.deleteSpecificWork = (whiteLabelName, department, taskIdentityKey
                             ListenerName: whiteLabelName,
                             Departure: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
-                            IdentityKeyTime:identityKeyTime
+                            IdentityKeyTime: identityKeyTime
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
