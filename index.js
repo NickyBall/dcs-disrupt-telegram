@@ -263,7 +263,51 @@ bot.on('message', (msg) => {
         //#endregion
 
         //#region  DeleteSpecific by IdentityKeyTime
-        
+        else if (state[chatId].state === "IdentDelete"){
+            state[chatId].state = "DepartmentDelete";
+            bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "DepartmentDelete"){
+            state[chatId].state = "TaskIdentityDelete";
+            if(text.indexOf("Operator") === 0){
+                state[chatId].Department = "operator";
+                bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+
+            }
+            else if(text.indexOf("Banker") === 0) {
+                state[chatId].Department = "banker";
+                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+
+            }
+            else if(text.indexOf("Updater") === 0) {
+                state[chatId].Department = "updater";
+                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+            }
+        }
+        else if (state[chatId].state === "TaskIdentityDelete"){
+            if(state[chatId].Department === "operator"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.deleteSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].Department, "", text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
+                state[chatId].state = "NotOperator";
+                state[chatId].TaskIdentityKeyTime = text;
+                bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+            }
+        }
+        else if (state[chatId].state === "NotOperator"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.deleteSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].Department
+            , state[chat].TaskIdentityKeyTime, text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
         //#endregion
 
         //#region  CompleteSpecific by IdentityKeyTime
