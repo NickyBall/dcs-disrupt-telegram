@@ -127,11 +127,11 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
-    console.log(JSON.stringify(state));
-    console.log(text);
+    // console.log(JSON.stringify(state));
+    // console.log(text);
 
     if (state[chatId]) {
-        console.log(state[chatId].state);
+        //console.log(state[chatId].state);
 
         //#region First Page Command
         if (state[chatId].state === "Start") {
@@ -207,7 +207,27 @@ bot.on('message', (msg) => {
 
         //#region  Blob Partition
         else if (state[chatId].state === "BlobPartition"){
-
+            state[chatId].state === "BlobPartitionWeekKeyTime"
+            if(text.indexOf("Operator") === 0) state[chatId].Department = "operator"
+            else if(text.indexOf("Banker") === 0) state[chatId].Department = "banker"
+            else if(text.indexOf("Updater") === 0) state[chatId].Department = "updater"
+            bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"force_reply" : true}});
+        }
+        else if (state[chatId].state === "BlobPartitionWeekKeyTime"){
+            state[chatId].state === "BlobPartitionNumber";
+            state[chatId].WeekKeyTime = text;
+            bot.sendMessage(chatId, "กรุณาระบุ Partition(eg.9999999999)", {"reply_markup": {"force_reply" : true}});
+        }
+        else if (state[chatId].state === "BlobPartitionNumber"){
+            state[chatId].state === "BlobPartitionAccount";
+            state[chatId].Partition = text;
+            bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
+        }
+        else if (state[chatId].state === "BlobPartitionAccount"){
+            state[chatId].state === "Finish";
+            state[chatId].AccountPattern = text;
+            console.log(JSON.stringify(state));
+            console.log(text);
         }
         //#endregion
         //#endregion
