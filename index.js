@@ -119,13 +119,14 @@ bot.on('message', (msg) => {
         // First Page Command
         console.log(state[chatId].state);
         if (state[chatId].state === "Start") {
+            console.log("Start in if")
             if (text.indexOf("เติมเครดิต") === 0) {
-                state[chatId].state = "TopupCredit";
+                state[chatId].state = "CreditTopup";
                 bot.sendMessage(chatId, 'จำนวนเงินที่ต้องการเติม', {"reply_markup": {"force_reply" : true}});
         }
         // Credit Topup
-        else if (state[chatId].state === "TopupCredit"){
-            console.log("TopupCredit")
+        else if (state[chatId].state === "CreditTopup"){
+            console.log("CreditTopup in else if")
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
