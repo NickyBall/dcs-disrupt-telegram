@@ -239,7 +239,7 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "WorkManagement"){
             if(text.indexOf("ลบงานโดย TaskIdentityKeyTime") === 0){
                 state[chatId].state = "TaskIdentDelete";
-                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true}});
             }
             if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
                 state[chatId].state = "IdentDelete";
@@ -252,7 +252,14 @@ bot.on('message', (msg) => {
         }
 
         //#region Delete by TaskIdentityKeyTime
-
+        else if(state[chatId].state === "TaskIdentDelete"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.deleteWorkByTaskIdentityKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
         //#endregion
 
         //#region  DeleteSpecific by IdentityKeyTime
