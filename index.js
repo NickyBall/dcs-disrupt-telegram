@@ -21,10 +21,13 @@ const bot = new TelegramBot(token, { polling: true });
 var state = {};
 const whiteLabels = ["indigo", "grey", "green"];
 const firstPageCommands = [
-    ["เติมเครดิต"],
+    ["จัดการทั่วไป"],
     ["จัดการงาน"],
     ["จัดการคิว"],
     ["จัดการความปลอดภัย"]
+];
+const generalCommands = [
+    ["เติมเครดิต"]
 ];
 const commands = [
     ["ลบงาน"],
@@ -119,22 +122,39 @@ bot.on('message', (msg) => {
         // First Page Command
         console.log(state[chatId].state);
         if (state[chatId].state === "Start") {
-            console.log("Start in if")
-            if (text.indexOf("เติมเครดิต") === 0) {
-                state[chatId].state = "CreditTopup";
-                bot.sendMessage(chatId, 'จำนวนเงินที่ต้องการเติม', {"reply_markup": {"force_reply" : true}});
+            if (text.indexOf("จัดการทั่วไป") === 0) {
+                state[chatId].state = "GeneralManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands,resizeKeyBoard}});
             }
         }
-        // Credit Topup
-        else if (state[chatId].state === "CreditTopup"){
-            console.log("CreditTopup in else if")
+        // General Management Command
+        else if (state[chatId].state === "GeneralManagement"){
+            if(text.indexOf("เติมเครดิต") === 0){
+                state[chatId].state = "TopupCredit";
+                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {forceReplyKeyBoard, resizeKeyBoard}});
+            }
+            // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            // disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+            //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+            // }).catch(err => console.log(err));
+            // state[chatId].state = "Finish";
+
+        }
+        // TopupCredit
+        else if (state[chatId].state === "TopupCredit"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
             state[chatId].state = "Finish";
         }
+
+        // WorkTask Management Command
+        // Queue Management Command
+        // Security ManageMent Command
     }
+});
         // else if (state[chatId].state === "CreatingBlobWeek") {
         //     if (text.indexOf("สร้างสัปดาห์ล่าสุด") === 0) {
         //         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
@@ -199,5 +219,3 @@ bot.on('message', (msg) => {
         //     state[chatId].state = "InstallCert";
         //     bot.sendMessage(chatId, 'กรณีระบุ Install Code (eg. aBcd)',{"reply_markup": removeKeyBoard});
         // }
-    }
-});
