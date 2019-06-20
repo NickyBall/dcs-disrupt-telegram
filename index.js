@@ -287,6 +287,7 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "TaskIdentityDelete"){
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                console.log(text);
                 disrupt.deleteSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].Department, "", text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
