@@ -124,6 +124,7 @@ bot.on('message', (msg) => {
         }
         // Credit Topup
         else if (state[chatId].state === "TopupCredit"){
+            console.log("TopupCredit")
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
