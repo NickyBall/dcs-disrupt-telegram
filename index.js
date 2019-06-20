@@ -224,10 +224,13 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
         }
         else if (state[chatId].state === "AccountPattern"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.createBlobByPartition(state[chatId].Department, capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].WeekKeyTime
+            ,state[chatId].Partition, text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob Partition เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
             state[chatId].state = "Finish";
-            state[chatId].AccountPattern = text;
-            console.log("end =>" + JSON.stringify(state));
-            console.log("end =>" + text);
         }
         //#endregion
         //#endregion

@@ -34,13 +34,13 @@ module.exports.topupCredit = (whiteLabelName, amount) => {
     });
 };
 
-module.exports.deleteWorkByTaskIdentityKeyTime = (whiteLabelName, taskIdentityKeyTime) => {
+module.exports.createBlobByWeekKeyTime = (whiteLabelName, weekKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/worktask/delete/workbytaskidentitykeytime')
+            superagent.post(endpoint + 'api/disrupt/blob/create/week')
                         .send({
                             ListenerName: whiteLabelName,
-                            TaskIdentityKeyTime: taskIdentityKeyTime
+                            WeekKeyTime: weekKeyTime
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
@@ -51,13 +51,33 @@ module.exports.deleteWorkByTaskIdentityKeyTime = (whiteLabelName, taskIdentityKe
     });
 };
 
-module.exports.createBlobByWeekKeyTime = (whiteLabelName, weekKeyTime) => {
+module.exports.createBlobByPartition = (department, whiteLabelName, weekKeyTime, partition, accountingpattern) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/blob/create/week')
+            superagent.post(endpoint + 'api/disrupt/blob/create/partition')
+                        .send({
+                            Departure: department,
+                            ListenerName: whiteLabelName,
+                            WeekKeyTime: weekKeyTime,
+                            Partition: partition,
+                            AccountingPattern: accountingpattern
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.deleteWorkByTaskIdentityKeyTime = (whiteLabelName, taskIdentityKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/delete/workbytaskidentitykeytime')
                         .send({
                             ListenerName: whiteLabelName,
-                            WeekKeyTime: weekKeyTime
+                            TaskIdentityKeyTime: taskIdentityKeyTime
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
