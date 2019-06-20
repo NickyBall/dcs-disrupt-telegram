@@ -207,24 +207,24 @@ bot.on('message', (msg) => {
 
         //#region  Blob Partition
         else if (state[chatId].state === "BlobPartition"){
-            state[chatId].state === "WeekKeyTime"
+            state[chatId].state = "WeekKeyTime"
             if(text.indexOf("Operator") === 0) state[chatId].Department = "operator"
             else if(text.indexOf("Banker") === 0) state[chatId].Department = "banker"
             else if(text.indexOf("Updater") === 0) state[chatId].Department = "updater"
             bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"force_reply" : true}});
         }
         else if (state[chatId].state === "WeekKeyTime"){
-            state[chatId].state === "PartitionNumber";
+            state[chatId].state = "PartitionNumber";
             state[chatId].WeekKeyTime = text;
             bot.sendMessage(chatId, "กรุณาระบุ Partition(eg.9999999999)", {"reply_markup": {"force_reply" : true}});
         }
         else if (state[chatId].state === "PartitionNumber"){
-            state[chatId].state === "AccountPattern";
+            state[chatId].state = "AccountPattern";
             state[chatId].Partition = text;
             bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
         }
         else if (state[chatId].state === "AccountPattern"){
-            state[chatId].state === "Finish";
+            state[chatId].state = "Finish";
             state[chatId].AccountPattern = text;
             console.log("end =>" + JSON.stringify(state));
             console.log("end =>" + text);
