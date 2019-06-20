@@ -27,18 +27,34 @@ const firstPageCommands = [
     ["จัดการความปลอดภัย"]
 ];
 const generalCommands = [
-    ["เติมเครดิต"]
-];
-const commands = [
-    ["ลบงาน"],
+    ["เติมเครดิต"],
     ["สร้าง Blob Week"],
+    ["สร้าง Blob Partition"]
+];
+const workCommands = [
+    ["ลบงานโดย TaskIdentityKeyTime"],
+    ["ลบงานโดย IdentityKeyTime"],
+    ["สำเร็จงานโดย IdentityKeyTime"]
+];
+const queueCommands = [
+    ["ต้องการทราบจำนวนคิว"],
+    ["เริ่มคิว"],
+    ["เคลียร์คิว"],
+    ["คิวสเตท"],
+    ["คิวสเตททั้งหมด"],    
+];
+const securityCommands = [
     ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
     ["ติดตั้ง Cert"]
 ];
-const blobcommand = [
+const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
-//const blobcommandbyweek = [["กรุณาระบุ WeekKeyTime(eg.3091260600000000)"]];
 
+const department = [
+    ["Operator"],
+    ["Banker"],
+    ["Updater"]
+];
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
@@ -113,34 +129,47 @@ bot.on('message', (msg) => {
     var text = msg.text;
     console.log(JSON.stringify(state));
     console.log(text);
-    // ["เติมเครดิต"],
-    // ["จัดการงาน"],
-    // ["จัดการคิว"],
-    // ["จัดการความปลอดภัย"]
 
     if (state[chatId]) {
-        // First Page Command
         console.log(state[chatId].state);
+
+        //#region First Page Command
         if (state[chatId].state === "Start") {
             if (text.indexOf("จัดการทั่วไป") === 0) {
                 state[chatId].state = "GeneralManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
             }
+            else if (text.indexOf("จัดการงาน") === 0) {
+                state[chatId].state = "WorkManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": workCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("จัดการคิว") === 0) {
+                state[chatId].state = "QueueManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": queueCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("จัดการความปลอดภัย") === 0) {
+                state[chatId].state = "SecurityManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
+            }
         }
-        // General Management Command
+        //#endregion
+
+        //#region General Management Command
         else if (state[chatId].state === "GeneralManagement"){
             if(text.indexOf("เติมเครดิต") === 0){
                 state[chatId].state = "TopupCredit";
                 bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
             }
-            // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            // disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-            //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-            // }).catch(err => console.log(err));
-            // state[chatId].state = "Finish";
-
+            if(text.indexOf("สร้าง Blob Week") === 0){
+                state[chatId].state = "BlobWeek";
+                bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
+            }
+            if(text.indexOf("สร้าง Blob Partition") === 0){
+                state[chatId].state = "BlobPartition";
+                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+            }
         }
-        // TopupCredit
+        //#region Topup Credit
         else if (state[chatId].state === "TopupCredit"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
@@ -149,6 +178,39 @@ bot.on('message', (msg) => {
             }).catch(err => console.log(err));
             state[chatId].state = "Finish";
         }
+        //#endregion
+
+        //#region BlobWeek
+        else if (state[chatId].state === "BlobWeek"){
+            if(text.indexOf("สร้างสัปดาห์ล่าสุด") === 0){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), "").then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else if(text.indexOf("ระบุ WeekKeyTime") === 0){
+                state[chatId].state = "WeekKeyTimeBlob";
+                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"force_reply" : true}});
+            }
+        }
+        else if(state[chatId].state === "WeekKeyTimeBlob"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region  Blob Partition
+        else if (state[chatId].state === "BlobPartition"){
+
+        }
+        //#endregion
+        //#endregion
 
         // WorkTask Management Command
         // Queue Management Command
