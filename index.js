@@ -124,14 +124,14 @@ bot.on('message', (msg) => {
         if (state[chatId].state === "Start") {
             if (text.indexOf("จัดการทั่วไป") === 0) {
                 state[chatId].state = "GeneralManagement";
-                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands,resizeKeyBoard}});
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
             }
         }
         // General Management Command
         else if (state[chatId].state === "GeneralManagement"){
             if(text.indexOf("เติมเครดิต") === 0){
                 state[chatId].state = "TopupCredit";
-                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {forceReplyKeyBoard, resizeKeyBoard}});
+                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
             }
             // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             // disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
