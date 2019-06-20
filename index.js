@@ -243,7 +243,7 @@ bot.on('message', (msg) => {
             }
             if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
                 state[chatId].state = "IdentDelete";
-                bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
+                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
             if(text.indexOf("สำเร็จงานโดย IdentityKeyTime") === 0){
                 state[chatId].state = "CompleteIdent";
@@ -263,11 +263,11 @@ bot.on('message', (msg) => {
         //#endregion
 
         //#region  DeleteSpecific by IdentityKeyTime
+        // else if (state[chatId].state === "IdentDelete"){
+        //     state[chatId].state = "DepartmentDelete";
+        //     bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+        // }
         else if (state[chatId].state === "IdentDelete"){
-            state[chatId].state = "DepartmentDelete";
-            bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
-        }
-        else if (state[chatId].state === "DepartmentDelete"){
             state[chatId].state = "TaskIdentityDelete";
             if(text.indexOf("Operator") === 0){
                 state[chatId].Department = "operator";
