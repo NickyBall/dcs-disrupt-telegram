@@ -131,7 +131,9 @@ bot.on('message', (msg) => {
             }
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 state[chatId].state = "WeekKeyTimeBlob";
-                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)");
+                bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {
+                    "reply_markup": {"keyboard": blobcommand, "resize_keyboard" : true, "one_time_keyboard" : true}
+                });
 
                 // bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"keyboard" : blobcommandbyweek}});
                 // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
