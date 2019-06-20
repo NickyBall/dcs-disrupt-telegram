@@ -105,7 +105,7 @@ bot.on('message', (msg) => {
             } else if (text.indexOf("สร้าง Blob Week") === 0) {
                 state[chatId].state = "CreatingBlobWeek";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {
-                    "reply_markup": {"keyboard": blobcommand, "resize_keyboard" : true, "one_time_keyboard" : true}
+                    "reply_markup": {"keyboard": blobcommand}
                 });
 
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
@@ -132,7 +132,7 @@ bot.on('message', (msg) => {
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 state[chatId].state = "WeekKeyTimeBlob";
                 bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {
-                    "reply_markup": {"keyboard": blobcommand, "resize_keyboard" : true, "one_time_keyboard" : true}
+                    "reply_markup": {"keyboard": blobcommand, "resize_keyboard" : true, "force_reply" : true}
                 });
 
                 // bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"keyboard" : blobcommandbyweek}});
