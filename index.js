@@ -117,6 +117,7 @@ bot.on('message', (msg) => {
 
     if (state[chatId]) {
         // First Page Command
+        console.log(state[chatId].state);
         if (state[chatId].state === "Start") {
             if (text.indexOf("เติมเครดิต") === 0) {
                 state[chatId].state = "TopupCredit";
