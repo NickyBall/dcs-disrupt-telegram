@@ -109,7 +109,7 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
     console.log(JSON.stringify(state));
-
+    console.log(text);
     // ["เติมเครดิต"],
     // ["จัดการงาน"],
     // ["จัดการคิว"],
