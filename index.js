@@ -235,7 +235,35 @@ bot.on('message', (msg) => {
         //#endregion
         //#endregion
 
-        // WorkTask Management Command
+        //#region  WorkTask Management Command
+        else if (state[chatId].state === "WorkManagement"){
+            if(text.indexOf("ลบงานโดย TaskIdentityKeyTime") === 0){
+                state[chatId].state = "TaskIdentDelete";
+                bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
+            if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
+                state[chatId].state = "IdentDelete";
+                bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
+            }
+            if(text.indexOf("สำเร็จงานโดย IdentityKeyTime") === 0){
+                state[chatId].state = "CompleteIdent";
+                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+            }
+        }
+
+        //#region Delete by TaskIdentityKeyTime
+
+        //#endregion
+
+        //#region  DeleteSpecific by IdentityKeyTime
+        
+        //#endregion
+
+        //#region  CompleteSpecific by IdentityKeyTime
+
+        //#endregion
+        //#endregion
+
         // Queue Management Command
         // Security ManageMent Command
     }
