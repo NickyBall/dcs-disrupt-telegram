@@ -111,6 +111,7 @@ bot.on('message', (msg) => {
                 });
 
             } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
                     , {"reply_markup": removeKeyBoard}));
@@ -133,9 +134,7 @@ bot.on('message', (msg) => {
             else if (text.indexOf("ระบุ WeekKeyTime") === 0){
                 state[chatId].state = "WeekKeyTimeBlob";
                 bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {
-                    "reply_markup": {
-                        "keyboard": blobcommandbyweek
-                    }
+                    "reply_markup": {"keyboard" : blobcommandbyweek, "resize_keyboard" : true, "one_time_keyboard" : true}
                 });
                 // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
@@ -147,15 +146,15 @@ bot.on('message', (msg) => {
         }
         else if(state[chatId].state === "WeekKeyTimeBlob"){
             console.log(text);
-            if(text != "กรุณาระบุ WeekKeyTime(eg.3091260600000000)") {
-            console.log("Execute WeekKeyTimeBlob");
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
-            }
+            // if(text != "กรุณาระบุ WeekKeyTime(eg.3091260600000000)") {
+            // console.log("Execute WeekKeyTimeBlob");
+            // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+            //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+            //     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            // }).catch(err => console.log(err));
+            // state[chatId].state = "Finish";
+            // }
         }
         else if (state[chatId].state === "DeletingWork") {
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
