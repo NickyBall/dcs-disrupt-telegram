@@ -28,7 +28,7 @@ const commands = [
 ];
 const blobcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
-const blobcommandbyweek = [[""]];
+const blobcommandbyweek = [["กรุณาระบุ WeekKeyTime(eg.3091260600000000)"]];
 
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
@@ -83,7 +83,8 @@ bot.onText(/\/\w+/, (msg) => {
         console.log(JSON.stringify(state));
         bot.sendMessage(chatId, "เลือกคำสั่ง", {
             "reply_markup": {
-                "keyboard": commands
+                "keyboard": commands,
+                "resize_keyboard":true
             }
         });
     }
