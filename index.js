@@ -123,6 +123,7 @@ bot.on('message', (msg) => {
             if (text.indexOf("เติมเครดิต") === 0) {
                 state[chatId].state = "CreditTopup";
                 bot.sendMessage(chatId, 'จำนวนเงินที่ต้องการเติม', {"reply_markup": {"force_reply" : true}});
+            }
         }
         // Credit Topup
         else if (state[chatId].state === "CreditTopup"){
