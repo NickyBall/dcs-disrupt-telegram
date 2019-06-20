@@ -94,7 +94,7 @@ module.exports.deleteSpecificWork = (whiteLabelName, department, taskIdentityKey
             superagent.post(endpoint + 'api/disrupt/worktask/delete/workbyidentitykeytime')
                         .send({
                             ListenerName: whiteLabelName,
-                            Departure: department,
+                            Department: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
                             IdentityKeyTime: identityKeyTime
                         }) // sends a JSON post body
