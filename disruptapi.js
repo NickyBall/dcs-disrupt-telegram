@@ -6,8 +6,8 @@ function GetToken() {
     return new Promise((resolve, reject) => {
         superagent.post(endpoint +'connect/token')
                     .send({
-                            client_id: 'disrupt',
-                            client_secret: 'disruptdcs888',
+                            client_id: process.env.CLIENT_ID,
+                            client_secret: process.env.CLIENT_SECRET,
                             grant_type: "client_credentials"
                             }) // sends a JSON post body
             .set('accept', 'json')
