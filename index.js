@@ -351,7 +351,10 @@ bot.on('message', (msg) => {
                     if(res['identityKeyTime']){
                         state[chatId].OldBalance = res['oldBalance'];
                         state[chatId].NewBalance = res['newBalance'];
-                        bot.sendMessage(chatId, 'เลือกคำสั่ง', {"reply_markup": {"keyboard":[[res['oldBalance']],[res['newBalance']],["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], "resize_keyboard":true}});
+                        bot.sendMessage(chatId, 'เลือกคำสั่ง', {"reply_markup": {keyboard:[
+                            ["1"],
+                            ["2"],
+                            ["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], resize_keyboard:true}});
                     }
                     else{
                         state[chatId].state = "Finish";
