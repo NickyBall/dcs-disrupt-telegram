@@ -41,7 +41,7 @@ const queueCommands = [
     ["เริ่มคิว"],
     ["เคลียร์คิว"],
     ["คิวสเตท"],
-    ["คิวสเตททั้งหมด"],    
+    ["แสดงคิวสเตททั้งหมด"],    
 ];
 const securityCommands = [
     ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
@@ -410,7 +410,7 @@ bot.on('message', (msg) => {
             else if(text.indexOf("เริ่มคิว") === 0) state[chatId].state = "StartQueueByType";
             else if(text.indexOf("เคลียร์คิว") === 0) state[chatId].state = "ClearQueueByType";
             else if(text.indexOf("คิวสเตท") === 0) state[chatId].state = "GetQueueStateByType";
-            else if(text.indexOf("คิวสเตททั้งหมด") === 0) state[chatId].state = "GetAllQueueStateByType";
+            else if(text.indexOf("แสดงคิวสเตททั้งหมด") === 0) state[chatId].state = "GetAllQueueStateByType";
             bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": worktype, "resize_keyboard" : true}});
         }
         //#region GetQueueSize
@@ -470,7 +470,7 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "QueueStateName"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.GetQueueState(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
             state[chatId].state = "Finish";
