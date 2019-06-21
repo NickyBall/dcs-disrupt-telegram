@@ -206,7 +206,7 @@ module.exports.GetQueueSize = (workType, queueName) => {
             superagent.post(endpoint + 'api/disrupt/queue/getsize')
                         .send({
                             WorkType: workType,
-                            QueueName: queueName,
+                            QueueName: queueName
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')

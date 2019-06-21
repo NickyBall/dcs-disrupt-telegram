@@ -442,10 +442,9 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "QueueNameSize"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.GetQueueSize(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'xxxx', {"reply_markup": removeKeyBoard});
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['message'], {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
-            console.log(res);
             state[chatId].state = "Finish";
         }
         //#endregion
