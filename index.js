@@ -55,6 +55,7 @@ const department = [
     ["Banker"],
     ["Updater"]
 ];
+
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
@@ -331,9 +332,8 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.completeSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                 , "", text).then(res => {
-                    console.log(res);
-                    // if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                    // else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
             }
@@ -345,10 +345,18 @@ bot.on('message', (msg) => {
         }
         else if (state[chatId].state === "CompleteNotOperator"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            state[chatId].state = "Finish";
             if(state[chatId].Department === "banker") {
                 disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].TaskIdentityKeyTime, text).then(res => {
                     console.log(res);
+                    if(res['identityKeyTime']){
+                        state[chatId].OldBalance = res['oldBalance'];
+                        state[chatId].NewBalance = res['newBalance'];
+                        bot.sendMessage(chatId, 'เลือกคำสั่ง', {"reply_markup": {"keyboard":[[res['oldBalance']],[res['newBalance']],["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], "resize_keyboard":true}});
+                    }
+                    else{
+                        state[chatId].state = "Finish";
+                        bot.sendMessage(chatId, 'ไม่พบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    }
                 }).catch(err => console.log(err));
             }
             else if(state[chatId].Department === "updater"){
