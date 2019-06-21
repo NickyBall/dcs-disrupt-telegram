@@ -37,7 +37,7 @@ const workCommands = [
     ["สำเร็จงานโดย IdentityKeyTime"]
 ];
 const queueCommands = [
-    ["ต้องการทราบจำนวนคิว"],
+    ["ต้องการทราบจำนวนคิวที่กำหนด"],
     ["เริ่มคิว"],
     ["เคลียร์คิว"],
     ["คิวสเตท"],
@@ -161,11 +161,11 @@ bot.on('message', (msg) => {
                 state[chatId].state = "TopupCredit";
                 bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
             }
-            if(text.indexOf("สร้าง Blob Week") === 0){
+            else if(text.indexOf("สร้าง Blob Week") === 0){
                 state[chatId].state = "BlobWeek";
                 bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
             }
-            if(text.indexOf("สร้าง Blob Partition") === 0){
+            else if(text.indexOf("สร้าง Blob Partition") === 0){
                 state[chatId].state = "BlobPartition";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
@@ -242,11 +242,11 @@ bot.on('message', (msg) => {
                 state[chatId].state = "TaskIdentDelete";
                 bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true}});
             }
-            if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
+            else if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
                 state[chatId].state = "IdentDelete";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
-            if(text.indexOf("สำเร็จงานโดย IdentityKeyTime") === 0){
+            else if(text.indexOf("สำเร็จงานโดย IdentityKeyTime") === 0){
                 state[chatId].state = "CompleteIdent";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
@@ -399,7 +399,52 @@ bot.on('message', (msg) => {
         //#endregion
         //#endregion
 
-        // Queue Management Command
+        /*
+    ["ต้องการทราบจำนวนคิว"],
+    ["เริ่มคิว"],
+    ["เคลียร์คิว"],
+    ["คิวสเตท"],
+    ["คิวสเตททั้งหมด"],    
+        */
+        //#region Queue Management Command
+        else if (state[chatId].state === "QueueManagement"){
+            if(text.indexOf("ต้องการทราบจำนวนคิวที่กำหนด") === 0){
+                state[chatId].state = "GetQueueByType";
+                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+            }
+            else if(text.indexOf("เริ่มคิว") === 0){
+                state[chatId].state = "BlobWeek";
+                bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
+            }
+            else if(text.indexOf("เคลียร์คิว") === 0){
+                state[chatId].state = "BlobPartition";
+                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+            }
+            else if(text.indexOf("คิวสเตท") === 0){
+                state[chatId].state = "TopupCredit";
+                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
+            else if(text.indexOf("คิวสเตททั้งหมด") === 0){
+                state[chatId].state = "TopupCredit";
+                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
+        }
+        else if (state[chatId].state === "GetQueueByType"){
+            state[chatId].Department = text.toLowerCase();
+            state[chatId].state = "QueueNameSize";
+            bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "QueueNameSize"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.GetQueueSize(state[chatId].Department, text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'xxxx', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            console.log(res);
+            state[chatId].state = "Finish";
+        }
+        //#endregion
+
         // Security ManageMent Command
     }
 });

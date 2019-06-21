@@ -200,6 +200,23 @@ module.exports.retrieveUpdater = (whiteLabelName, taskIdentityKeyTime, IdentityK
     });
 };
 
+module.exports.GetQueueSize = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/getsize')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName,
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.getInvalidateComputer = (whiteLabelName) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
