@@ -314,12 +314,10 @@ bot.on('message', (msg) => {
             if(text.indexOf("Operator") === 0){
                 state[chatId].Department = "operator";
                 bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
-
             }
             else if(text.indexOf("Banker") === 0) {
                 state[chatId].Department = "banker";
                 bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
-
             }
             else if(text.indexOf("Updater") === 0) {
                 state[chatId].Department = "updater";
@@ -372,7 +370,7 @@ bot.on('message', (msg) => {
                         state[chatId].NewCredit = res['newCredit'];
                         state[chatId].state = "UpdaterChangeBalance";
                         bot.sendMessage(chatId
-                            , 'ต้องการเปลี่ยนแปลง ยอดเก่า('+res['oldBalance']+'), ยอดใหม่('+res['newBalance']+') ยอดเครดิตเก่า('+res['oldCredit']+'), ยอดเครดิตใหม่('+res['old'] +')หรือไม่'
+                            , 'ต้องการเปลี่ยนแปลง ยอดเก่า('+res['oldBalance']+'), ยอดใหม่('+res['newBalance']+') ยอดเครดิตเก่า('+res['oldCredit']+'), ยอดเครดิตใหม่('+res['newCredit'] +')หรือไม่'
                             , {"reply_markup": {keyboard:[
                             ["ต้องการเปลียนแปลงเงิน"],
                             ["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], resize_keyboard:true}});
@@ -413,6 +411,7 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่,ยอดเครดิตเก่า,ยอดเครดิตใหม่(eg. 30,50,0,10)", {"reply_markup": {"force_reply" : true}});
             }
             else if(text.indexOf("ไม่ต้องการเปลี่ยนแปลง ทำต่อ") === 0) {
+                console.log(state[chatId].OldBalance+", "+state[chatId].NewBalance+", "+state[chatId].OldCredit+", "+state[chatId].NewCredit)
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.completeSpecificWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                 , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].OldBalance, state[chatId].NewBalance
@@ -429,6 +428,7 @@ bot.on('message', (msg) => {
             state[chatId].NewBalance = balanceArr[1];
             state[chatId].OldCredit = balanceArr[2];
             state[chatId].NewCredit = balanceArr[3];
+            console.log(state[chatId].OldBalance+", "+state[chatId].NewBalance+", "+state[chatId].OldCredit+", "+state[chatId].NewCredit)
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.completeSpecificWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
             , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].OldBalance, state[chatId].NewBalance
