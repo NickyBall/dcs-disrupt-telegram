@@ -107,7 +107,7 @@ module.exports.deleteSpecificWork = (whiteLabelName, department, taskIdentityKey
     });
 };
 
-module.exports.completeSpecificWork = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime) => {
+module.exports.completeSpecificWorkOperator = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
@@ -116,6 +116,27 @@ module.exports.completeSpecificWork = (whiteLabelName, department, taskIdentityK
                             Department: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
                             IdentityKeyTime: identityKeyTime
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.completeSpecificWorkBanker = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, oldBalance, newBalance) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            Department: department,
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: identityKeyTime,
+                            OldBalance: oldBalance,
+                            NewBalance: newBalance
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
