@@ -55,6 +55,11 @@ const department = [
     ["Banker"],
     ["Updater"]
 ];
+const worktype = [
+    ["Deposit"],
+    ["Withdraw"],
+    ["Transfer"]
+];
 
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
@@ -410,7 +415,7 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "QueueManagement"){
             if(text.indexOf("ต้องการทราบจำนวนคิวที่กำหนด") === 0){
                 state[chatId].state = "GetQueueByType";
-                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": worktype, "resize_keyboard" : true}});
             }
             else if(text.indexOf("เริ่มคิว") === 0){
                 state[chatId].state = "BlobWeek";
@@ -430,13 +435,13 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "GetQueueByType"){
-            state[chatId].Department = text.toLowerCase();
+            state[chatId].WorkType = text.toLowerCase();
             state[chatId].state = "QueueNameSize";
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "QueueNameSize"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.GetQueueSize(state[chatId].Department, text).then(res => {
+            disrupt.GetQueueSize(state[chatId].WorkType, text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'xxxx', {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
