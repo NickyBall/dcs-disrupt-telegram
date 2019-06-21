@@ -351,9 +351,9 @@ bot.on('message', (msg) => {
                     if(res['identityKeyTime']){
                         state[chatId].OldBalance = res['oldBalance'];
                         state[chatId].NewBalance = res['newBalance'];
-                        bot.sendMessage(chatId, 'เลือกคำสั่ง', {"reply_markup": {keyboard:[
-                            ["1"],
-                            ["2"],
+                        state[chatId].state = "ChangeBalance";
+                        bot.sendMessage(chatId, 'ต้องการเปลี่ยนแปลง' + res['oldBalance'] + ', ' + res['newBalance'] + 'หรือไม่', {"reply_markup": {keyboard:[
+                            ["ต้องการเปลียนแปลงเงิน"],
                             ["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], resize_keyboard:true}});
                     }
                     else{
@@ -366,6 +366,14 @@ bot.on('message', (msg) => {
                 disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].TaskIdentityKeyTime, text).then(res => {
                     console.log(res);
                 }).catch(err => console.log(err));
+            }
+        }
+        else if(state[chatId].state === "ChangeBalance"){
+            if(text.indexOf("ChangeBalance 1") === 0){
+                console.log(res);
+            }
+            else if(text.indexOf("ChangeBalance 2") === 0) {
+                console.log(res);
             }
         }
         //#endregion
