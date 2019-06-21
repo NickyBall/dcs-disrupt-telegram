@@ -329,12 +329,15 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "DepartmentComplete"){
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                console.log(text);
-                disrupt.completeSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-                , "", text).then(res => {
-                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                disrupt.ret(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                    console.log(res);
                 }).catch(err => console.log(err));
+
+                // disrupt.completeSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                // , "", text).then(res => {
+                //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                //     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                // }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
