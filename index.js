@@ -509,6 +509,7 @@ bot.on('message', (msg) => {
             disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, "ติดตั้ง Certificate เสร็จสิ้น", {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                state[chatId].state = "Finish";
             }).catch(err => console.log(err));
         }
         //#endregion
