@@ -49,7 +49,6 @@ const securityCommands = [
 ];
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
-
 const department = [
     ["Operator"],
     ["Banker"],
@@ -60,16 +59,11 @@ const worktype = [
     ["Withdraw"],
     ["Transfer"]
 ];
-
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
-
 const resizeKeyBoard = JSON.stringify({
     resize_keyboard: true
-});
-const forceReplyKeyBoard = JSON.stringify({
-    force_reply: true
 });
 
 // Azure Queue Service
@@ -377,7 +371,9 @@ bot.on('message', (msg) => {
                         state[chatId].OldCredit = res['oldCredit'];
                         state[chatId].NewCredit = res['newCredit'];
                         state[chatId].state = "UpdaterChangeBalance";
-                        bot.sendMessage(chatId, 'ต้องการเปลี่ยนแปลง ยอดเก่า(' + res['oldBalance'] + '), ยอดใหม่(' + res['newBalance'] + ')หรือไม่', {"reply_markup": {keyboard:[
+                        bot.sendMessage(chatId
+                            , 'ต้องการเปลี่ยนแปลง ยอดเก่า('+res['oldBalance']+'), ยอดใหม่('+res['newBalance']+') ยอดเครดิตเก่า('+res['oldCredit']+'), ยอดเครดิตใหม่('+res['old'] +')หรือไม่'
+                            , {"reply_markup": {keyboard:[
                             ["ต้องการเปลียนแปลงเงิน"],
                             ["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], resize_keyboard:true}});
                     }
@@ -556,67 +552,3 @@ bot.on('message', (msg) => {
         //#endregion
     }
 });
-        // else if (state[chatId].state === "CreatingBlobWeek") {
-        //     if (text.indexOf("สร้างสัปดาห์ล่าสุด") === 0) {
-        //         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-        //         disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), "").then(res => {
-        //             if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-        //             else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-        //         }).catch(err => console.log(err));
-        //         state[chatId].state = "Finish";
-        //     }
-        //     else if (text.indexOf("ระบุ WeekKeyTime") === 0){
-        //         state[chatId].state = "WeekKeyTimeBlob";
-        //         bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"force_reply" : true}});
-        //     }
-        // }
-        // else if(state[chatId].state === "WeekKeyTimeBlob"){
-        //     console.log("WeekKeyTimeBlob");
-        //     console.log(text);
-        //     // if(text != "กรุณาระบุ WeekKeyTime(eg.3091260600000000)") {
-        //     // console.log("Execute WeekKeyTimeBlob");
-        //     // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-        //     // disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-        //     //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้างเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-        //     //     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-        //     // }).catch(err => console.log(err));
-        //     // state[chatId].state = "Finish";
-        //     // }
-        // }
-        // else if (state[chatId].state === "DeletingWork") {
-        //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-        //     disrupt.deleteWorkByTaskIdentityKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-        //         if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-        //         else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-        //     }).catch(err => console.log(err));
-        //     state[chatId].state = "Finish";
-        // }
-        // else if (state[chatId].state === "InstallCert") {
-        //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-        //     disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-        //         if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ติดตั้งเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-        //         else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-        //     }).catch(err => console.log(err));
-        //     state[chatId].state = "Finish";
-        // }
-
-        // if (text.indexOf("ลบงาน") === 0) {
-        //     state[chatId].state = "DeletingWork";
-        //     bot.sendMessage(chatId, 'กรณีระบุ TaskIdentityKeyTime');
-        // } else if (text.indexOf("สร้าง Blob Week") === 0) {
-        //     state[chatId].state = "CreatingBlobWeek";
-        //     bot.sendMessage(chatId, "เลือกคำสั่ง", {
-        //         "reply_markup": {"keyboard": blobcommand}
-        //     });
-
-        // } else if (text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0) {
-        //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-        //     disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-        //         res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
-        //         , {"reply_markup": removeKeyBoard}));
-        //         state[chatId].state = "Finish";
-        //     }).catch(err => console.log(err));
-        // } else if (text.indexOf("ติดตั้ง Cert") === 0) {
-        //     state[chatId].state = "InstallCert";
-        //     bot.sendMessage(chatId, 'กรณีระบุ Install Code (eg. aBcd)',{"reply_markup": removeKeyBoard});
-        // }
