@@ -217,6 +217,74 @@ module.exports.GetQueueSize = (workType, queueName) => {
     });
 };
 
+module.exports.StartQueue = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/start')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.ClearQueue = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/clear')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.GetQueueState = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/getqueuestate')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.GetAllQueueState = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/getallqueuestate')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.getInvalidateComputer = (whiteLabelName) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {

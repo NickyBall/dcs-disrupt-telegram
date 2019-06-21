@@ -404,36 +404,16 @@ bot.on('message', (msg) => {
         //#endregion
         //#endregion
 
-        /*
-    ["ต้องการทราบจำนวนคิว"],
-    ["เริ่มคิว"],
-    ["เคลียร์คิว"],
-    ["คิวสเตท"],
-    ["คิวสเตททั้งหมด"],    
-        */
         //#region Queue Management Command
         else if (state[chatId].state === "QueueManagement"){
-            if(text.indexOf("ต้องการทราบจำนวนคิวที่กำหนด") === 0){
-                state[chatId].state = "GetQueueByType";
-                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": worktype, "resize_keyboard" : true}});
-            }
-            else if(text.indexOf("เริ่มคิว") === 0){
-                state[chatId].state = "BlobWeek";
-                bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
-            }
-            else if(text.indexOf("เคลียร์คิว") === 0){
-                state[chatId].state = "BlobPartition";
-                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
-            }
-            else if(text.indexOf("คิวสเตท") === 0){
-                state[chatId].state = "TopupCredit";
-                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
-            }
-            else if(text.indexOf("คิวสเตททั้งหมด") === 0){
-                state[chatId].state = "TopupCredit";
-                bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
-            }
+            if(text.indexOf("ต้องการทราบจำนวนคิวที่กำหนด") === 0) state[chatId].state = "GetQueueByType";
+            else if(text.indexOf("เริ่มคิว") === 0) state[chatId].state = "StartQueueByType";
+            else if(text.indexOf("เคลียร์คิว") === 0) state[chatId].state = "ClearQueueByType";
+            else if(text.indexOf("คิวสเตท") === 0) state[chatId].state = "GetQueueStateByType";
+            else if(text.indexOf("คิวสเตททั้งหมด") === 0) state[chatId].state = "GetAllQueueStateByType";
+            bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": worktype, "resize_keyboard" : true}});
         }
+        //#region GetQueueSize
         else if (state[chatId].state === "GetQueueByType"){
             state[chatId].WorkType = text.toLowerCase();
             state[chatId].state = "QueueNameSize";
@@ -442,14 +422,96 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "QueueNameSize"){
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.GetQueueSize(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['message'], {"reply_markup": removeKeyBoard});
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['queueSize'], {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
             state[chatId].state = "Finish";
         }
         //#endregion
 
-        // Security ManageMent Command
+        //#region  Start Queue
+        else if (state[chatId].state === "StartQueueByType"){
+            state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "StartQueueName";
+            bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "StartQueueName"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.StartQueue(state[chatId].WorkType, text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region Clear Queue
+        else if (state[chatId].state === "ClearQueueByType"){
+            state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "ClearQueueName";
+            bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "ClearQueueName"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.ClearQueue(state[chatId].WorkType, text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region Get QueueState by Name
+        else if (state[chatId].state === "GetQueueStateByType"){
+            state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "QueueStateName";
+            bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "QueueStateName"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.GetQueueState(state[chatId].WorkType, text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region Get All QueueState
+        else if (state[chatId].state === "GetAllQueueStateByType"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.GetAllQueueState(text.toLowerCase(), "").then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
+        //#endregion
+        //#endregion
+
+        //#region  Security ManageMent Command
+        else if (state[chatId].state === "SecurityManagement"){
+            if(text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
+                    , {"reply_markup": removeKeyBoard}));
+                    state[chatId].state = "Finish";
+                }).catch(err => console.log(err));
+            }
+            else if(text.indexOf("ติดตั้ง Cert") === 0) {
+                state[chatId].state = "InstallCert";
+                bot.sendMessage(chatId, "ระบุ Install Code(eg.aBcd)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
+        }
+        else if (state[chatId].state === "InstallCert"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.installCert(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, "ติดตั้ง Certificate เสร็จสิ้น", {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+        }
+        //#endregion
     }
 });
         // else if (state[chatId].state === "CreatingBlobWeek") {
