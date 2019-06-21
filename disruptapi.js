@@ -107,13 +107,33 @@ module.exports.deleteSpecificWork = (whiteLabelName, department, taskIdentityKey
     });
 };
 
+module.exports.completeSpecificWork = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            Department: department,
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: identityKeyTime
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.retrieveBanker = (whiteLabelName, taskIdentityKeyTime, IdentityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/worktask/delete/workbytaskidentitykeytime')
+            superagent.post(endpoint + 'api/disrupt/worktask/retrieve/banker')
                         .send({
                             ListenerName: whiteLabelName,
-                            TaskIdentityKeyTime: taskIdentityKeyTime
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: IdentityKeyTime
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
@@ -127,10 +147,11 @@ module.exports.retrieveBanker = (whiteLabelName, taskIdentityKeyTime, IdentityKe
 module.exports.retrieveUpdater = (whiteLabelName, taskIdentityKeyTime, IdentityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/worktask/delete/workbytaskidentitykeytime')
+            superagent.post(endpoint + 'api/disrupt/worktask/retrieve/updater')
                         .send({
                             ListenerName: whiteLabelName,
-                            TaskIdentityKeyTime: taskIdentityKeyTime
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: IdentityKeyTime
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
@@ -140,6 +161,7 @@ module.exports.retrieveUpdater = (whiteLabelName, taskIdentityKeyTime, IdentityK
         }).catch(err => reject(err));
     });
 };
+
 module.exports.getInvalidateComputer = (whiteLabelName) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
