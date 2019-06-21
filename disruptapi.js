@@ -135,8 +135,8 @@ module.exports.completeSpecificWorkBanker = (whiteLabelName, department, taskIde
                             Department: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
                             IdentityKeyTime: identityKeyTime,
-                            OldBalance: oldBalance,
-                            NewBalance: newBalance
+                            BankerOldBalance: oldBalance,
+                            BankerNewBalance: newBalance,
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
@@ -156,10 +156,10 @@ module.exports.completeSpecificWorkUpdater = (whiteLabelName, department, taskId
                             Department: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
                             IdentityKeyTime: identityKeyTime,
-                            OldBalance: oldBalance,
-                            NewBalance: newBalance,
-                            OldCredit: oldCredit,
-                            NewCredit: newCredit
+                            UpdaterOldBalance: oldBalance,
+                            UpdaterNewBalance: newBalance,
+                            UpdaterOldCredit: oldCredit,
+                            UpdaterNewCredit: newCredit
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
