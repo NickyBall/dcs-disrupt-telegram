@@ -147,6 +147,29 @@ module.exports.completeSpecificWorkBanker = (whiteLabelName, department, taskIde
     });
 };
 
+module.exports.completeSpecificWorkUpdater = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, oldBalance, newBalance, oldCredit, newCredit) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            Department: department,
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: identityKeyTime,
+                            OldBalance: oldBalance,
+                            NewBalance: newBalance,
+                            OldCredit: oldCredit,
+                            NewCredit: newCredit
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.retrieveOperator = (whiteLabelName, taskIdentityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {

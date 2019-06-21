@@ -357,7 +357,7 @@ bot.on('message', (msg) => {
                     if(res['identityKeyTime']){
                         state[chatId].OldBalance = res['oldBalance'];
                         state[chatId].NewBalance = res['newBalance'];
-                        state[chatId].state = "ChangeBalance";
+                        state[chatId].state = "BankerChangeBalance";
                         bot.sendMessage(chatId, 'ต้องการเปลี่ยนแปลง ยอดเก่า(' + res['oldBalance'] + '), ยอดใหม่(' + res['newBalance'] + ')หรือไม่', {"reply_markup": {keyboard:[
                             ["ต้องการเปลียนแปลงเงิน"],
                             ["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], resize_keyboard:true}});
@@ -371,12 +371,22 @@ bot.on('message', (msg) => {
             else if(state[chatId].Department === "updater"){
                 disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].TaskIdentityKeyTime, text).then(res => {
                     console.log(res);
+                    if(res['identityKeyTime']){
+                        state[chatId].OldBalance = res['oldBalance'];
+                        state[chatId].NewBalance = res['newBalance'];
+                        state[chatId].OldCredit = res['oldCredit'];
+                        state[chatId].NewCredit = res['newCredit'];
+                        state[chatId].state = "UpdaterChangeBalance";
+                        bot.sendMessage(chatId, 'ต้องการเปลี่ยนแปลง ยอดเก่า(' + res['oldBalance'] + '), ยอดใหม่(' + res['newBalance'] + ')หรือไม่', {"reply_markup": {keyboard:[
+                            ["ต้องการเปลียนแปลงเงิน"],
+                            ["ไม่ต้องการเปลี่ยนแปลง ทำต่อ"]], resize_keyboard:true}});
+                    }
                 }).catch(err => console.log(err));
             }
         }
-        else if(state[chatId].state === "ChangeBalance"){
+        else if(state[chatId].state === "BankerChangeBalance"){
             if(text.indexOf("ต้องการเปลียนแปลงเงิน") === 0){
-                state[chatId].state = "BalanceChange";
+                state[chatId].state = "BankerBalanceChange";
                 bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่(eg. 30,50)", {"reply_markup": {"force_reply" : true}});
             }
             else if(text.indexOf("ไม่ต้องการเปลี่ยนแปลง ทำต่อ") === 0) {
@@ -389,13 +399,44 @@ bot.on('message', (msg) => {
                 state[chatId].state = "Finish";
             }
         }
-        else if (state[chatId].state === "BalanceChange"){
+        else if (state[chatId].state === "BankerBalanceChange"){
             var balanceArr = text.split(',')
             state[chatId].OldBalance = balanceArr[0];
             state[chatId].NewBalance = balanceArr[1];
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.completeSpecificWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
             , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].OldBalance, state[chatId].NewBalance).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
+        }
+        else if(state[chatId].state === "UpdaterChangeBalance"){
+            if(text.indexOf("ต้องการเปลียนแปลงเงิน") === 0){
+                state[chatId].state = "UpdaterBalanceChange";
+                bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่,ยอดเครดิตเก่า,ยอดเครดิตใหม่(eg. 30,50,0,10)", {"reply_markup": {"force_reply" : true}});
+            }
+            else if(text.indexOf("ไม่ต้องการเปลี่ยนแปลง ทำต่อ") === 0) {
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.completeSpecificWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].OldBalance, state[chatId].NewBalance
+                ,state[chatId].OldCredit, state[chatId].NewCredit).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+        }
+        else if (state[chatId].state === "UpdaterBalanceChange"){
+            var balanceArr = text.split(',')
+            state[chatId].OldBalance = balanceArr[0];
+            state[chatId].NewBalance = balanceArr[1];
+            state[chatId].OldCredit = balanceArr[2];
+            state[chatId].NewCredit = balanceArr[3];
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.completeSpecificWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+            , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].OldBalance, state[chatId].NewBalance
+            ,state[chatId].OldCredit, state[chatId].NewCredit).then(res => {
                 if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
             }).catch(err => console.log(err));
