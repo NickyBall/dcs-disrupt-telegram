@@ -329,7 +329,7 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "DepartmentComplete"){
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.ret(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
                     console.log(res);
                 }).catch(err => console.log(err));
 
