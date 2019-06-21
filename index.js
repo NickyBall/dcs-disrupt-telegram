@@ -344,6 +344,7 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "CompleteNotOperator"){
+            state[chatId].IdentityKeyTime = text;
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             if(state[chatId].Department === "banker") {
                 disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel),state[chatId].TaskIdentityKeyTime, text).then(res => {
