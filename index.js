@@ -1,6 +1,8 @@
 const express = require('express');
 const disrupt = require('./disruptapi');
 var https = require("https");
+var dotenv = require('dotenv');
+dotenv.config();
 // https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const app = express()
 const port = process.env.PORT || 3000
