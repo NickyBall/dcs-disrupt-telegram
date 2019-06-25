@@ -224,10 +224,46 @@ module.exports.retrieveBanker = (whiteLabelName, taskIdentityKeyTime, IdentityKe
     });
 };
 
+module.exports.retrieveBankerEvent = (whiteLabelName, taskIdentityKeyTime, IdentityKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/retrieve/bankerevent')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: IdentityKeyTime
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.retrieveUpdater = (whiteLabelName, taskIdentityKeyTime, IdentityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/worktask/retrieve/updater')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            TaskIdentityKeyTime: taskIdentityKeyTime,
+                            IdentityKeyTime: IdentityKeyTime
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.retrieveUpdaterEvent = (whiteLabelName, taskIdentityKeyTime, IdentityKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/retrieve/updaterevent')
                         .send({
                             ListenerName: whiteLabelName,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
