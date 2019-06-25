@@ -139,7 +139,7 @@ bot.on('message', (msg) => {
     console.log(JSON.stringify(state));
     console.log(text);
 
-    if (!whiteLists.includes(chatId)) {
+    if (!whiteLists.includes(chatId.toString())) {
         console.log("ChatId does not in whiteLists");
         return;
     }
