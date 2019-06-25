@@ -10,7 +10,7 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 const TelegramBot = require('node-telegram-bot-api');
-const azure = require('azure-storage');
+// const azure = require('azure-storage');
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.BOT_API_KEY;
@@ -67,12 +67,12 @@ const resizeKeyBoard = JSON.stringify({
 });
 
 // Azure Queue Service
-const queueSvc = azure.createQueueService();
-queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
-    if (!error) {
-        // Queue created or exists
-    }
-});
+// const queueSvc = azure.createQueueService();
+// queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
+//     if (!error) {
+//         // Queue created or exists
+//     }
+// });
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
