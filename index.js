@@ -99,7 +99,7 @@ bot.onText(/\/\w+/, (msg) => {
     var text = msg.text;
     console.log(JSON.stringify(text));
 
-    if (!whiteLists.includes(chatId)) {
+    if (!whiteLists.includes(chatId.toString())) {
         console.log("ChatId does not in whiteLists");
         return;
     }
