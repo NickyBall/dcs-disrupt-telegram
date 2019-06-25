@@ -21,6 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
+const whiteLists = ["-339042186", "-311188887"];
 const whiteLabels = ["indigo", "grey", "green"];
 const firstPageCommands = [
     ["จัดการทั่วไป"],
@@ -98,6 +99,11 @@ bot.onText(/\/\w+/, (msg) => {
     var text = msg.text;
     console.log(JSON.stringify(text));
 
+    if (!whiteLists.includes(chatId)) {
+        console.log("ChatId does not in whiteLists");
+        return;
+    }
+
     var whiteLabel = text.toLowerCase().substring(1);
 
     if (!state[chatId]) {
@@ -132,6 +138,11 @@ bot.on('message', (msg) => {
     console.log(`ChatId: ${chatId}`);
     console.log(JSON.stringify(state));
     console.log(text);
+
+    if (!whiteLists.includes(chatId)) {
+        console.log("ChatId does not in whiteLists");
+        return;
+    }
 
     if (state[chatId]) {
         //console.log(state[chatId].state);
