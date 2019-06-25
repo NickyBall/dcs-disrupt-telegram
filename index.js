@@ -33,8 +33,8 @@ const generalCommands = [
 ];
 const workCommands = [
     ["ลบงานโดย TaskIdentityKeyTime"],
-    ["ลบงานโดย IdentityKeyTime"],
-    ["สำเร็จงานโดย IdentityKeyTime"]
+    ["แก้ไขงานโดย IdentityKeyTime"],
+    ["ตรวจสอบDataกับEvent"]
 ];
 const queueCommands = [
     ["ต้องการทราบจำนวนคิวที่กำหนด"],
@@ -241,12 +241,12 @@ bot.on('message', (msg) => {
                 state[chatId].state = "TaskIdentDelete";
                 bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true}});
             }
-            else if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
-                state[chatId].state = "IdentDelete";
+            else if(text.indexOf("แก้ไขงานโดย IdentityKeyTime") === 0){
+                state[chatId].state = "commitbyIden";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
-            else if(text.indexOf("สำเร็จงานโดย IdentityKeyTime") === 0){
-                state[chatId].state = "CompleteIdent";
+            else if(text.indexOf("ตรวจสอบDataกับEvent") === 0){
+                state[chatId].state = "checkdataevent";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
         }
@@ -262,18 +262,16 @@ bot.on('message', (msg) => {
         }
         //#endregion
 
-        //#region  DeleteSpecific by IdentityKeyTime
-        else if (state[chatId].state === "IdentDelete"){
+        //#region  CommitEvent by IdentityKeyTime
+        else if (state[chatId].state === "commitbyIden"){
             state[chatId].state = "TaskIdentityDelete";
             if(text.indexOf("Operator") === 0){
                 state[chatId].Department = "operator";
                 bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
-
             }
             else if(text.indexOf("Banker") === 0) {
                 state[chatId].Department = "banker";
                 bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
-
             }
             else if(text.indexOf("Updater") === 0) {
                 state[chatId].Department = "updater";
@@ -283,13 +281,19 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "TaskIdentityDelete"){
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                console.log(text);
-                disrupt.deleteSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-                , "", text).then(res => {
-                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                , text).then(res => {
+                    console.log(res);
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
+
+                // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                // disrupt.deleteSpecificWork(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                // , "", text).then(res => {
+                //     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                //     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                // }).catch(err => console.log(err));
+                // state[chatId].state = "Finish";
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
                 state[chatId].state = "NotOperator";

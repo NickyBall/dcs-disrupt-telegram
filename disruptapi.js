@@ -187,6 +187,23 @@ module.exports.retrieveOperator = (whiteLabelName, taskIdentityKeyTime) => {
     });
 };
 
+module.exports.retrieveOperatorEvent = (whiteLabelName, identityKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/worktask/retrieve/operatorevent')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            IdentityKeyTime: identityKeyTime,
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.retrieveBanker = (whiteLabelName, taskIdentityKeyTime, IdentityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
