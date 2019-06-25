@@ -1,5 +1,7 @@
 const superagent = require('superagent');
-const endpoint = 'https://dcs-staging.southeastasia.cloudapp.azure.com:8817/';
+var dotenv = require('dotenv');
+dotenv.config();
+const endpoint = process.env.BASE_URL;
 // const endpoint = 'https://dcs-production.southeastasia.cloudapp.azure.com:8817/';
 
 function GetToken() {
