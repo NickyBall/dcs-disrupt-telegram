@@ -297,7 +297,26 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
-                    console.log(res);
+                    if(res['identityKeyTime'] != null){
+                        if(res['operatorType'] == 0 || res['operatorType'] == 4){
+                            bot.sendMessage(chatId
+                                , "เลือกแผนก Department"
+                                , {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+                        }
+                        else if (res['operatorType'] == 1){
+
+                        }
+                        else if (res['operatorType'] == 2){
+
+                        }
+                        else if (res['operatorType'] == 3){
+
+                        }
+                        
+                    };
+                    else{
+
+                    }
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
 
