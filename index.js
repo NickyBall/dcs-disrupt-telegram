@@ -127,6 +127,7 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
+    console.log(`ChatId: ${chatId}`);
     console.log(JSON.stringify(state));
     console.log(text);
 
