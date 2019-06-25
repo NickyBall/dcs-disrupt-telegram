@@ -1,6 +1,8 @@
 const express = require('express');
 const disrupt = require('./disruptapi');
 var https = require("https");
+var dotenv = require('dotenv');
+dotenv.config();
 // https.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const app = express()
 const port = process.env.PORT || 3000
@@ -10,7 +12,7 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 const TelegramBot = require('node-telegram-bot-api');
-const azure = require('azure-storage');
+// const azure = require('azure-storage');
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.BOT_API_KEY;
@@ -19,6 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
+const whiteLists = ["-339042186", "-311188887"];
 const whiteLabels = ["indigo", "grey", "green"];
 const firstPageCommands = [
     ["จัดการทั่วไป"],
@@ -67,12 +70,12 @@ const resizeKeyBoard = JSON.stringify({
 });
 
 // Azure Queue Service
-const queueSvc = azure.createQueueService();
-queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
-    if (!error) {
-        // Queue created or exists
-    }
-});
+// const queueSvc = azure.createQueueService();
+// queueSvc.createQueueIfNotExists('disrupt', function (error, results, response) {
+//     if (!error) {
+//         // Queue created or exists
+//     }
+// });
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -95,6 +98,11 @@ bot.onText(/\/\w+/, (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
     console.log(JSON.stringify(text));
+
+    if (!whiteLists.includes(chatId.toString())) {
+        console.log("ChatId does not in whiteLists");
+        return;
+    }
 
     var whiteLabel = text.toLowerCase().substring(1);
 
@@ -127,8 +135,14 @@ bot.onText(/\/\w+/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
+    console.log(`ChatId: ${chatId}`);
     console.log(JSON.stringify(state));
     console.log(text);
+
+    if (!whiteLists.includes(chatId.toString())) {
+        console.log("ChatId does not in whiteLists");
+        return;
+    }
 
     if (state[chatId]) {
         //console.log(state[chatId].state);
