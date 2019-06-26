@@ -74,7 +74,7 @@ const operatorCustomerDeposit = [
     ["Matched"],
     ["UpdaterDoing"],
     ["UpdaterCompleted"],
-    ["UserDenied"],
+    ["UserDenied"]
 ];
 
 const removeKeyBoard = JSON.stringify({
