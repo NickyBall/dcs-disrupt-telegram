@@ -110,7 +110,7 @@ module.exports.deleteSpecificWork = (whiteLabelName, department, taskIdentityKey
 module.exports.completeSpecificWorkOperator = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
+            superagent.post(endpoint + 'api/disrupt/worktask/commit/workbyidentitykeytime')
                         .send({
                             ListenerName: whiteLabelName,
                             Department: department,
@@ -129,7 +129,7 @@ module.exports.completeSpecificWorkOperator = (whiteLabelName, department, taskI
 module.exports.completeSpecificWorkBanker = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, oldBalance, newBalance) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
+            superagent.post(endpoint + 'api/disrupt/worktask/commit/workbyidentitykeytime')
                         .send({
                             ListenerName: whiteLabelName,
                             Department: department,
@@ -150,7 +150,7 @@ module.exports.completeSpecificWorkBanker = (whiteLabelName, department, taskIde
 module.exports.completeSpecificWorkUpdater = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, oldBalance, newBalance, oldCredit, newCredit) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/worktask/complete/workbyidentitykeytime')
+            superagent.post(endpoint + 'api/disrupt/worktask/commit/workbyidentitykeytime')
                         .send({
                             ListenerName: whiteLabelName,
                             Department: department,

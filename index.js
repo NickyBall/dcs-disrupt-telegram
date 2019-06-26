@@ -19,7 +19,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green"];
+const whiteLabels = ["indigo", "grey", "green", "red"];
 const firstPageCommands = [
     ["จัดการทั่วไป"],
     ["จัดการงาน"],
@@ -33,8 +33,7 @@ const generalCommands = [
 ];
 const workCommands = [
     ["ลบงานโดย TaskIdentityKeyTime"],
-    ["ลบงานโดย IdentityKeyTime"],
-    ["สำเร็จงานโดย IdentityKeyTime"]
+    ["CommitEventByIdentityKeyTime"]
 ];
 const queueCommands = [
     ["ต้องการทราบจำนวนคิวที่กำหนด"],
@@ -241,11 +240,7 @@ bot.on('message', (msg) => {
                 state[chatId].state = "TaskIdentDelete";
                 bot.sendMessage(chatId, "กรุณาระบุ TaskIdentityKeyTime(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true}});
             }
-            else if(text.indexOf("ลบงานโดย IdentityKeyTime") === 0){
-                state[chatId].state = "IdentDelete";
-                bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
-            }
-            else if(text.indexOf("สำเร็จงานโดย IdentityKeyTime") === 0){
+            else if(text.indexOf("CommitEventByIdentityKeyTime") === 0){
                 state[chatId].state = "CompleteIdent";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
@@ -552,3 +547,4 @@ bot.on('message', (msg) => {
         //#endregion
     }
 });
+
