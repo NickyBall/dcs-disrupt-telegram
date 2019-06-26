@@ -53,6 +53,7 @@ const securityCommands = [
 ];
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
+    
 const department = [
     ["Operator"],
     ["Banker"],
@@ -62,11 +63,6 @@ const worktype = [
     ["Deposit"],
     ["Withdraw"],
     ["Transfer"]
-];
-const department = [
-    ["Operator"],
-    ["Banker"],
-    ["Updater"]
 ];
 const operatorCustomerDeposit = [
     ["OperatorCreated"],
