@@ -63,6 +63,20 @@ const worktype = [
     ["Withdraw"],
     ["Transfer"]
 ];
+const department = [
+    ["Operator"],
+    ["Banker"],
+    ["Updater"]
+];
+const operatorCustomerDeposit = [
+    ["OperatorCreated"],
+    ["BankerCreated"],
+    ["Matched"],
+    ["UpdaterDoing"],
+    ["UpdaterCompleted"],
+    ["UserDenied"],
+];
+
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
@@ -296,13 +310,13 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "ChooseDepartmentCommit"){
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
                     if(res['identityKeyTime'] != null){
                         if(res['operatorType'] == 0 || res['operatorType'] == 4){
                             bot.sendMessage(chatId
-                                , "เลือกแผนก Department"
-                                , {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+                                , "เลือกสถานะ"
+                                , {"reply_markup": {"keyboard": operatorCustomerDeposit, "resize_keyboard" : true}});
                         }
                         else if (res['operatorType'] == 1){
 
@@ -314,9 +328,9 @@ bot.on('message', (msg) => {
 
                         }
                         
-                    };
+                    }
                     else{
-
+                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
                     }
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
