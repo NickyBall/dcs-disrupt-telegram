@@ -109,15 +109,15 @@ module.exports.deleteSpecificWork = (whiteLabelName, department, taskIdentityKey
     });
 };
 
-module.exports.completeSpecificWorkOperator = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime) => {
+module.exports.completeSpecificWorkOperator = (whiteLabelName, department, identityKeyTime, commitStatus) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/worktask/commit/workbyidentitykeytime')
                         .send({
                             ListenerName: whiteLabelName,
                             Department: department,
-                            TaskIdentityKeyTime: taskIdentityKeyTime,
-                            IdentityKeyTime: identityKeyTime
+                            IdentityKeyTime: identityKeyTime,
+                            CommitStatus: commitStatus
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')

@@ -53,7 +53,7 @@ const securityCommands = [
 ];
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
-    
+
 const department = [
     ["Operator"],
     ["Banker"],
@@ -309,6 +309,8 @@ bot.on('message', (msg) => {
                 disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
                     if(res['identityKeyTime'] != null){
+                        state[chatId].state = "StatusChoose";
+                        state[chatId].identityKeyTime = res['identityKeyTime'];
                         if(res['operatorType'] == 0 || res['operatorType'] == 4){
                             bot.sendMessage(chatId
                                 , "เลือกสถานะ"
@@ -344,6 +346,16 @@ bot.on('message', (msg) => {
                 state[chatId].TaskIdentityKeyTime = text;
                 bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
             }
+        }
+        else if (state[chatId].state === "StatusChoose"){
+            state[chatId].eventstatus = text;
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.completeSpecificWorkOperator(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+            , state[chatId].identityKeyTime, state[chatId].eventstatus).then(res => {
+                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            }).catch(err => console.log(err));
+            state[chatId].state = "Finish";
         }
         else if (state[chatId].state === "NotOperator"){
             if(state[chatId].Department === "banker"){
