@@ -23,7 +23,7 @@ const bot = new TelegramBot(token, { polling: true });
 var state = {};
 const whiteLabels = ["indigo", "grey", "green", "red"];
 const whiteLists = ["-339042186", "-311188887"];
-var isFound = false;
+var isFound;
 
 const firstPageCommands = [
     ["จัดการทั่วไป"],
@@ -588,7 +588,8 @@ bot.on('message', (msg) => {
                 else{
                     bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
                     state[chatId].state = "Finish";
-                }                
+                }
+                console.log(isFound);     
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
                 state[chatId].state = "NotOperator";
