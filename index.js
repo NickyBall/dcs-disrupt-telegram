@@ -449,7 +449,7 @@ bot.on('message', (msg) => {
             if(state[chatId].Department === "banker"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , state[chatId].TaskIdentityKeyTime, state[chatId].identityKeyTime).then(res => {
+                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
                     if(res['identityKeyTime'] != null){
                         state[chatId].state = "StatusChoose";
                         state[chatId].OldBalance = res['oldBalance'];
@@ -479,7 +479,7 @@ bot.on('message', (msg) => {
             else if(state[chatId].Department === "updater"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , state[chatId].TaskIdentityKeyTime, state[chatId].identityKeyTime).then(res => {
+                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
                     if(res['identityKeyTime'] != null){
                         state[chatId].state = "StatusChoose";
                         state[chatId].OldBalance = res['oldBalance'];
