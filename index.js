@@ -445,13 +445,13 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "NotOperator"){
+            state[chatId].IdentityKeyTime = text;
             if(state[chatId].Department === "banker"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , state[chatId].TaskIdentityKeyTime, text).then(res => {
+                , state[chatId].TaskIdentityKeyTime, state[chatId].identityKeyTime).then(res => {
                     if(res['identityKeyTime'] != null){
                         state[chatId].state = "StatusChoose";
-                        state[chatId].identityKeyTime = res['identityKeyTime'];
                         state[chatId].OldBalance = res['oldBalance'];
                         state[chatId].NewBalance = res['newBalance'];
                         if(res['bankerType'] == 0){
@@ -479,10 +479,9 @@ bot.on('message', (msg) => {
             else if(state[chatId].Department === "updater"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , state[chatId].TaskIdentityKeyTime, text).then(res => {
+                , state[chatId].TaskIdentityKeyTime, state[chatId].identityKeyTime).then(res => {
                     if(res['identityKeyTime'] != null){
                         state[chatId].state = "StatusChoose";
-                        state[chatId].identityKeyTime = res['identityKeyTime'];
                         state[chatId].OldBalance = res['oldBalance'];
                         state[chatId].NewBalance = res['newBalance'];
                         state[chatId].OldCredit = res['oldCredit'];
