@@ -128,7 +128,7 @@ module.exports.commitWorkOperator = (whiteLabelName, department, identityKeyTime
     });
 };
 
-module.exports.commitWorkBanker = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, oldBalance, newBalance) => {
+module.exports.commitWorkBanker = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, commitStatus, oldBalance, newBalance) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/worktask/commit/workbyidentitykeytime')
@@ -137,6 +137,7 @@ module.exports.commitWorkBanker = (whiteLabelName, department, taskIdentityKeyTi
                             Department: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
                             IdentityKeyTime: identityKeyTime,
+                            CommitStatus: commitStatus,
                             BankerOldBalance: oldBalance,
                             BankerNewBalance: newBalance,
                         }) // sends a JSON post body
@@ -149,7 +150,7 @@ module.exports.commitWorkBanker = (whiteLabelName, department, taskIdentityKeyTi
     });
 };
 
-module.exports.commitWorkUpdater = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, oldBalance, newBalance, oldCredit, newCredit) => {
+module.exports.commitWorkUpdater = (whiteLabelName, department, taskIdentityKeyTime, identityKeyTime, commitStatus, oldBalance, newBalance, oldCredit, newCredit) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/worktask/commit/workbyidentitykeytime')
@@ -158,6 +159,7 @@ module.exports.commitWorkUpdater = (whiteLabelName, department, taskIdentityKeyT
                             Department: department,
                             TaskIdentityKeyTime: taskIdentityKeyTime,
                             IdentityKeyTime: identityKeyTime,
+                            CommitStatus: commitStatus,
                             UpdaterOldBalance: oldBalance,
                             UpdaterNewBalance: newBalance,
                             UpdaterOldCredit: oldCredit,
