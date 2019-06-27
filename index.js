@@ -549,7 +549,6 @@ bot.on('message', (msg) => {
                 , text).then(res => {
                     console.log(res);
                     if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
                         state[chatId].IdentityKeyTime = res['identityKeyTime'];
                         state[chatId].DataVersion = res['version'];
                         state[chatId].DataStatus = res['status'];
@@ -558,14 +557,15 @@ bot.on('message', (msg) => {
                         , text).then(res => {
                             console.log(res);
                             if(res['identityKeyTime'] != null){
-                                state[chatId].state = "StatusChoose";
                                 state[chatId].IdentityKeyTime = res['identityKeyTime'];
                                 state[chatId].EventVersion = res['version'];
                                 state[chatId].EventStatus = res['status'];
 
                                 if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
                                     state[chatId].state = "fixOperatorEvent";
-                                    bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                                    bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
+                                    + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
+                                    + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                                 }
                                 else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
                                     bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
@@ -584,15 +584,89 @@ bot.on('message', (msg) => {
                 }).catch(err => console.log(err));
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
-                state[chatId].state = "NotOperator";
+                state[chatId].state = "CheckNotOperator";
                 state[chatId].TaskIdentityKeyTime = text;
                 bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
             }
         }
+        else if (state[chatId].state === "CheckNotOperator"){
+            state[chatId].IdentityKeyTime = text;
+            if(state[chatId].Department === "banker"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
+                ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                    console.log(res);
+                    if(res['identityKeyTime'] != null){
+                        state[chatId].DataVersion = res['version'];
+                        state[chatId].DataStatus = res['status'];
+
+                        disrupt.retrieveBankerEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                            console.log(res);
+                            if(res['identityKeyTime'] != null){
+                                state[chatId].EventVersion = res['version'];
+                                state[chatId].EventStatus = res['status'];
+
+                                if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
+                                    state[chatId].state = "fixBankerEvent";
+                                    bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
+                                    + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
+                                    + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                                }
+                                else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
+                                    bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                                    state[chatId].state = "Finish";
+                                }
+                            }
+                            else{
+                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                                state[chatId].state = "Finish";                            }
+                        }).catch(err => console.log(err));
+                    }
+                    else{
+                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                        state[chatId].state = "Finish";
+                    }
+                }).catch(err => console.log(err));
+            }
+            else if(state[chatId].Department === "updater"){
+
+            } 
+        }
         else if (state[chatId].state === "fixOperatorEvent"){
             if(text.indexOf("ใช่") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.completeSpecificWorkOperator(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                disrupt.commitWorkOperator(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                , state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else if(text.indexOf("ไม่") === 0) {
+                state[chatId].Department = "Finish";
+                bot.sendMessage(chatId, "เสร็จสิ้น", {"reply_markup": removeKeyBoard});
+            }
+        }
+        else if (state[chatId].state === "fixBankerEvent"){
+            if(text.indexOf("ใช่") === 0){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.commitWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                , state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else if(text.indexOf("ไม่") === 0) {
+                state[chatId].Department = "Finish";
+                bot.sendMessage(chatId, "เสร็จสิ้น", {"reply_markup": removeKeyBoard});
+            }
+        }
+        else if (state[chatId].state === "fixUpdaterEvent"){
+            if(text.indexOf("ใช่") === 0){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.commitWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                 , state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
