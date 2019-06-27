@@ -183,7 +183,7 @@ bot.onText(/\/\w+/, (msg) => {
     }
 });
 
-function StartProgram(Input){
+function StartProgramCommand(Input){
     if (Input.indexOf("จัดการทั่วไป") === 0) {
         state[chatId].state = "GeneralManagement";
         bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
@@ -202,6 +202,29 @@ function StartProgram(Input){
     }
 }
 
+function GeneralCommand(Input){
+    if(Input.indexOf("เติมเครดิต") === 0){
+        state[chatId].state = "TopupCredit";
+        bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+    }
+    else if(Input.indexOf("สร้าง Blob Week") === 0){
+        state[chatId].state = "BlobWeek";
+        bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
+    }
+    else if(Input.indexOf("สร้าง Blob Partition") === 0){
+        state[chatId].state = "BlobPartition";
+        bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
+    }
+}
+
+function TopupExecuteCommand(Input){
+    bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+    disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), Input).then(res => {
+        if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+        else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+    }).catch(err => console.log(err));
+    state[chatId].state = "Finish";
+}
 // Listen for any kind of message. There are different kinds of
 // messages.
 bot.on('message', (msg) => {
@@ -215,7 +238,16 @@ bot.on('message', (msg) => {
         return;
     }
     if(state[chatId]){
-        if(state[chatId].state === "Start") StartProgram(text);
+        if(state[chatId].state === "Start") StartProgramCommand(text);// 0.Start Program with Command
+
+        else if(state[chatId].state === "GeneralManagement") GeneralCommand(text); // 1.GeneralManagement
+        else if (state[chatId].state === "TopupCredit") TopupExecuteCommand(text); // 1.1 TopupCredit Execute and End
+        //else if (state[chatId].state === "TopupCredit") TopupExecuteCommand(text); // 1.2 TopupCredit Execute and End
+        else if(state[chatId].state === "WorkManagement") StartProgram(text);
+        else if(state[chatId].state === "QueueManagement") StartProgram(text);
+        else if(state[chatId].state === "SecurityManagement") StartProgram(text);
+
+
     }
 
     // if (state[chatId]) {
