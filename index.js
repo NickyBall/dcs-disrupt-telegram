@@ -185,8 +185,10 @@ bot.onText(/\/\w+/, (msg) => {
 
 function StartProgramCommand(Input){
     console.log("StartProgramCommand");
+    console.log("1 => " + Input);
     if (Input.indexOf("จัดการทั่วไป") === 0) {
         state[chatId].state = "GeneralManagement";
+        console.log("1 => " + state[chatId].state);
         bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
     }
     else if (Input.indexOf("จัดการงาน") === 0) {
