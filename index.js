@@ -115,6 +115,10 @@ const updaterStatus = [
     ["UserDenied"]
 ]; 
 
+const confirm = [
+    ["ใช่"],
+    ["ไม่ใช่"]
+];
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
@@ -350,7 +354,7 @@ bot.on('message', (msg) => {
                 , text).then(res => {
                     if(res['identityKeyTime'] != null){
                         state[chatId].state = "StatusChoose";
-                        state[chatId].identityKeyTime = res['identityKeyTime'];
+                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
                         if(res['operatorType'] == 0 || res['operatorType'] == 4){
                             bot.sendMessage(chatId
                                 , "เลือกสถานะ"
@@ -437,7 +441,7 @@ bot.on('message', (msg) => {
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.completeSpecificWorkOperator(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-                , state[chatId].identityKeyTime, state[chatId].eventstatus).then(res => {
+                , state[chatId].IdentityKeyTime, state[chatId].eventstatus).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
@@ -541,51 +545,70 @@ bot.on('message', (msg) => {
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 var isFound = false;
-                var isNotUptodate = false;
                 disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
                     console.log(res);
-                    // if(res['identityKeyTime'] != null){
-                    //     state[chatId].state = "StatusChoose";
-                    //     state[chatId].IdentityKeyTime = res['identityKeyTime'];
-                    //     state[chatId].IdentityKeyTime
-                    //     isFound = true;
-                    // }
-                    // else{
-                    //     isFound = false;
-                    // }
+                    if(res['identityKeyTime'] != null){
+                        state[chatId].state = "StatusChoose";
+                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                        state[chatId].DataVersion = res['version'];
+                        state[chatId].DataStatus = res['status'];
+                        isFound = true;
+                    }
+                    else{
+                        isFound = false;
+                    }
                 }).catch(err => console.log(err));
 
                 disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
                     console.log(res);
-                    // if(res['identityKeyTime'] != null){
-                    //     state[chatId].state = "StatusChoose";
-                    //     state[chatId].IdentityKeyTime = res['identityKeyTime'];
-                    //     isFound = true
-                    // }
-                    // else{
-                    //     isFound = false;
-                    // }
+                    if(res['identityKeyTime'] != null){
+                        state[chatId].state = "StatusChoose";
+                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                        state[chatId].EventVersion = res['version'];
+                        state[chatId].EventStatus = res['status'];
+                        isFound = true
+                    }
+                    else{
+                        isFound = false;
+                    }
                 }).catch(err => console.log(err));
 
-                // if(isFound){
-                //     if(){
-
-                //     }
-                //     else{
-
-                //     }
-                // }
-                // else{
-
-                // }
-                state[chatId].state = "Finish";
+                if(isFound){
+                    if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
+                        state[chatId].state = "fixOperatorEvent";
+                        bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                    }
+                    else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
+                        bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                        state[chatId].state = "Finish";
+                    }
+                }
+                else{
+                    bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                    state[chatId].state = "Finish";
+                }                
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
                 state[chatId].state = "NotOperator";
                 state[chatId].TaskIdentityKeyTime = text;
                 bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+            }
+        }
+        else if (state[chatId].state === "fixOperatorEvent"){
+            if(text.indexOf("ใช่") === 0){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.completeSpecificWorkOperator(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                , state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else if(text.indexOf("ไม่") === 0) {
+                state[chatId].Department = "Finish";
+                bot.sendMessage(chatId, "เสร็จสิ้น", {"reply_markup": removeKeyBoard});
             }
         }
         // else if (state[chatId].state === "CompleteIdent"){
