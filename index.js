@@ -553,43 +553,35 @@ bot.on('message', (msg) => {
                         state[chatId].IdentityKeyTime = res['identityKeyTime'];
                         state[chatId].DataVersion = res['version'];
                         state[chatId].DataStatus = res['status'];
-                        isFound = true;
+
+                        disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        , text).then(res => {
+                            console.log(res);
+                            if(res['identityKeyTime'] != null){
+                                state[chatId].state = "StatusChoose";
+                                state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                                state[chatId].EventVersion = res['version'];
+                                state[chatId].EventStatus = res['status'];
+
+                                if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
+                                    state[chatId].state = "fixOperatorEvent";
+                                    bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                                }
+                                else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
+                                    bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                                    state[chatId].state = "Finish";
+                                }
+                            }
+                            else{
+                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                                state[chatId].state = "Finish";                            }
+                        }).catch(err => console.log(err));
                     }
                     else{
-                        isFound = false;
-                    }
-                }).catch(err => console.log(err));
-
-                disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , text).then(res => {
-                    console.log(res);
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
-                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
-                        state[chatId].EventVersion = res['version'];
-                        state[chatId].EventStatus = res['status'];
-                        isFound = true
-                    }
-                    else{
-                        isFound = false;
-                    }
-                }).catch(err => console.log(err));
-
-                if(isFound){
-                    if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
-                        state[chatId].state = "fixOperatorEvent";
-                        bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
-                    }
-                    else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
-                        bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
                         state[chatId].state = "Finish";
                     }
-                }
-                else{
-                    bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                    state[chatId].state = "Finish";
-                }
-                console.log(isFound);     
+                }).catch(err => console.log(err));
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
                 state[chatId].state = "NotOperator";
