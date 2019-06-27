@@ -184,6 +184,7 @@ bot.onText(/\/\w+/, (msg) => {
 });
 
 function StartProgramCommand(Input){
+    console.log("StartProgramCommand");
     if (Input.indexOf("จัดการทั่วไป") === 0) {
         state[chatId].state = "GeneralManagement";
         bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
@@ -203,6 +204,7 @@ function StartProgramCommand(Input){
 }
 
 function GeneralCommand(Input){
+    console.log("GeneralCommand");
     if(Input.indexOf("เติมเครดิต") === 0){
         state[chatId].state = "TopupCredit";
         bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
@@ -218,6 +220,7 @@ function GeneralCommand(Input){
 }
 
 function TopupExecuteCommand(Input){
+    console.log("TopupExecuteCommand");
     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
     disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), Input).then(res => {
         if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
