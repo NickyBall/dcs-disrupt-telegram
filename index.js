@@ -23,6 +23,7 @@ const bot = new TelegramBot(token, { polling: true });
 var state = {};
 const whiteLabels = ["indigo", "grey", "green", "red"];
 const whiteLists = ["-339042186", "-311188887"];
+var isFound = false;
 
 const firstPageCommands = [
     ["จัดการทั่วไป"],
@@ -544,7 +545,6 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "departChooseCheck"){
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                var isFound = false;
                 disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
                     console.log(res);
