@@ -183,58 +183,6 @@ bot.onText(/\/\w+/, (msg) => {
     }
 });
 
-function StartProgramCommand(Input){
-    console.log("StartProgramCommand");
-    console.log("0 => " + Input);
-    if (Input.indexOf("จัดการทั่วไป") === 0) {
-        console.log("if 1");
-        state[chatId].state = "GeneralManagement";
-        console.log("1 => " + state[chatId].state);
-        bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
-    }
-    else if (Input.indexOf("จัดการงาน") === 0) {
-        state[chatId].state = "WorkManagement";
-        bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": workCommands, "resize_keyboard" : true}});
-    }
-    else if (Input.indexOf("จัดการคิว") === 0) {
-        state[chatId].state = "QueueManagement";
-        bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": queueCommands, "resize_keyboard" : true}});
-    }
-    else if (Input.indexOf("จัดการความปลอดภัย") === 0) {
-        state[chatId].state = "SecurityManagement";
-        bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
-    }
-    else{
-        console.log("else");
-        state[chatId].state = "Finish";
-    }
-}
-
-function GeneralCommand(Input){
-    console.log("GeneralCommand");
-    if(Input.indexOf("เติมเครดิต") === 0){
-        state[chatId].state = "TopupCredit";
-        bot.sendMessage(chatId, "กรอกจำนวนเครดิตที่ต้องการเติม", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
-    }
-    else if(Input.indexOf("สร้าง Blob Week") === 0){
-        state[chatId].state = "BlobWeek";
-        bot.sendMessage(chatId, "เลือกคำสั่งการจัดการ Blob", {"reply_markup": {"keyboard": blobweekcommand, "resize_keyboard" : true}});
-    }
-    else if(Input.indexOf("สร้าง Blob Partition") === 0){
-        state[chatId].state = "BlobPartition";
-        bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
-    }
-}
-
-function TopupExecuteCommand(Input){
-    console.log("TopupExecuteCommand");
-    bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-    disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), Input).then(res => {
-        if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-        else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-    }).catch(err => console.log(err));
-    state[chatId].state = "Finish";
-}
 // Listen for any kind of message. There are different kinds of
 // messages.
 bot.on('message', (msg) => {
@@ -247,19 +195,6 @@ bot.on('message', (msg) => {
         console.log("ChatId does not in whiteLists");
         return;
     }
-    // if(state[chatId]){
-    //     if(state[chatId].state === "Start") StartProgramCommand(text);// 0.Start Program with Command
-
-    //     else if(state[chatId].state === "GeneralManagement") GeneralCommand(text); // 1.GeneralManagement
-    //     else if (state[chatId].state === "TopupCredit") TopupExecuteCommand(text); // 1.1 TopupCredit Execute and End
-    //     //else if (state[chatId].state === "TopupCredit") TopupExecuteCommand(text); // 1.2 TopupCredit Execute and End
-    //     else if(state[chatId].state === "WorkManagement") StartProgram(text);
-    //     else if(state[chatId].state === "QueueManagement") StartProgram(text);
-    //     else if(state[chatId].state === "SecurityManagement") StartProgram(text);
-
-
-    // }
-
     if (state[chatId]) {
         //console.log(state[chatId].state);
 
@@ -606,30 +541,46 @@ bot.on('message', (msg) => {
             if(state[chatId].Department === "operator"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 var isFound = false;
+                var isNotUptodate = false;
                 disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
-                        state[chatId].identityKeyTime = res['identityKeyTime'];
-                        isFound = true;
-                    }
-                    else{
-                        isFound = false;
-                    }
+                    console.log(res);
+                    // if(res['identityKeyTime'] != null){
+                    //     state[chatId].state = "StatusChoose";
+                    //     state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                    //     state[chatId].IdentityKeyTime
+                    //     isFound = true;
+                    // }
+                    // else{
+                    //     isFound = false;
+                    // }
                 }).catch(err => console.log(err));
 
                 disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
                 , text).then(res => {
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
-                        state[chatId].identityKeyTime = res['identityKeyTime'];
-                        isFound = true
-                    }
-                    else{
-                        isFound = false;
-                    }
+                    console.log(res);
+                    // if(res['identityKeyTime'] != null){
+                    //     state[chatId].state = "StatusChoose";
+                    //     state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                    //     isFound = true
+                    // }
+                    // else{
+                    //     isFound = false;
+                    // }
                 }).catch(err => console.log(err));
 
+                // if(isFound){
+                //     if(){
+
+                //     }
+                //     else{
+
+                //     }
+                // }
+                // else{
+
+                // }
+                state[chatId].state = "Finish";
             }
             else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
                 state[chatId].state = "NotOperator";
