@@ -21,7 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green", "red"];
+const whiteLabels = ["indigo", "grey", "green", "red", "aplus888"];
 const whiteLists = ["-339042186", "-311188887"];
 var isFound;
 
