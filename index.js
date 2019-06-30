@@ -241,12 +241,18 @@ bot.on('message', (msg) => {
         }
         //#region Topup Credit
         else if (state[chatId].state === "TopupCredit"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var isNumber = /^\d+$/.test(text);
+            if(isNumber){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวนเต็มเท่านั้น", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
 
