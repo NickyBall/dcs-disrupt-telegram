@@ -319,7 +319,7 @@ bot.on('message', (msg) => {
         }
         else if (state[chatId].state === "AccountPattern"){
             var isNumber =  /^\d+$/.test(text);
-            if(isNumber && text.toString().length == 1){
+            if(isNumber && text.toString().length == 1 && (text == 1 || text == 2)){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.createBlobByPartition(state[chatId].Department, capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].WeekKeyTime
                 ,state[chatId].Partition, text).then(res => {
@@ -329,7 +329,7 @@ bot.on('message', (msg) => {
                 state[chatId].state = "Finish";
             }
             else{
-                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวนเต็ม 1 หลักเท่านั้น(eg.1)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
             }
         }
         //#endregion
