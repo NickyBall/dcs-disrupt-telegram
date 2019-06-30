@@ -273,7 +273,6 @@ bot.on('message', (msg) => {
         }
         else if(state[chatId].state === "WeekKeyTimeBlob"){
             var isNumber = /^\d+$/.test(text);
-            console.log(text.toString().length);
             if(isNumber && text.toString().length == 16){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
@@ -297,23 +296,41 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"force_reply" : true}});
         }
         else if (state[chatId].state === "WeekKeyTime"){
-            state[chatId].state = "PartitionNumber";
-            state[chatId].WeekKeyTime = text;
-            bot.sendMessage(chatId, "กรุณาระบุ Partition(eg.9999999999)", {"reply_markup": {"force_reply" : true}});
+            var isNumber = /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 16){
+                state[chatId].state = "PartitionNumber";
+                state[chatId].WeekKeyTime = text;
+                bot.sendMessage(chatId, "กรุณาระบุ Partition(eg.9999999999)", {"reply_markup": {"force_reply" : true}});
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวน 16 หลักเท่านั้น(eg.3091260600000000)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         else if (state[chatId].state === "PartitionNumber"){
-            state[chatId].state = "AccountPattern";
-            state[chatId].Partition = text;
-            bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
+            var isNumber =  /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 10){
+                state[chatId].state = "AccountPattern";
+                state[chatId].Partition = text;
+                bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวน 10 หลักเท่านั้น(eg.9999999999)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         else if (state[chatId].state === "AccountPattern"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.createBlobByPartition(state[chatId].Department, capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].WeekKeyTime
-            ,state[chatId].Partition, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob Partition เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var isNumber =  /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 1){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.createBlobByPartition(state[chatId].Department, capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].WeekKeyTime
+                ,state[chatId].Partition, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob Partition เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวนเต็ม 1 หลักเท่านั้น(eg.1)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
         //#endregion
