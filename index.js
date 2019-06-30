@@ -272,12 +272,19 @@ bot.on('message', (msg) => {
             }
         }
         else if(state[chatId].state === "WeekKeyTimeBlob"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var isNumber = /^\d+$/.test(text);
+            console.log(text.toString().length);
+            if(isNumber && text.toString().length == 16){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวน 16 หลักเท่านั้น(eg.3091260600000000)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
 
