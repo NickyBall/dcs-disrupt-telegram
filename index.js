@@ -21,7 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green", "red"];
+const whiteLabels = ["indigo", "grey", "green", "red", "aplus888"];
 const whiteLists = ["-339042186", "-311188887"];
 var isFound;
 
@@ -242,12 +242,18 @@ bot.on('message', (msg) => {
         }
         //#region Topup Credit
         else if (state[chatId].state === "TopupCredit"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var isNumber = /^\d+$/.test(text);
+            if(isNumber){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.topupCredit(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'เติมเครดิตเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวนเต็มเท่านั้น", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
 
@@ -267,12 +273,18 @@ bot.on('message', (msg) => {
             }
         }
         else if(state[chatId].state === "WeekKeyTimeBlob"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var isNumber = /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 16){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.createBlobByWeekKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวน 16 หลักเท่านั้น(eg.3091260600000000)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
 
@@ -285,23 +297,41 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "กรุณาระบุ WeekKeyTime(eg.3091260600000000)", {"reply_markup": {"force_reply" : true}});
         }
         else if (state[chatId].state === "WeekKeyTime"){
-            state[chatId].state = "PartitionNumber";
-            state[chatId].WeekKeyTime = text;
-            bot.sendMessage(chatId, "กรุณาระบุ Partition(eg.9999999999)", {"reply_markup": {"force_reply" : true}});
+            var isNumber = /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 16){
+                state[chatId].state = "PartitionNumber";
+                state[chatId].WeekKeyTime = text;
+                bot.sendMessage(chatId, "กรุณาระบุ Partition(eg.9999999999)", {"reply_markup": {"force_reply" : true}});
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวน 16 หลักเท่านั้น(eg.3091260600000000)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         else if (state[chatId].state === "PartitionNumber"){
-            state[chatId].state = "AccountPattern";
-            state[chatId].Partition = text;
-            bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
+            var isNumber =  /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 10){
+                state[chatId].state = "AccountPattern";
+                state[chatId].Partition = text;
+                bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true}});
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอกตัวเลขจำนวน 10 หลักเท่านั้น(eg.9999999999)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         else if (state[chatId].state === "AccountPattern"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.createBlobByPartition(state[chatId].Department, capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].WeekKeyTime
-            ,state[chatId].Partition, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob Partition เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var isNumber =  /^\d+$/.test(text);
+            if(isNumber && text.toString().length == 1 && (text == 1 || text == 2)){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.createBlobByPartition(state[chatId].Department, capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].WeekKeyTime
+                ,state[chatId].Partition, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง Blob Partition เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณาระบุ AccountPatter(Thai = 1, Inter = 2)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
         //#endregion
