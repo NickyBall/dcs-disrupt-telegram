@@ -354,12 +354,25 @@ bot.on('message', (msg) => {
 
         //#region Delete by TaskIdentityKeyTime
         else if(state[chatId].state === "TaskIdentDelete"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.deleteWorkByTaskIdentityKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            var arrTaskIdentityKeyTime = text.split('_');
+            if(arrTaskIdentityKeyTime != null){
+                var TaskPrefix = arrTaskIdentityKeyTime[0];
+                var TaskSuffix = arrTaskIdentityKeyTime[1];
+                if(TaskPrefix.toString().length == 16 && /^\d+$/.test(TaskPrefix) && TaskSuffix.toString().length == 5){
+                    bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                    disrupt.deleteWorkByTaskIdentityKeyTime(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                        if(res['resultCode'] == 200) bot.sendMessage(chatId, 'ลบงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                        else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    }).catch(err => console.log(err));
+                    state[chatId].state = "Finish";
+                }
+                else{
+                    bot.sendMessage(chatId, "กรุณากรอก TaskIdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอก TaskIdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
 
