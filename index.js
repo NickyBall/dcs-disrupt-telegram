@@ -393,93 +393,132 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "ChooseDepartmentCommit"){
-            if(state[chatId].Department === "operator"){
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , text).then(res => {
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
-                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
-                        if(res['operatorType'] == 0 || res['operatorType'] == 4){
-                            bot.sendMessage(chatId
-                                , "เลือกสถานะ"
-                                , {"reply_markup": {"keyboard": operatorCustomerDeposit, "resize_keyboard" : true}});
-                        }
-                        else if (res['operatorType'] == 1){
-                            bot.sendMessage(chatId
-                                , "เลือกสถานะ"
-                                , {"reply_markup": {"keyboard": operatorCustomerWithdraw, "resize_keyboard" : true}});
-                        }
-                        else if (res['operatorType'] == 2 || res['operatorType'] == 3){
-                            bot.sendMessage(chatId
-                                , "เลือกสถานะ"
-                                , {"reply_markup": {"keyboard": operatorCustomerTransfer, "resize_keyboard" : true}});
-                        }
+            var arrTaskIdentityKeyTime = text.split('_');
+            if(arrTaskIdentityKeyTime != null){
+                var TaskPrefix = arrTaskIdentityKeyTime[0];
+                var TaskSuffix = arrTaskIdentityKeyTime[1];
+                if(TaskPrefix.toString().length == 16 && /^\d+$/.test(TaskPrefix) && TaskSuffix.toString().length == 5){
+                    if(state[chatId].Department === "operator"){
+                        bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                        disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        , text).then(res => {
+                            if(res['identityKeyTime'] != null){
+                                state[chatId].state = "StatusChoose";
+                                state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                                if(res['operatorType'] == 0 || res['operatorType'] == 4){
+                                    bot.sendMessage(chatId
+                                        , "เลือกสถานะ"
+                                        , {"reply_markup": {"keyboard": operatorCustomerDeposit, "resize_keyboard" : true}});
+                                }
+                                else if (res['operatorType'] == 1){
+                                    bot.sendMessage(chatId
+                                        , "เลือกสถานะ"
+                                        , {"reply_markup": {"keyboard": operatorCustomerWithdraw, "resize_keyboard" : true}});
+                                }
+                                else if (res['operatorType'] == 2 || res['operatorType'] == 3){
+                                    bot.sendMessage(chatId
+                                        , "เลือกสถานะ"
+                                        , {"reply_markup": {"keyboard": operatorCustomerTransfer, "resize_keyboard" : true}});
+                                }
+                            }
+                            else{
+                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                            }
+                        }).catch(err => console.log(err));
+                        state[chatId].state = "Finish";
+                    }
+                    else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
+                        state[chatId].state = "NotOperator";
+                        state[chatId].TaskIdentityKeyTime = text;
+                        bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+                    }
+                }
+                else{
+                    if(state[chatId].Department === "operator"){
+                        bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
                     }
                     else{
-                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                        bot.sendMessage(chatId, "กรุณากรอก TaskIdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
                     }
-                }).catch(err => console.log(err));
-                state[chatId].state = "Finish";
+                }
             }
-            else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
-                state[chatId].state = "NotOperator";
-                state[chatId].TaskIdentityKeyTime = text;
-                bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+            else{
+                if(state[chatId].Department === "operator"){
+                    bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }  
+                else{
+                    bot.sendMessage(chatId, "กรุณากรอก TaskIdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }          
             }
         }
         else if (state[chatId].state === "NotOperator"){
             state[chatId].IdentityKeyTime = text;
-            if(state[chatId].Department === "banker"){
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
-                        state[chatId].OldBalance = res['oldBalance'];
-                        state[chatId].NewBalance = res['newBalance'];
-                        if(res['bankerType'] == 0){
-                            bot.sendMessage(chatId
-                                , "เลือกสถานะ"
-                                , {"reply_markup": {"keyboard": bankerDeposit, "resize_keyboard" : true}});
-                        }
-                        else if (res['bankerType'] == 1){
-                            bot.sendMessage(chatId
-                                , "เลือกสถานะ"
-                                , {"reply_markup": {"keyboard": bankerWithdraw, "resize_keyboard" : true}});
-                        }
-                        else if (res['bankerType'] == 2 || res['bankerType'] == 3 || res['bankerType'] == 4){
-                            bot.sendMessage(chatId
-                                , "เลือกสถานะ"
-                                , {"reply_markup": {"keyboard": bankerTask, "resize_keyboard" : true}});
-                        }
+            var arrIdentityKeyTime = text.split('_');
+            if(arrIdentityKeyTime != null){
+                var TaskPrefix = arrIdentityKeyTime[0];
+                var TaskSuffix = arrIdentityKeyTime[1];
+                if(TaskPrefix.toString().length == 16 && /^\d+$/.test(TaskPrefix) && TaskSuffix.toString().length == 5){
+                    if(state[chatId].Department === "banker"){
+                        bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                        disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                            if(res['identityKeyTime'] != null){
+                                state[chatId].state = "StatusChoose";
+                                state[chatId].OldBalance = res['oldBalance'];
+                                state[chatId].NewBalance = res['newBalance'];
+                                state[chatId].Amount = res['amount'];
+                                if(res['bankerType'] == 0){
+                                    bot.sendMessage(chatId
+                                        , "เลือกสถานะ"
+                                        , {"reply_markup": {"keyboard": bankerDeposit, "resize_keyboard" : true}});
+                                }
+                                else if (res['bankerType'] == 1){
+                                    bot.sendMessage(chatId
+                                        , "เลือกสถานะ"
+                                        , {"reply_markup": {"keyboard": bankerWithdraw, "resize_keyboard" : true}});
+                                }
+                                else if (res['bankerType'] == 2 || res['bankerType'] == 3 || res['bankerType'] == 4){
+                                    bot.sendMessage(chatId
+                                        , "เลือกสถานะ"
+                                        , {"reply_markup": {"keyboard": bankerTask, "resize_keyboard" : true}});
+                                }
+                            }
+                            else{
+                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                            }
+                        }).catch(err => console.log(err));
+                        state[chatId].state = "Finish";
                     }
-                    else{
-                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                    }
-                }).catch(err => console.log(err));
-                state[chatId].state = "Finish";
+                    else if(state[chatId].Department === "updater"){
+                        bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                        disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                            if(res['identityKeyTime'] != null){
+                                state[chatId].state = "StatusChoose";
+                                state[chatId].OldBalance = res['oldBalance'];
+                                state[chatId].NewBalance = res['newBalance'];
+                                state[chatId].OldCredit = res['oldCredit'];
+                                state[chatId].NewCredit = res['newCredit'];
+                                state[chatId].Amount = res['amount'];
+                                bot.sendMessage(chatId
+                                    , "เลือกสถานะ"
+                                    , {"reply_markup": {"keyboard": updaterStatus, "resize_keyboard" : true}});
+                            }
+                            else{
+                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                            }
+                        }).catch(err => console.log(err));
+                        state[chatId].state = "Finish";
+                    }   
+                }
+                else{
+                    bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }
             }
-            else if(state[chatId].Department === "updater"){
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].state = "StatusChoose";
-                        state[chatId].OldBalance = res['oldBalance'];
-                        state[chatId].NewBalance = res['newBalance'];
-                        state[chatId].OldCredit = res['oldCredit'];
-                        state[chatId].NewCredit = res['newCredit'];
-                        bot.sendMessage(chatId
-                            , "เลือกสถานะ"
-                            , {"reply_markup": {"keyboard": updaterStatus, "resize_keyboard" : true}});
-                    }
-                    else{
-                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                    }
-                }).catch(err => console.log(err));
-                state[chatId].state = "Finish";
-            }            
+            else{
+                bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
+                     
         }
         else if (state[chatId].state === "StatusChoose"){
             state[chatId].eventstatus = text;
@@ -511,7 +550,7 @@ bot.on('message', (msg) => {
         else if(state[chatId].state === "BankerChangeBalance"){
             if(text.indexOf("ต้องการเปลียนแปลงเงิน") === 0){
                 state[chatId].state = "BankerBalanceChange";
-                bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่(eg. 30,50)", {"reply_markup": {"force_reply" : true}});
+                bot.sendMessage(chatId, "จำนวนคือ "+ state[chatId].Amount +" กรุณากรอก ยอดเก่า,ยอดใหม่(eg. 30,50)", {"reply_markup": {"force_reply" : true}});
             }
             else if(text.indexOf("ไม่ต้องการเปลี่ยนแปลง ทำต่อ") === 0) {
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
@@ -527,18 +566,23 @@ bot.on('message', (msg) => {
             var balanceArr = text.split(',')
             state[chatId].OldBalance = balanceArr[0];
             state[chatId].NewBalance = balanceArr[1];
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.commitWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-            , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus, state[chatId].OldBalance, state[chatId].NewBalance).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1])){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.commitWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus, state[chatId].OldBalance, state[chatId].NewBalance).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่(eg. 30,50) ให้ถูกต้อง", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         else if(state[chatId].state === "UpdaterChangeBalance"){
             if(text.indexOf("ต้องการเปลียนแปลงเงิน") === 0){
                 state[chatId].state = "UpdaterBalanceChange";
-                bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่,ยอดเครดิตเก่า,ยอดเครดิตใหม่(eg. 30,50,0,10)", {"reply_markup": {"force_reply" : true}});
+                bot.sendMessage(chatId,"จำนวนคือ "+ state[chatId].Amount + "กรุณากรอก ยอดเก่า,ยอดใหม่,ยอดเครดิตเก่า,ยอดเครดิตใหม่(eg. 30,50,0,10)", {"reply_markup": {"force_reply" : true}});
             }
             else if(text.indexOf("ไม่ต้องการเปลี่ยนแปลง ทำต่อ") === 0) {
                 console.log(state[chatId].OldBalance+", "+state[chatId].NewBalance+", "+state[chatId].OldCredit+", "+state[chatId].NewCredit)
@@ -558,15 +602,20 @@ bot.on('message', (msg) => {
             state[chatId].NewBalance = balanceArr[1];
             state[chatId].OldCredit = balanceArr[2];
             state[chatId].NewCredit = balanceArr[3];
-            console.log(state[chatId].OldBalance+", "+state[chatId].NewBalance+", "+state[chatId].OldCredit+", "+state[chatId].NewCredit)
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.commitWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-            , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus
-            , state[chatId].OldBalance, state[chatId].NewBalance, state[chatId].OldCredit, state[chatId].NewCredit).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null
+                && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1]) && /^\d+$/.test(balanceArr[2]) && /^\d+$/.test(balanceArr[3])){
+                    bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                    disrupt.commitWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
+                    , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus
+                    , state[chatId].OldBalance, state[chatId].NewBalance, state[chatId].OldCredit, state[chatId].NewCredit).then(res => {
+                        if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขงานเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                        else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    }).catch(err => console.log(err));
+                    state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณากรอก ยอดเก่า,ยอดใหม่,ยอดเครดิตเก่า,ยอดเครดิตใหม่(eg. 30,50,0,10) ให้ถูกต้อง", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         //#endregion
 
@@ -587,95 +636,166 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "departChooseCheck"){
-            if(state[chatId].Department === "operator"){
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
-                , text).then(res => {
-                    console.log(res);
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
-                        state[chatId].DataVersion = res['version'];
-                        state[chatId].DataStatus = res['status'];
-
-                        disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+            var arrTaskIdentityKeyTime = text.split('_');
+            if(arrTaskIdentityKeyTime != null){
+                var TaskPrefix = arrTaskIdentityKeyTime[0];
+                var TaskSuffix = arrTaskIdentityKeyTime[1];
+                if(TaskPrefix.toString().length == 16 && /^\d+$/.test(TaskPrefix) && TaskSuffix.toString().length == 5){
+                    if(state[chatId].Department === "operator"){
+                        bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                        disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                         , text).then(res => {
                             console.log(res);
                             if(res['identityKeyTime'] != null){
                                 state[chatId].IdentityKeyTime = res['identityKeyTime'];
-                                state[chatId].EventVersion = res['version'];
-                                state[chatId].EventStatus = res['status'];
-
-                                if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
-                                    state[chatId].state = "fixOperatorEvent";
-                                    bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
-                                    + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
-                                    + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
-                                }
-                                else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
-                                    bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
-                                    state[chatId].state = "Finish";
-                                }
+                                state[chatId].DataVersion = res['version'];
+                                state[chatId].DataStatus = res['status'];
+        
+                                disrupt.retrieveOperatorEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                                , text).then(res => {
+                                    console.log(res);
+                                    if(res['identityKeyTime'] != null){
+                                        state[chatId].IdentityKeyTime = res['identityKeyTime'];
+                                        state[chatId].EventVersion = res['version'];
+                                        state[chatId].EventStatus = res['status'];
+        
+                                        if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
+                                            state[chatId].state = "fixOperatorEvent";
+                                            bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
+                                            + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
+                                            + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                                        }
+                                        else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
+                                            bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                                            state[chatId].state = "Finish";
+                                        }
+                                    }
+                                    else{
+                                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                                        state[chatId].state = "Finish";                            }
+                                }).catch(err => console.log(err));
                             }
                             else{
                                 bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                                state[chatId].state = "Finish";                            }
+                                state[chatId].state = "Finish";
+                            }
                         }).catch(err => console.log(err));
                     }
-                    else{
-                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                        state[chatId].state = "Finish";
+                    else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
+                        state[chatId].state = "CheckNotOperator";
+                        state[chatId].TaskIdentityKeyTime = text;
+                        bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
                     }
-                }).catch(err => console.log(err));
+                }
+                else{
+                    if(state[chatId].Department === "operator"){
+                        bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                    }  
+                    else{
+                        bot.sendMessage(chatId, "กรุณากรอก TaskIdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                    }    
+                }
             }
-            else if((state[chatId].Department === "banker") || state[chatId].Department === "updater"){
-                state[chatId].state = "CheckNotOperator";
-                state[chatId].TaskIdentityKeyTime = text;
-                bot.sendMessage(chatId, "กรุณาระบุ IdentityKeyTime(eg.3091123883325470_5SEI8)", {"reply_markup": {"force_reply" : true}});
+            else{
+                if(state[chatId].Department === "operator"){
+                    bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }  
+                else{
+                    bot.sendMessage(chatId, "กรุณากรอก TaskIdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }    
             }
         }
         else if (state[chatId].state === "CheckNotOperator"){
             state[chatId].IdentityKeyTime = text;
-            if(state[chatId].Department === "banker"){
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
-                ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
-                    console.log(res);
-                    if(res['identityKeyTime'] != null){
-                        state[chatId].DataVersion = res['version'];
-                        state[chatId].DataStatus = res['status'];
-
-                        disrupt.retrieveBankerEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+            var arrIdentityKeyTime = text.split('_');
+            if(arrIdentityKeyTime != null){
+                var TaskPrefix = arrIdentityKeyTime[0];
+                var TaskSuffix = arrIdentityKeyTime[1];
+                if(TaskPrefix.toString().length == 16 && /^\d+$/.test(TaskPrefix) && TaskSuffix.toString().length == 5){
+                    if(state[chatId].Department === "banker"){
+                        bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                        disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
                         ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
                             console.log(res);
                             if(res['identityKeyTime'] != null){
-                                state[chatId].EventVersion = res['version'];
-                                state[chatId].EventStatus = res['status'];
-
-                                if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
-                                    state[chatId].state = "fixBankerEvent";
-                                    bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
-                                    + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
-                                    + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
-                                }
-                                else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
-                                    bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
-                                    state[chatId].state = "Finish";
-                                }
+                                state[chatId].DataVersion = res['version'];
+                                state[chatId].DataStatus = res['status'];
+        
+                                disrupt.retrieveBankerEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                                ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                                    console.log(res);
+                                    if(res['identityKeyTime'] != null){
+                                        state[chatId].EventVersion = res['version'];
+                                        state[chatId].EventStatus = res['status'];
+        
+                                        if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
+                                            state[chatId].state = "fixBankerEvent";
+                                            bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
+                                            + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
+                                            + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                                        }
+                                        else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
+                                            bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                                            state[chatId].state = "Finish";
+                                        }
+                                    }
+                                    else{
+                                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                                        state[chatId].state = "Finish";                            }
+                                }).catch(err => console.log(err));
                             }
                             else{
                                 bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                                state[chatId].state = "Finish";                            }
+                                state[chatId].state = "Finish";
+                            }
                         }).catch(err => console.log(err));
                     }
-                    else{
-                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                        state[chatId].state = "Finish";
+                    else if(state[chatId].Department === "updater"){
+                        bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                        disrupt.retrieveUpdater(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                            console.log(res);
+                            if(res['identityKeyTime'] != null){
+                                state[chatId].DataVersion = res['version'];
+                                state[chatId].DataStatus = res['status'];
+        
+                                disrupt.retrieveUpdaterEvent(capitalizeFirstLetter(state[chatId].whiteLabel)
+                                ,state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
+                                    console.log(res);
+                                    if(res['identityKeyTime'] != null){
+                                        state[chatId].EventVersion = res['version'];
+                                        state[chatId].EventStatus = res['status'];
+        
+                                        if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === -1 && state[chatId].DataStatus != state[chatId].EventStatus){
+                                            state[chatId].state = "fixUpdaterEvent";
+                                            bot.sendMessage(chatId, "ต้องการแก้ไขให้ถูกต้องหรือไม่ (DataVersion,EventVersion)=>"
+                                            + "("+state[chatId].DataVersion+","+state[chatId].EventVersion+") // (DataStatus,EventStatus)=>"
+                                            + "("+state[chatId].DataStatus+","+state[chatId].EventStatus+")", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
+                                        }
+                                        else if(state[chatId].DataVersion.indexOf(state[chatId].EventVersion) === 0 && state[chatId].DataStatus == state[chatId].EventStatus){
+                                            bot.sendMessage(chatId, "งานตรวจสอบถูกต้องแล้ว", {"reply_markup": removeKeyBoard});
+                                            state[chatId].state = "Finish";
+                                        }
+                                    }
+                                    else{
+                                        bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                                        state[chatId].state = "Finish";                            }
+                                }).catch(err => console.log(err));
+                            }
+                            else{
+                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                                state[chatId].state = "Finish";
+                            }
+                        }).catch(err => console.log(err));
                     }
-                }).catch(err => console.log(err));
+                }
+                else{
+                    bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+                }
             }
-            else if(state[chatId].Department === "updater"){
-
-            } 
+            else{
+                bot.sendMessage(chatId, "กรุณากรอก IdentityKeyTime ให้ถูกต้อง(eg.3091112131567160_OAOUY)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
         }
         else if (state[chatId].state === "fixOperatorEvent"){
             if(text.indexOf("ใช่") === 0){
@@ -815,8 +935,11 @@ bot.on('message', (msg) => {
             if(text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
-                    , {"reply_markup": removeKeyBoard}));
+                    if(res['resultCode']){
+                        res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
+                        , {"reply_markup": removeKeyBoard}));
+                    }
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
             }
