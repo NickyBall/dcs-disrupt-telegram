@@ -816,7 +816,7 @@ bot.on('message', (msg) => {
             if(text.indexOf("ใช่") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.commitWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-                , state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
+                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
@@ -831,7 +831,7 @@ bot.on('message', (msg) => {
             if(text.indexOf("ใช่") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.commitWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
-                , state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
+                , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].DataStatus).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
