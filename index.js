@@ -63,7 +63,8 @@ const department = [
 const worktype = [
     ["Deposit"],
     ["Withdraw"],
-    ["Transfer"]
+    ["Transfer"],
+    ["TaskStorage"]
 ];
 const operatorCustomerDeposit = [
     ["OperatorCreated"],
@@ -861,12 +862,22 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "QueueNameSize"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.GetQueueSize(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['queueSize'], {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(state[chatId].WorkType == "TaskStorage"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetTaskStorageQueueSize(text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['queueSize'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetQueueSize(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['queueSize'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
         }
         //#endregion
 
@@ -877,12 +888,21 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "StartQueueName"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.StartQueue(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(state[chatId].WorkType == "TaskStorage"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.StartTaskStorageQueue(text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }else{
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.StartQueue(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
         }
         //#endregion
 
@@ -893,12 +913,22 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ClearQueueName"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.ClearQueue(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(state[chatId].WorkType == "TaskStorage"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.ClearTaskStorageQueue(text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.ClearQueue(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
         }
         //#endregion
 
@@ -909,23 +939,42 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "QueueStateName"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.GetQueueState(state[chatId].WorkType, text).then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(state[chatId].WorkType == "TaskStorage"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetTaskStorageQueueState(text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }else{
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetQueueState(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
         }
         //#endregion
 
         //#region Get All QueueState
         else if (state[chatId].state === "GetAllQueueStateByType"){
-            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-            disrupt.GetAllQueueState(text.toLowerCase(), "").then(res => {
-                if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
-                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-            }).catch(err => console.log(err));
-            state[chatId].state = "Finish";
+            if(text == "TaskStorage"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetAllTaskStorageQueueState("").then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetAllQueueState(text.toLowerCase(), "").then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            }
         }
         //#endregion
         //#endregion
