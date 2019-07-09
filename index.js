@@ -854,7 +854,7 @@ bot.on('message', (msg) => {
         //#region Queue Management Command
         else if (state[chatId].state === "QueueManagement"){
             if(text.indexOf("ต้องการทราบจำนวนคิวที่กำหนด") === 0) state[chatId].state = "GetQueueByType";
-            else if(text.indexOf("เริ่มคิว") === 0) state[chatId].state = "StartQueueByType";
+            else if(text.indexOf("จัดการคิวสเตท") === 0) state[chatId].state = "StartQueueByType";
             else if(text.indexOf("เคลียร์คิว") === 0) state[chatId].state = "ClearQueueByType";
             else if(text.indexOf("คิวสเตท") === 0) state[chatId].state = "GetQueueStateByType";
             else if(text.indexOf("แสดงคิวสเตททั้งหมด") === 0) state[chatId].state = "GetAllQueueStateByType";
