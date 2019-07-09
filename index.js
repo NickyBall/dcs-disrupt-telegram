@@ -862,7 +862,9 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "QueueNameSize"){
+            console.log("WorkType is => " + state[chatId].WorkType);
             if(state[chatId].WorkType == "TaskStorage"){
+                console.log("TaskStorage");
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.GetTaskStorageQueueSize(text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['queueSize'], {"reply_markup": removeKeyBoard});
