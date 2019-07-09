@@ -863,8 +863,7 @@ bot.on('message', (msg) => {
         }
         else if (state[chatId].state === "QueueNameSize"){
             console.log("WorkType is => " + state[chatId].WorkType);
-            if(state[chatId].WorkType == "TaskStorage"){
-                console.log("TaskStorage");
+            if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.GetTaskStorageQueueSize(text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, 'QueueSize => ' + res['contract']['queueSize'], {"reply_markup": removeKeyBoard});
@@ -890,7 +889,7 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "StartQueueName"){
-            if(state[chatId].WorkType == "TaskStorage"){
+            if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.StartTaskStorageQueue(text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
@@ -915,7 +914,7 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ClearQueueName"){
-            if(state[chatId].WorkType == "TaskStorage"){
+            if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.ClearTaskStorageQueue(text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
@@ -941,7 +940,7 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "QueueStateName"){
-            if(state[chatId].WorkType == "TaskStorage"){
+            if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.GetTaskStorageQueueState(text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['queueState'], {"reply_markup": removeKeyBoard});
