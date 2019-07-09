@@ -122,6 +122,11 @@ const confirm = [
     ["ใช่"],
     ["ไม่ใช่"]
 ];
+
+const queueState = [
+    ["SLEEP"],
+    ["PROCESS"]
+];
 const removeKeyBoard = JSON.stringify({
     remove_keyboard: true
 });
@@ -885,13 +890,18 @@ bot.on('message', (msg) => {
         //#region  Start Queue
         else if (state[chatId].state === "StartQueueByType"){
             state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "StateQueueChoose";
+            bot.sendMessage(chatId, "เลือกสถานะ", {"reply_markup": {"keyboard": queueState, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "StateQueueChoose"){
+            state[chatId].QueueState = text.toLowerCase();
             state[chatId].state = "StartQueueName";
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "StartQueueName"){
             if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.StartTaskStorageQueue(text).then(res => {
+                disrupt.StartTaskStorageQueue(text, state[chatId].QueueState).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
