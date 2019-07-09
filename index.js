@@ -43,7 +43,7 @@ const workCommands = [
 ];
 const queueCommands = [
     ["ต้องการทราบจำนวนคิวที่กำหนด"],
-    ["เริ่มคิว"],
+    ["จัดการคิวสเตท"],
     ["เคลียร์คิว"],
     ["คิวสเตท"],
     ["แสดงคิวสเตททั้งหมด"],    
@@ -908,7 +908,7 @@ bot.on('message', (msg) => {
                 state[chatId].state = "Finish";
             }else{
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.StartQueue(state[chatId].WorkType, text).then(res => {
+                disrupt.StartQueue(state[chatId].WorkType, text, state[chatId].QueueState).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
