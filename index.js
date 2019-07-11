@@ -572,7 +572,8 @@ bot.on('message', (msg) => {
             var balanceArr = text.split(',')
             state[chatId].OldBalance = balanceArr[0];
             state[chatId].NewBalance = balanceArr[1];
-            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1])){
+            // if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1])){
+            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.commitWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                 , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus, state[chatId].OldBalance, state[chatId].NewBalance).then(res => {
@@ -608,8 +609,9 @@ bot.on('message', (msg) => {
             state[chatId].NewBalance = balanceArr[1];
             state[chatId].OldCredit = balanceArr[2];
             state[chatId].NewCredit = balanceArr[3];
-            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null
-                && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1]) && /^\d+$/.test(balanceArr[2]) && /^\d+$/.test(balanceArr[3])){
+            // if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null
+            //     && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1]) && /^\d+$/.test(balanceArr[2]) && /^\d+$/.test(balanceArr[3])){
+            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null){                
                     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                     disrupt.commitWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                     , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus
