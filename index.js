@@ -409,6 +409,7 @@ bot.on('message', (msg) => {
                         disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                         , text).then(res => {
                             if(res['identityKeyTime'] != null){
+                                console.log(res);
                                 state[chatId].state = "StatusChoose";
                                 state[chatId].IdentityKeyTime = res['identityKeyTime'];
                                 if(res['operatorType'] == 0 || res['operatorType'] == 4){
