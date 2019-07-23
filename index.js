@@ -230,8 +230,7 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
             else if (text.indexOf("test") === 0){
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260").then(res => {
                     console.log(res);
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
