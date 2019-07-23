@@ -29,7 +29,8 @@ const firstPageCommands = [
     ["จัดการทั่วไป"],
     ["จัดการงาน"],
     ["จัดการคิว"],
-    ["จัดการความปลอดภัย"]
+    ["จัดการความปลอดภัย"],
+    ["test"]
 ];
 const generalCommands = [
     ["เติมเครดิต"],
@@ -228,6 +229,13 @@ bot.on('message', (msg) => {
                 state[chatId].state = "SecurityManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
+            else if (text.indexOf("test") === 0){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), text).then(res => {
+                    console.log(res);
+                    state[chatId].state = "Finish";
+                }).catch(err => console.log(err));
+            }
         }
         //#endregion
 
@@ -409,7 +417,6 @@ bot.on('message', (msg) => {
                         disrupt.retrieveOperator(capitalizeFirstLetter(state[chatId].whiteLabel)
                         , text).then(res => {
                             if(res['identityKeyTime'] != null){
-                                console.log(res);
                                 state[chatId].state = "StatusChoose";
                                 state[chatId].IdentityKeyTime = res['identityKeyTime'];
                                 if(res['operatorType'] == 0 || res['operatorType'] == 4){
