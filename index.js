@@ -246,10 +246,9 @@ bot.on('message', (msg) => {
 
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     //console.log(JSON.stringify(res));
-                    state[chatId].BankList = res['contract']['bankList'];
+                    state[chatId].BankList = JSON.stringify(res['contract']);
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
-
                 console.log(state[chatId].BankList);
             }
         }
