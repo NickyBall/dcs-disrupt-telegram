@@ -248,8 +248,9 @@ bot.on('message', (msg) => {
                     console.log((res['contract']['bankList']).length);
                     const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
                     console.log(grouped.size);
+                    var iterator1 = grouped.keys();
                     for(var i = 0; i < grouped.size ; i++){
-                        accountingCommands.push(grouped.key);
+                        accountingCommands.push(iterator1.next().value);
                     }
                     console.log(accountingCommands);
 
