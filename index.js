@@ -1059,7 +1059,7 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "AccountRetrieved"){
             //console.log(grouped.get(text));
 
-            bankAccountGrouped = groupBy(grouped.get(text), accountNumber => accountNumber.accountNumber);
+            bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
             var iterator1 = bankAccountGrouped.keys();
             for(var i = 0; i < bankAccountGrouped.size ; i++){
                 console.log(bankAccountGrouped.get(iterator1.next().value));
