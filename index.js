@@ -57,7 +57,7 @@ const securityCommands = [
 const accountingCommands = [
 ];
 
-const grouped;
+const grouped = {};
 
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
