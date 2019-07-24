@@ -57,6 +57,8 @@ const securityCommands = [
 const accountingCommands = [
 ];
 
+const grouped;
+
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
 
@@ -234,9 +236,17 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
+                //state[chatId].state = "AccountingManagement";
+                //bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
+
+                // disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260").then(res => {
+                //     console.log(res);
+                //     state[chatId].state = "Finish";
+                // }).catch(err => console.log(err));
+
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
-                        const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                        grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
                         var iterator1 = grouped.keys();
                         for(var i = 0; i < grouped.size ; i++){
                             accountingCommands.push(new Array(iterator1.next().value));
@@ -249,6 +259,7 @@ bot.on('message', (msg) => {
                         state[chatId].state = "Finish";
                     }
                 }).catch(err => console.log(err));
+                
             }
         }
         //#endregion
@@ -1042,9 +1053,9 @@ bot.on('message', (msg) => {
         //#endregion
 
         //#region AccountingManagement Command
-        // else if (state[chatId].state === "AccountingManagement"){
-
-        // }
+        else if (state[chatId].state === "AccountRetrieved"){
+            console.log(grouped.get(text));
+        }
         //#endregion
     }
 });
