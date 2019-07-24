@@ -249,7 +249,7 @@ bot.on('message', (msg) => {
                     const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
                     console.log(grouped.size);
                     for(var i = 0; i < grouped.size ; i++){
-                        accountingCommands.push(grouped.keys);
+                        accountingCommands.push(grouped.key);
                     }
                     console.log(accountingCommands);
 
