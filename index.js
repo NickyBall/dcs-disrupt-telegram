@@ -1063,7 +1063,7 @@ bot.on('message', (msg) => {
             var iterator1 = bankAccountGrouped.keys();
             for(var i = 0; i < bankAccountGrouped.size ; i++){
                 console.log(bankAccountGrouped.get(iterator1.next().value));
-                console.log(bankAccountGrouped.get(iterator1.next().value)['bankTemplateId']);
+                //console.log(bankAccountGrouped.get(iterator1.next().value)['bankTemplateId']);
                 //bankAccountCommands.push(new Array(iterator2.next().value['bankTemplateId'] +" "+ iterator1.next().value));
             }
             // state[chatId].state = "ChooseAccounting";
