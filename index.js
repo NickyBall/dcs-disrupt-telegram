@@ -245,9 +245,12 @@ bot.on('message', (msg) => {
                 // }).catch(err => console.log(err));
 
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    console.log(JSON.stringify(res));
+                    //console.log(JSON.stringify(res));
+                    state[chatId].BankList = res['contract']['bankList'];
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
+
+                console.log(state[chatId].BankList);
             }
         }
         //#endregion
