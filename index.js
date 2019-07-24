@@ -248,9 +248,7 @@ bot.on('message', (msg) => {
                     // console.log(JSON.stringify(res));
                     // state[chatId].BankList = JSON.stringify(res['contract']);
                     console.log((res['contract']['bankList']).length);
-                    const grouped = _.groupBy(res['contract']['bankList'], name => name.accountName);
-                    console.log(grouped.length);
-                    console.log(grouped)
+                    console.log((groupBy(res['contract']['bankList'], 'accountName')).length);
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
                 
