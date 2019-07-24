@@ -1060,8 +1060,12 @@ bot.on('message', (msg) => {
             //console.log(grouped.get(text));
 
             grouped.get(text).forEach(element => {
-                console.log(element['bankTemplateId'])
+                //console.log(element['bankTemplateId'])
+                bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
             });
+            state[chatId].state = "ChooseAccounting";
+            bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
+
             //bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
             // console.log(bankAccountGrouped.get('3091053961671900'));
             // console.log(bankAccountGrouped.get('3091053961671900')['bankTemplateId']);
