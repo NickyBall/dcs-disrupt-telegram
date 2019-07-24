@@ -30,7 +30,7 @@ const firstPageCommands = [
     ["จัดการงาน"],
     ["จัดการคิว"],
     ["จัดการความปลอดภัย"],
-    ["test"]
+    ["จัดการบัญชีธนาคาร"]
 ];
 const generalCommands = [
     ["เติมเครดิต"],
@@ -53,6 +53,12 @@ const securityCommands = [
     ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
     ["ติดตั้ง Cert"]
 ];
+
+const accountingCommands = [
+    ["a"],
+    ["b"]
+];
+
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
 
@@ -229,8 +235,16 @@ bot.on('message', (msg) => {
                 state[chatId].state = "SecurityManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
-            else if (text.indexOf("test") === 0){
-                disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260").then(res => {
+            else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
+                //state[chatId].state = "AccountingManagement";
+                //bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
+
+                // disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260").then(res => {
+                //     console.log(res);
+                //     state[chatId].state = "Finish";
+                // }).catch(err => console.log(err));
+
+                disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     console.log(res);
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
@@ -1024,6 +1038,12 @@ bot.on('message', (msg) => {
                 state[chatId].state = "Finish";
             }).catch(err => console.log(err));
         }
+        //#endregion
+
+        //#region AccountingManagement Command
+        // else if (state[chatId].state === "AccountingManagement"){
+
+        // }
         //#endregion
     }
 });
