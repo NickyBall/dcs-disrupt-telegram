@@ -248,7 +248,8 @@ bot.on('message', (msg) => {
                     // console.log(JSON.stringify(res));
                     // state[chatId].BankList = JSON.stringify(res['contract']);
                     console.log((res['contract']['bankList']).length);
-                    console.log((groupBy(res['contract']['bankList'], 'accountName')).length);
+                    const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                    console.log(grouped.get("Dream"))
                     state[chatId].state = "Finish";
                 }).catch(err => console.log(err));
                 
@@ -1052,3 +1053,16 @@ bot.on('message', (msg) => {
     }
 });
 
+function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+         const key = keyGetter(item);
+         const collection = map.get(key);
+         if (!collection) {
+             map.set(key, [item]);
+         } else {
+             collection.push(item);
+         }
+    });
+    return map;
+}
