@@ -26,11 +26,11 @@ const whiteLists = ["-339042186", "-311188887"];
 var isFound;
 
 const firstPageCommands = [
-    "จัดการทั่วไป",
-    "จัดการงาน",
-    "จัดการคิว",
-    "จัดการความปลอดภัย",
-    "จัดการบัญชีธนาคาร"
+    ["จัดการทั่วไป"],
+    ["จัดการงาน"],
+    ["จัดการคิว"],
+    ["จัดการความปลอดภัย"],
+    ["จัดการบัญชีธนาคาร"]
 ];
 const generalCommands = [
     ["เติมเครดิต"],
@@ -243,18 +243,22 @@ bot.on('message', (msg) => {
                 // }).catch(err => console.log(err));
 
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    // console.log(JSON.stringify(res));
-                    // state[chatId].BankList = JSON.stringify(res['contract']);
-                    console.log((res['contract']['bankList']).length);
-                    const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
-                    console.log(grouped.size);
-                    var iterator1 = grouped.keys();
-                    for(var i = 0; i < grouped.size ; i++){
-                        accountingCommands.push(iterator1.next().value);
-                    }
-                    console.log(accountingCommands);
+                    if(res['resultCode'] == 200){
+                        const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                        var iterator1 = grouped.keys();
+                        for(var i = 0; i < grouped.size ; i++){
+                            accountingCommands.push("[" + iterator1.next().value + "]");
 
-                    state[chatId].state = "Finish";
+                            //state[chatId].state = "AccountRetrieved";
+                            //bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
+                        }
+                        console.log(generalCommands)
+                        console.log(accountingCommands);
+                    }
+                    else {
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                        state[chatId].state = "Finish";
+                    }
                 }).catch(err => console.log(err));
                 
             }
