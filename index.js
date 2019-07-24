@@ -247,7 +247,7 @@ bot.on('message', (msg) => {
                         const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
                         var iterator1 = grouped.keys();
                         for(var i = 0; i < grouped.size ; i++){
-                            accountingCommands.push("[" + iterator1.next().value + "]");
+                            accountingCommands.push(new Array(iterator1.next().value));
 
                             //state[chatId].state = "AccountRetrieved";
                             //bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
