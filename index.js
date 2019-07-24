@@ -1057,20 +1057,21 @@ bot.on('message', (msg) => {
 
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
-            //console.log(grouped.get(text));
+            console.log(grouped.get(text));
 
-            bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
+            //bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
             // console.log(bankAccountGrouped.get('3091053961671900'));
             // console.log(bankAccountGrouped.get('3091053961671900')['bankTemplateId']);
             // console.log(bankAccountGrouped.get('3091053961671900').bankTemplateId);
             // console.log(bankAccountGrouped.get('3091053961671900')[0]['bankTemplateId']);
             // console.log(bankAccountGrouped.get('3091053961671900')[0].bankTemplateId);
-            var iterator1 = bankAccountGrouped.keys();
-            for(var i = 0; i < bankAccountGrouped.size ; i++){
-                console.log(bankAccountGrouped.get(iterator1.next().value)[0].bankTemplateId);
-                console.log(bankAccountGrouped.get(iterator1.next().value)[0].accountNumber);
-                //bankAccountCommands.push(new Array(bankAccountGrouped.get(iterator1.next().value)[0].bankTemplateId + " " + bankAccountGrouped.get(iterator1.next().value)[0].accountNumber));
-            }
+            //var iterator1 = bankAccountGrouped.keys();
+            // for(var i = 0; i < grouped.get(text).length ; i++){
+            //     console.log(bankAccountGrouped);
+            //     // console.log(bankAccountGrouped.get(iterator1.next().value)[0].bankTemplateId);
+            //     // console.log(bankAccountGrouped.get(iterator1.next().value)[0].accountNumber);
+            //     //bankAccountCommands.push(new Array(bankAccountGrouped.get(iterator1.next().value)[0].bankTemplateId + " " + bankAccountGrouped.get(iterator1.next().value)[0].accountNumber));
+            // }
             // state[chatId].state = "ChooseAccounting";
             // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
