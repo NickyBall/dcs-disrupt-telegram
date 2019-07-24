@@ -234,33 +234,21 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
-                //state[chatId].state = "AccountingManagement";
-                //bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
-
-                // disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260").then(res => {
-                //     console.log(res);
-                //     state[chatId].state = "Finish";
-                // }).catch(err => console.log(err));
-
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
                         const grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
                         var iterator1 = grouped.keys();
                         for(var i = 0; i < grouped.size ; i++){
                             accountingCommands.push(new Array(iterator1.next().value));
-
-                            //state[chatId].state = "AccountRetrieved";
-                            //bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
                         }
-                        console.log(generalCommands)
-                        console.log(accountingCommands);
+                        state[chatId].state = "AccountRetrieved";
+                        bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
                     }
                     else {
                         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                         state[chatId].state = "Finish";
                     }
                 }).catch(err => console.log(err));
-                
             }
         }
         //#endregion
