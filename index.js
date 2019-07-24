@@ -1057,8 +1057,11 @@ bot.on('message', (msg) => {
 
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
-            console.log(grouped.get(text));
+            //console.log(grouped.get(text));
 
+            grouped.get(text).forEach(element => {
+                console.log(element['bankTemplateId'])
+            });
             //bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
             // console.log(bankAccountGrouped.get('3091053961671900'));
             // console.log(bankAccountGrouped.get('3091053961671900')['bankTemplateId']);
