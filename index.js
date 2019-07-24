@@ -1062,6 +1062,9 @@ bot.on('message', (msg) => {
             bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
             console.log(bankAccountGrouped.get('3091053961671900'));
             console.log(bankAccountGrouped.get('3091053961671900')['bankTemplateId']);
+            console.log(bankAccountGrouped.get('3091053961671900').bankTemplateId);
+            console.log(bankAccountGrouped.get('3091053961671900')[0]['bankTemplateId']);
+            console.log(bankAccountGrouped.get('3091053961671900')[0].bankTemplateId);
             //var iterator1 = bankAccountGrouped.keys();
             // for(var i = 0; i < bankAccountGrouped.size ; i++){
             //     console.log(bankAccountGrouped.get(iterator1.next().value));
