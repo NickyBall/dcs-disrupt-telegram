@@ -1060,12 +1060,14 @@ bot.on('message', (msg) => {
             //console.log(grouped.get(text));
 
             bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
-            var iterator1 = bankAccountGrouped.keys();
-            for(var i = 0; i < bankAccountGrouped.size ; i++){
-                console.log(bankAccountGrouped.get(iterator1.next().value));
-                //console.log(bankAccountGrouped.get(iterator1.next().value)['bankTemplateId']);
-                //bankAccountCommands.push(new Array(iterator2.next().value['bankTemplateId'] +" "+ iterator1.next().value));
-            }
+            console.log(bankAccountGrouped.get('3091053961671900'));
+            console.log(bankAccountGrouped.get('3091053961671900')['bankTemplateId']);
+            //var iterator1 = bankAccountGrouped.keys();
+            // for(var i = 0; i < bankAccountGrouped.size ; i++){
+            //     console.log(bankAccountGrouped.get(iterator1.next().value));
+            //     //console.log(bankAccountGrouped.get(iterator1.next().value)['bankTemplateId']);
+            //     //bankAccountCommands.push(new Array(iterator2.next().value['bankTemplateId'] +" "+ iterator1.next().value));
+            // }
             // state[chatId].state = "ChooseAccounting";
             // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
