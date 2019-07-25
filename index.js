@@ -55,7 +55,7 @@ const securityCommands = [
 ];
 
 var grouped;
-var bankAccountGrouped;
+const bankAccountGrouped = new Map();
 const accountingCommands = [
 ];
 const bankAccountCommands = [
@@ -1061,7 +1061,7 @@ bot.on('message', (msg) => {
             grouped.get(text).forEach(element => {
                 //console.log(element['bankTemplateId'])
                 bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
-                bankAccountGrouped.push(new Map(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']));
+                bankAccountGrouped.set(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']);
             });
             state[chatId].state = "ChooseAccounting";
             bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
