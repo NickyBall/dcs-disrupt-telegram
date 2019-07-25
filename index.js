@@ -245,7 +245,7 @@ bot.on('message', (msg) => {
                 //     console.log(res);
                 //     state[chatId].state = "Finish";
                 // }).catch(err => console.log(err));
-
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
                         grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
@@ -1056,10 +1056,7 @@ bot.on('message', (msg) => {
 
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
-            //console.log(grouped.get(text));
-
             grouped.get(text).forEach(element => {
-                //console.log(element['bankTemplateId'])
                 bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
                 bankAccountGrouped.set(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']);
             });
@@ -1083,7 +1080,8 @@ bot.on('message', (msg) => {
             // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ChooseAccounting"){
-            console.log(bankAccountGrouped);
+            //console.log(bankAccountGrouped);
+            console.log(bankAccountGrouped.get(text));
         }
         //#endregion
     }
