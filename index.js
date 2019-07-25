@@ -1058,7 +1058,7 @@ bot.on('message', (msg) => {
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
             //console.log(grouped.get(text));
-
+            bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
             grouped.get(text).forEach(element => {
                 //console.log(element['bankTemplateId'])
                 bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
@@ -1082,6 +1082,9 @@ bot.on('message', (msg) => {
             // state[chatId].state = "ChooseAccounting";
             // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
+        else if (state[chatId].state === "ChooseAccounting"){
+            console.log(bankAccountGrouped, text.split('_')[1]);
+        }
         //#endregion
     }
 });
@@ -1099,3 +1102,7 @@ function groupBy(list, keyGetter) {
     });
     return map;
 }
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
