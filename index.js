@@ -21,7 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green", "red", "aplus888"];
+const whiteLabels = ["indigo", "grey", "green", "red", "aplus888", "black"];
 const whiteLists = ["-339042186", "-311188887"];
 var isFound;
 
@@ -1024,7 +1024,7 @@ bot.on('message', (msg) => {
             if(text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    if(res['resultCode']){
+                    if(res['resultCode'] == 200){
                         res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
                         , {"reply_markup": removeKeyBoard}));
                     }
@@ -1062,7 +1062,12 @@ bot.on('message', (msg) => {
             //console.log(bankAccountGrouped.get(text));
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text)).then(res => {
-                console.log(res);
+                //console.log(res);
+                if(res['resultCode'] == 200){
+                    bot.sendMessage(chatId, `${res['contract']['deposits']}\n ${res['contract']['withdraw']}\n ${res['contract']['extraDeposits']}\n
+                    ${res['contract']['extraWithdraws']}\n ${res['contract']['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+                }
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 state[chatId].state = "Finish";
             }).catch(err => console.log(err));
         }
