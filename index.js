@@ -238,13 +238,6 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
-                //state[chatId].state = "AccountingManagement";
-                //bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
-
-                // disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260").then(res => {
-                //     console.log(res);
-                //     state[chatId].state = "Finish";
-                // }).catch(err => console.log(err));
                 accountingCommands.length = 0;
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
@@ -262,7 +255,6 @@ bot.on('message', (msg) => {
                         state[chatId].state = "Finish";
                     }
                 }).catch(err => console.log(err));
-                
             }
         }
         //#endregion
@@ -1064,26 +1056,15 @@ bot.on('message', (msg) => {
             });
             state[chatId].state = "ChooseAccounting";
             bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
-
-            //bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
-            // console.log(bankAccountGrouped.get('3091053961671900'));
-            // console.log(bankAccountGrouped.get('3091053961671900')['bankTemplateId']);
-            // console.log(bankAccountGrouped.get('3091053961671900').bankTemplateId);
-            // console.log(bankAccountGrouped.get('3091053961671900')[0]['bankTemplateId']);
-            // console.log(bankAccountGrouped.get('3091053961671900')[0].bankTemplateId);
-            //var iterator1 = bankAccountGrouped.keys();
-            // for(var i = 0; i < grouped.get(text).length ; i++){
-            //     console.log(bankAccountGrouped);
-            //     // console.log(bankAccountGrouped.get(iterator1.next().value)[0].bankTemplateId);
-            //     // console.log(bankAccountGrouped.get(iterator1.next().value)[0].accountNumber);
-            //     //bankAccountCommands.push(new Array(bankAccountGrouped.get(iterator1.next().value)[0].bankTemplateId + " " + bankAccountGrouped.get(iterator1.next().value)[0].accountNumber));
-            // }
-            // state[chatId].state = "ChooseAccounting";
-            // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ChooseAccounting"){
-            console.log(bankAccountGrouped);
-            console.log(bankAccountGrouped.get(text));
+            //console.log(bankAccountGrouped);
+            //console.log(bankAccountGrouped.get(text));
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text)).then(res => {
+                console.log(res);
+                state[chatId].state = "Finish";
+            }).catch(err => console.log(err));
         }
         //#endregion
     }
@@ -1102,7 +1083,3 @@ function groupBy(list, keyGetter) {
     });
     return map;
 }
-
-function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-  }
