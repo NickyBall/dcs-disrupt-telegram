@@ -541,3 +541,36 @@ module.exports.installCert = (whiteLabelName, installCode) => {
         }).catch(err => console.log(err));
     });
 };
+
+module.exports.checkConsistensy = (whiteLabelName, bankKeyTime) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/accounting/checkconsistency')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            BankKeyTime: bankKeyTime
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => console.log(err));
+    });
+};
+
+module.exports.getBankList = (whiteLabelName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/accounting/getbanklist')
+                        .send({
+                            ListenerName: whiteLabelName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => console.log(err));
+    });
+};

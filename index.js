@@ -21,7 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green", "red", "aplus888"];
+const whiteLabels = ["indigo", "grey", "green", "red", "aplus888", "black"];
 const whiteLists = ["-339042186", "-311188887"];
 var isFound;
 
@@ -29,7 +29,8 @@ const firstPageCommands = [
     ["จัดการทั่วไป"],
     ["จัดการงาน"],
     ["จัดการคิว"],
-    ["จัดการความปลอดภัย"]
+    ["จัดการความปลอดภัย"],
+    ["จัดการบัญชีธนาคาร"]
 ];
 const generalCommands = [
     ["เติมเครดิต"],
@@ -52,6 +53,14 @@ const securityCommands = [
     ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
     ["ติดตั้ง Cert"]
 ];
+
+var grouped;
+const bankAccountGrouped = new Map();
+const accountingCommands = [
+];
+const bankAccountCommands = [
+];
+
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
 
@@ -227,6 +236,25 @@ bot.on('message', (msg) => {
             else if (text.indexOf("จัดการความปลอดภัย") === 0) {
                 state[chatId].state = "SecurityManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
+                accountingCommands.length = 0;
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    if(res['resultCode'] == 200){
+                        grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                        var iterator1 = grouped.keys();
+                        for(var i = 0; i < grouped.size ; i++){
+                            accountingCommands.push(new Array(iterator1.next().value));
+                        }
+                        state[chatId].state = "AccountRetrieved";
+                        bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
+                    }
+                    else {
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                        state[chatId].state = "Finish";
+                    }
+                }).catch(err => console.log(err));
             }
         }
         //#endregion
@@ -904,7 +932,8 @@ bot.on('message', (msg) => {
             if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.StartTaskStorageQueue(text, state[chatId].QueueState).then(res => {
-                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    if(res['resultCode'] == 200 && state[chatId].QueueState == "process") bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else if(res['resultCode'] == 200 && state[chatId].QueueState == "sleep") bot.sendMessage(chatId, "Sleep Queue Success", {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
@@ -997,7 +1026,7 @@ bot.on('message', (msg) => {
             if(text.indexOf("แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getInvalidateComputer(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    if(res['resultCode']){
+                    if(res['resultCode'] == 200){
                         res.contract.userInvalidateComputerContract.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName} => ${c.securityCode}\n`
                         , {"reply_markup": removeKeyBoard}));
                     }
@@ -1019,6 +1048,44 @@ bot.on('message', (msg) => {
             }).catch(err => console.log(err));
         }
         //#endregion
+
+        //#region AccountingManagement Command
+        else if (state[chatId].state === "AccountRetrieved"){
+            bankAccountCommands.length = 0;
+            grouped.get(text).forEach(element => {
+                bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
+                bankAccountGrouped.set(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']);
+            });
+            state[chatId].state = "ChooseAccounting";
+            bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "ChooseAccounting"){
+            //console.log(bankAccountGrouped);
+            //console.log(bankAccountGrouped.get(text));
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text)).then(res => {
+                //console.log(res);
+                if(res['resultCode'] == 200){
+                    bot.sendMessage(chatId, `${res['contract']['deposits']}\n${res['contract']['withdraws']}\n${res['contract']['extraDeposits']}\n${res['contract']['extraWithdraws']}\n${res['contract']['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+                }
+                else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                state[chatId].state = "Finish";
+            }).catch(err => console.log(err));
+        }
+        //#endregion
     }
 });
 
+function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+         const key = keyGetter(item);
+         const collection = map.get(key);
+         if (!collection) {
+             map.set(key, [item]);
+         } else {
+             collection.push(item);
+         }
+    });
+    return map;
+}
