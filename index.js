@@ -245,6 +245,7 @@ bot.on('message', (msg) => {
                 //     console.log(res);
                 //     state[chatId].state = "Finish";
                 // }).catch(err => console.log(err));
+                grouped.clear();
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
@@ -1057,6 +1058,7 @@ bot.on('message', (msg) => {
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
             bankAccountGrouped.clear();
+            bankAccountCommands.clear();
             grouped.get(text).forEach(element => {
                 bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
                 bankAccountGrouped.set(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']);
