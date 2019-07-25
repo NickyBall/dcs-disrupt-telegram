@@ -1083,7 +1083,7 @@ bot.on('message', (msg) => {
             // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ChooseAccounting"){
-            console.log(bankAccountGrouped, text.split('_')[1]);
+            console.log(getKeyByValue(bankAccountGrouped, text.split('_')[1]));
         }
         //#endregion
     }
