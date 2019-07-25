@@ -61,7 +61,6 @@ const accountingCommands = [
 const bankAccountCommands = [
 ];
 
-
 const blobweekcommand = [
     ["สร้างสัปดาห์ล่าสุด"],["ระบุ WeekKeyTime"]];
 
@@ -1058,10 +1057,11 @@ bot.on('message', (msg) => {
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
             //console.log(grouped.get(text));
-            bankAccountGrouped = groupBy(grouped.get(text), rowKey => rowKey.rowKey);
+
             grouped.get(text).forEach(element => {
                 //console.log(element['bankTemplateId'])
                 bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
+                bankAccountGrouped.push(new Map(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']));
             });
             state[chatId].state = "ChooseAccounting";
             bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
@@ -1083,7 +1083,7 @@ bot.on('message', (msg) => {
             // bot.sendMessage(chatId, "เลือกบัญชี", {"reply_markup": {"keyboard": bankAccountCommands, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ChooseAccounting"){
-            console.log(getKeyByValue(bankAccountGrouped, text.split('_')[1]));
+            console.log(bankAccountGrouped);
         }
         //#endregion
     }
