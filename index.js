@@ -1064,8 +1064,7 @@ bot.on('message', (msg) => {
             disrupt.checkConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text)).then(res => {
                 //console.log(res);
                 if(res['resultCode'] == 200){
-                    bot.sendMessage(chatId, `${res['contract']['deposits']}\n ${res['contract']['withdraw']}\n ${res['contract']['extraDeposits']}\n
-                    ${res['contract']['extraWithdraws']}\n ${res['contract']['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+                    bot.sendMessage(chatId, `${res['contract']['deposits']}\n${res['contract']['withdraws']}\n${res['contract']['extraDeposits']}\n${res['contract']['extraWithdraws']}\n${res['contract']['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
                 }
                 else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 state[chatId].state = "Finish";
