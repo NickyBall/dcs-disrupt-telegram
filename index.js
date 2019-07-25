@@ -1056,6 +1056,7 @@ bot.on('message', (msg) => {
 
         //#region AccountingManagement Command
         else if (state[chatId].state === "AccountRetrieved"){
+            bankAccountGrouped.clear();
             grouped.get(text).forEach(element => {
                 bankAccountCommands.push(new Array(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber']));
                 bankAccountGrouped.set(element['bankTemplateId'].split('-')[1] + "_" + element['accountNumber'], element['rowKey']);
