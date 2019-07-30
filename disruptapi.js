@@ -559,6 +559,22 @@ module.exports.checkConsistensy = (whiteLabelName, bankKeyTime) => {
     });
 };
 
+module.exports.checkAllBankConsistensy = (whiteLabelName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/accounting/checkallconsistency')
+                        .send({
+                            ListenerName: whiteLabelName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => console.log(err));
+    });
+};
+
 module.exports.getBankList = (whiteLabelName) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
@@ -574,3 +590,4 @@ module.exports.getBankList = (whiteLabelName) => {
         }).catch(err => console.log(err));
     });
 };
+
