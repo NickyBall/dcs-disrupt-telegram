@@ -240,32 +240,32 @@ bot.on('message', (msg) => {
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
                 accountingCommands.length = 0;
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                // disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                //     console.log(res);
-                //     // if(res['resultCode'] == 200){
-                //     //     console.log(res);
-                //     // }
-                //     // else {
-                //     //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                //     //     state[chatId].state = "Finish";
-                //     // }
-                // }).catch(err => console.log(err));
-
-                disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    if(res['resultCode'] == 200){
-                        grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
-                        var iterator1 = grouped.keys();
-                        for(var i = 0; i < grouped.size ; i++){
-                            accountingCommands.push(new Array(iterator1.next().value));
-                        }
-                        state[chatId].state = "AccountRetrieved";
-                        bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
-                    }
-                    else {
-                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                        state[chatId].state = "Finish";
-                    }
+                disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    console.log(res);
+                    // if(res['resultCode'] == 200){
+                    //     console.log(res);
+                    // }
+                    // else {
+                    //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    //     state[chatId].state = "Finish";
+                    // }
                 }).catch(err => console.log(err));
+
+                // disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                //     if(res['resultCode'] == 200){
+                //         grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                //         var iterator1 = grouped.keys();
+                //         for(var i = 0; i < grouped.size ; i++){
+                //             accountingCommands.push(new Array(iterator1.next().value));
+                //         }
+                //         state[chatId].state = "AccountRetrieved";
+                //         bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
+                //     }
+                //     else {
+                //         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                //         state[chatId].state = "Finish";
+                //     }
+                // }).catch(err => console.log(err));
             }
         }
         //#endregion
