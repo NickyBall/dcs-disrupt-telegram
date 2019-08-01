@@ -53,6 +53,23 @@ const securityCommands = [
     ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
     ["ติดตั้ง Cert"]
 ];
+const accountBankCommands = [
+    ["แสดงรายละเอียดของบัญชีธนาคาร"],
+    ["ตรวจสอบความถูกต้องของบัญชีธนาคาร"]
+];
+const detailBankCommands = [
+    ["แสดงรายละเอียดของบัญชีธนาคารที่กำหนด"],
+    ["แสดงรายละเอียดของบัญชีธนาคารทั้งหมด"]
+];
+const checkingBankCommands = [
+    ["ตรวจสอบรายการที่สูญหาย"],
+    ["ตรวจสอบรายการที่เกิน"],
+    ["ตรวจสอบรายการซ้ำกัน"]
+];
+const checkingBankContCommands = [
+    ["แสดงรายละเอียดของบัญชีธนาคารที่กำหนด"],
+    ["แสดงรายละเอียดของบัญชีธนาคารทั้งหมด"]
+];
 
 var grouped;
 const bankAccountGrouped = new Map();
@@ -238,42 +255,46 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": securityCommands, "resize_keyboard" : true}});
             }
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
-                accountingCommands.length = 0;
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    // console.log(JSON.stringify(res));
-                    // console.log(JSON.stringify(res['contract']));
-                    //console.log(JSON.stringify(res['contract']['accountingResultContract']));
-                    res['contract']['accountingResultContract'].forEach(element => {
-                        //console.log(element);
-                        bot.sendMessage(chatId, `${element['bankName']}\n${element['deposits']}\n${element['withdraws']}\n${element['extraDeposits']}\n${element['extraWithdraws']}\n${element['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+                state[chatId].state = "BankAccountManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": accountBankCommands, "resize_keyboard" : true}});
 
-                    });
+                // accountingCommands.length = 0;
+                // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                // disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                //     // console.log(JSON.stringify(res));
+                //     // console.log(JSON.stringify(res['contract']));
+                //     //console.log(JSON.stringify(res['contract']['accountingResultContract']));
+                //     res['contract']['accountingResultContract'].forEach(element => {
+                //         //console.log(element);
+                //         bot.sendMessage(chatId, `${element['bankName']}\n${element['deposits']}\n${element['withdraws']}\n${element['extraDeposits']}\n${element['extraWithdraws']}\n${element['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+                //     });
+                //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                //     state[chatId].state = "Finish";
 
-                    // if(res['resultCode'] == 200){
-                    //     console.log(res);
-                    // }
-                    // else {
-                    //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                    //     state[chatId].state = "Finish";
-                    // }
-                }).catch(err => console.log(err));
-
-                // disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                //     if(res['resultCode'] == 200){
-                //         grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
-                //         var iterator1 = grouped.keys();
-                //         for(var i = 0; i < grouped.size ; i++){
-                //             accountingCommands.push(new Array(iterator1.next().value));
-                //         }
-                //         state[chatId].state = "AccountRetrieved";
-                //         bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
-                //     }
-                //     else {
-                //         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                //         state[chatId].state = "Finish";
-                //     }
+                //     // if(res['resultCode'] == 200){
+                //     //     console.log(res);
+                //     // }
+                //     // else {
+                //     //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                //     //     state[chatId].state = "Finish";
+                //     // }
                 // }).catch(err => console.log(err));
+
+                // // disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                // //     if(res['resultCode'] == 200){
+                // //         grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                // //         var iterator1 = grouped.keys();
+                // //         for(var i = 0; i < grouped.size ; i++){
+                // //             accountingCommands.push(new Array(iterator1.next().value));
+                // //         }
+                // //         state[chatId].state = "AccountRetrieved";
+                // //         bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
+                // //     }
+                // //     else {
+                // //         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                // //         state[chatId].state = "Finish";
+                // //     }
+                // // }).catch(err => console.log(err));
             }
         }
         //#endregion
@@ -1067,6 +1088,91 @@ bot.on('message', (msg) => {
         //#endregion
 
         //#region AccountingManagement Command
+        else if (state[chatId].state === "BankAccountManagement"){
+            if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคาร") === 0) {
+                state[chatId].state = "DetailAccountManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": detailBankCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("ตรวจสอบความถูกต้องของบัญชีธนาคาร") === 0) {
+                state[chatId].state = "CheckingAccountManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": checkingBankCommands, "resize_keyboard" : true}});
+            }
+        }
+        else if (state[chatId].state === "DetailAccountManagement"){
+            if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารที่กำหนด") === 0) {
+                accountingCommands.length = 0;
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    if(res['resultCode'] == 200){
+                        grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
+                        var iterator1 = grouped.keys();
+                        for(var i = 0; i < grouped.size ; i++){
+                            accountingCommands.push(new Array(iterator1.next().value));
+                        }
+                        state[chatId].state = "AccountRetrieved";
+                        bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
+                    }
+                    else {
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                        state[chatId].state = "Finish";
+                    }
+                }).catch(err => console.log(err));
+            }
+            else if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0) {
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    if(res['resultCode'] == 200){
+                        res['contract']['accountingResultContract'].forEach(element => {
+                            bot.sendMessage(chatId, `${element['bankName']}\n${element['deposits']}\n${element['withdraws']}\n${element['extraDeposits']}\n${element['extraWithdraws']}\n${element['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+                        });
+                    }
+                    else {
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    }
+                    state[chatId].state = "Finish";
+                }).catch(err => console.log(err));
+            }
+        }
+        else if (state[chatId].state === "CheckingAccountManagement"){
+            state[chatId].state = "ChooseCheckingMethodManagement";
+            state[chatId].CheckingMethod = text;
+            bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": checkingBankContCommands, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "ChooseCheckingMethodManagement"){
+            if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่สูญหาย") === 0){
+                console.log("หาย");
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+                    console.log(JSON.stringify(res));
+                }).catch(err => console.log(err));
+            }
+            else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่เกิน") === 0){
+                console.log("เกิน");
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.checkOver(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+                    console.log(JSON.stringify(res));
+                }).catch(err => console.log(err));
+            }
+            else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการซ้ำกัน") === 0){
+                console.log("ซ้ำ");
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.checkDuplicate(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+                    console.log(JSON.stringify(res));
+                }).catch(err => console.log(err));
+            }
+            // if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารที่กำหนด") === 0){
+            //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            //     disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+            //         console.log(JSON.stringify(res));
+            //     }).catch(err => console.log(err));
+            // }
+            // else if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
+            //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            //     disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+            //         console.log(JSON.stringify(res));
+            //     }).catch(err => console.log(err));
+            // }
+        }
         else if (state[chatId].state === "AccountRetrieved"){
             bankAccountCommands.length = 0;
             grouped.get(text).forEach(element => {
