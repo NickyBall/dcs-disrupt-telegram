@@ -630,7 +630,7 @@ module.exports.checkOver = (whiteLabelName, bankKeyTime, isExecute) => {
 module.exports.checkDuplicate = (whiteLabelName, bankKeyTime, isExecute) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
-            superagent.post(endpoint + 'api/disrupt/accounting/checkconsistency')
+            superagent.post(endpoint + 'api/disrupt/accounting/checkduplicate')
                         .send({
                             ListenerName: whiteLabelName,
                             BankKeyTime: bankKeyTime,
