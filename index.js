@@ -1125,6 +1125,7 @@ bot.on('message', (msg) => {
                         res['contract']['accountingResultContract'].forEach(element => {
                             bot.sendMessage(chatId, `${element['bankName']}\n${element['deposits']}\n${element['withdraws']}\n${element['extraDeposits']}\n${element['extraWithdraws']}\n${element['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
                         });
+                        bot.sendMessage(chatId, "เสร็จสิ้นการแสดงรายการทั้งหมด", {"reply_markup": removeKeyBoard});
                     }
                     else {
                         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
