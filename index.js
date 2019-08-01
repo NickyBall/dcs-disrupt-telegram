@@ -245,7 +245,9 @@ bot.on('message', (msg) => {
                     // console.log(JSON.stringify(res['contract']));
                     //console.log(JSON.stringify(res['contract']['accountingResultContract']));
                     res['contract']['accountingResultContract'].forEach(element => {
-                        console.log(element);
+                        //console.log(element);
+                        bot.sendMessage(chatId, `${element['bankName']}\n${element['deposits']}\n${element['withdraws']}\n${element['extraDeposits']}\n${element['extraWithdraws']}\n${element['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
+
                     });
 
                     // if(res['resultCode'] == 200){
