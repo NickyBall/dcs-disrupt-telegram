@@ -241,9 +241,12 @@ bot.on('message', (msg) => {
                 accountingCommands.length = 0;
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    console.log(JSON.stringify(res));
-                    console.log(JSON.stringify(res['contract']));
-                    console.log(JSON.stringify(res['contract']['accountingResultContract']));
+                    // console.log(JSON.stringify(res));
+                    // console.log(JSON.stringify(res['contract']));
+                    //console.log(JSON.stringify(res['contract']['accountingResultContract']));
+                    res['contract']['accountingResultContract'].forEach(element => {
+                        console.log(element);
+                    });
 
                     // if(res['resultCode'] == 200){
                     //     console.log(res);
