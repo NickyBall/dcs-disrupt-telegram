@@ -1157,7 +1157,7 @@ bot.on('message', (msg) => {
             else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการซ้ำกัน") === 0){
                 console.log("ซ้ำ");
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.checkDuplicate(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+                disrupt.checkDuplicate(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", true).then(res => {
                     console.log(JSON.stringify(res));
                 }).catch(err => console.log(err));
             }
