@@ -1159,32 +1159,35 @@ bot.on('message', (msg) => {
                     }
                 }).catch(err => console.log(err));
             }
-            else if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
+            // else if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
 
-            }
+            // }
 
 
-            if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่สูญหาย") === 0){
-                console.log("หาย");
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
-                    console.log(JSON.stringify(res));
-                }).catch(err => console.log(err));
-            }
-            else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่เกิน") === 0){
-                console.log("เกิน");
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.checkOver(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
-                    console.log(JSON.stringify(res));
-                }).catch(err => console.log(err));
-            }
-            else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการซ้ำกัน") === 0){
-                console.log("ซ้ำ");
-                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                disrupt.checkDuplicate(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
-                    console.log(JSON.stringify(res));
-                }).catch(err => console.log(err));
-            }
+            // if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่สูญหาย") === 0){
+            //     console.log("หาย");
+            //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            //     disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+            //         console.log(JSON.stringify(res));
+            //     }).catch(err => console.log(err));
+            // }
+            // else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่เกิน") === 0){
+            //     console.log("เกิน");
+            //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            //     disrupt.checkOver(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+            //         console.log(JSON.stringify(res));
+            //     }).catch(err => console.log(err));
+            // }
+            // else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการซ้ำกัน") === 0){
+            //     console.log("ซ้ำ");
+            //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            //     disrupt.checkDuplicate(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+            //         console.log(JSON.stringify(res));
+            //     }).catch(err => console.log(err));
+            // }
+
+
+
             // if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารที่กำหนด") === 0){
             //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
             //     disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
