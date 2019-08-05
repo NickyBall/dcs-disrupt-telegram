@@ -1220,6 +1220,7 @@ bot.on('message', (msg) => {
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
                     }else{
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                         state[chatId].state = "Finish";
                     }
                 }).catch(err => console.log(err));
@@ -1231,6 +1232,7 @@ bot.on('message', (msg) => {
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
                     }else{
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                         state[chatId].state = "Finish";
                     }
                 }).catch(err => console.log(err));
@@ -1242,6 +1244,7 @@ bot.on('message', (msg) => {
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
                     }else{
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                         state[chatId].state = "Finish";
                     }
                 }).catch(err => console.log(err));
