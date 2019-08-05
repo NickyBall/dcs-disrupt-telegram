@@ -1141,7 +1141,7 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": checkingBankContCommands, "resize_keyboard" : true}});
         }
         else if (state[chatId].state === "ChooseCheckingMethodManagement"){
-            if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารที่กำหนด") === 0){
+            if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารที่กำหนด") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
