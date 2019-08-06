@@ -1159,9 +1159,9 @@ bot.on('message', (msg) => {
                     }
                 }).catch(err => console.log(err));
             }
-            // else if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
+            else if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
 
-            // }
+            }
 
 
             // if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่สูญหาย") === 0){
@@ -1215,7 +1215,7 @@ bot.on('message', (msg) => {
             state[chatId].BankAccountKeyTime = bankAccountGrouped.get(text);
             if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่สูญหาย") === 0){
                 disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text), false).then(res => {
-                    bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    //bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     if(res['message'].indexOf("missing") === 0){
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
@@ -1227,7 +1227,7 @@ bot.on('message', (msg) => {
             }
             else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่เกิน") === 0){
                 disrupt.checkOver(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text), false).then(res => {
-                    bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    //bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     if(res['message'].indexOf("over") === 0){
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
@@ -1239,7 +1239,7 @@ bot.on('message', (msg) => {
             }
             else if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการซ้ำกัน") === 0){
                 disrupt.checkDuplicate(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text), false).then(res => {
-                    bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    //bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     if(res['message'].indexOf("duplicate") === 0){
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
