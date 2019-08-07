@@ -1160,7 +1160,7 @@ bot.on('message', (msg) => {
                 }).catch(err => console.log(err));
             }
             else if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
-
+                console.log("checking");
             }
 
 
