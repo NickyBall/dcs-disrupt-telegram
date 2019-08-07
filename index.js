@@ -1219,6 +1219,7 @@ bot.on('message', (msg) => {
             if (state[chatId].CheckingMethod.indexOf("ตรวจสอบรายการที่สูญหาย") === 0){
                 disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), bankAccountGrouped.get(text), false).then(res => {
                     //bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    console.log(res);
                     if(res['message'].indexOf("missing") === 0){
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
