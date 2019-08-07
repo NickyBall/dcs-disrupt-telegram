@@ -1168,8 +1168,10 @@ bot.on('message', (msg) => {
                         var iterator1 = bankListGrouped.keys();
                         for(var i = 0; i < bankListGrouped.size ; i++){
                             console.log(iterator1.next().value);
+                            disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
+                                console.log(JSON.stringify(res));
+                            }).catch(err => console.log(err));
                         }
-
                         //console.log(bankListGrouped);
                         //console.log(bankListGrouped.get('3090698500279790')[0]['accountName']);
                     }
@@ -1236,6 +1238,7 @@ bot.on('message', (msg) => {
                     //bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     console.log(res);
                     if(res['message'].indexOf("missing") === 0){
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                         bot.sendMessage(chatId, "ต้องการแก้ไขหรือไม่", {"reply_markup": {"keyboard": confirm, "resize_keyboard" : true}});
                         state[chatId].state = "ExecuteFixAccount";
                     }else{
