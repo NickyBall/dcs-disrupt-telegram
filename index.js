@@ -1142,6 +1142,7 @@ bot.on('message', (msg) => {
         }
         else if (state[chatId].state === "ChooseCheckingMethodManagement"){
             if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารที่กำหนด") === 0){
+                console.log("detail");
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
@@ -1160,7 +1161,7 @@ bot.on('message', (msg) => {
                 }).catch(err => console.log(err));
             }
             else if (state[chatId].CheckingMethod.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
-                console.log("checking");
+                console.log("all");
             }
 
 
