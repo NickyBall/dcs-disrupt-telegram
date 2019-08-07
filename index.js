@@ -72,6 +72,7 @@ const checkingBankContCommands = [
 ];
 
 var grouped;
+var bankListGrouped;
 const bankAccountGrouped = new Map();
 const accountingCommands = [
 ];
@@ -1162,7 +1163,15 @@ bot.on('message', (msg) => {
             else if (text.indexOf("แสดงรายละเอียดของบัญชีธนาคารทั้งหมด") === 0){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                    console.log(JSON.stringify(res));
+                    if(res['resultCode'] == 200){
+                        bankListGrouped = groupBy(res['contract']['bankList'], rowKey => rowKey.rowKey);
+                        console.log(bankListGrouped);
+                    }
+                    else {
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                        state[chatId].state = "Finish";
+                    }
+
                 }).catch(err => console.log(err));
             }
 
