@@ -1166,7 +1166,7 @@ bot.on('message', (msg) => {
                     if(res['resultCode'] == 200){
                         bankListGrouped = groupBy(res['contract']['bankList'], rowKey => rowKey.rowKey);
                         console.log(bankListGrouped);
-                        console.log(bankListGrouped.get('3090698500279790'));
+                        console.log(bankListGrouped.get('3090698500279790')[0]['accountName']);
                     }
                     else {
                         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
