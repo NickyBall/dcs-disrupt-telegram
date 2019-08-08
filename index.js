@@ -1171,7 +1171,7 @@ bot.on('message', (msg) => {
                             disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
                                 //console.log(JSON.stringify(res));
                                 if(res['resultCode'] == 200){
-                                    bot.sendMessage(chatId,bankListGrouped.get('3090698500279790')[0]['accountName'] +" => "+res['description'], {"reply_markup": removeKeyBoard});
+                                    bot.sendMessage(chatId,bankListGrouped.get(res['contract'])[0]['accountName'] +" => "+res['description'], {"reply_markup": removeKeyBoard});
                                 }else{
 
                                 }
