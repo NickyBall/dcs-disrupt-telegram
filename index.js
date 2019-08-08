@@ -1185,7 +1185,7 @@ bot.on('message', (msg) => {
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountTemplate']);
                                 if(res['resultCode'] == 200){
                                     tempBank = bankListGrouped.get(res['contract']['bankName'])[0];
-                                    bot.sendMessage(chatId,tempBank['accountName'] +" " +tempBank['bankTemplateId']+"_"+tempBank['accountNumber']+"=> ", {"reply_markup": removeKeyBoard});
+                                    bot.sendMessage(chatId,tempBank['accountName'] +" " +tempBank['bankTemplateId']+"_"+tempBank['accountNumber']+"=> " + res['description'], {"reply_markup": removeKeyBoard});
                                 }else{
                                     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                                 }
