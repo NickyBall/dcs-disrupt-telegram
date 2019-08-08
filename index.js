@@ -1169,10 +1169,18 @@ bot.on('message', (msg) => {
                         for(var i = 0; i < bankListGrouped.size ; i++){
                             //console.log(iterator1.next().value);
                             disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), iterator1.next().value, false).then(res => {
+                                var tempBank;
                                 console.log(JSON.stringify(res));
                                 console.log(res['contract']);
                                 console.log(res['contract']['bankName']);
-                                console.log(bankListGrouped.get(res['contract']['bankName']));
+                                tempBank = bankListGrouped.get(res['contract']['bankName'])[0];
+                                console.log(tempBank['accountName']);
+                                console.log(tempBank['accountNumber']);
+                                console.log(tempBank['bankTemplateId']);
+                                // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountName']);
+                                // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountNumber']);
+                                // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['bankTemplateId']);
+
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountNumber']);
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountTemplate']);
                                 // if(res['resultCode'] == 200){
