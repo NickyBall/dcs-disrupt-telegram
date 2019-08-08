@@ -1170,24 +1170,25 @@ bot.on('message', (msg) => {
                             //console.log(iterator1.next().value);
                             disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), iterator1.next().value, false).then(res => {
                                 var tempBank;
-                                console.log(JSON.stringify(res));
-                                console.log(res['contract']);
-                                console.log(res['contract']['bankName']);
-                                tempBank = bankListGrouped.get(res['contract']['bankName'])[0];
-                                console.log(tempBank['accountName']);
-                                console.log(tempBank['accountNumber']);
-                                console.log(tempBank['bankTemplateId']);
+                                // console.log(JSON.stringify(res));
+                                // console.log(res['contract']);
+                                // console.log(res['contract']['bankName']);
+                                // tempBank = bankListGrouped.get(res['contract']['bankName'])[0];
+                                // console.log(tempBank['accountName']);
+                                // console.log(tempBank['accountNumber']);
+                                // console.log(tempBank['bankTemplateId']);
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountName']);
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountNumber']);
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['bankTemplateId']);
 
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountNumber']);
                                 // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountTemplate']);
-                                // if(res['resultCode'] == 200){
-                                //     //bot.sendMessage(chatId,bankListGrouped.get(res['contract']['bankName'])[0]['accountName'] +" => "+res['description'], {"reply_markup": removeKeyBoard});
-                                // }else{
-
-                                // }
+                                if(res['resultCode'] == 200){
+                                    tempBank = bankListGrouped.get(res['contract']['bankName'])[0];
+                                    bot.sendMessage(chatId,tempBank['accountName'] +" " +tempBank['bankTemplateId']+"_"+tempBank['accountNumber']+"=> ", {"reply_markup": removeKeyBoard});
+                                }else{
+                                    bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                                }
                             }).catch(err => console.log(err));
                         }
                         //console.log(bankListGrouped);
