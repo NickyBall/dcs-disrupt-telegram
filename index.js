@@ -1168,13 +1168,15 @@ bot.on('message', (msg) => {
                         var iterator1 = bankListGrouped.keys();
                         for(var i = 0; i < bankListGrouped.size ; i++){
                             //console.log(iterator1.next().value);
-                            disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), "3092677666365260", false).then(res => {
-                                //console.log(JSON.stringify(res));
-                                if(res['resultCode'] == 200){
-                                    bot.sendMessage(chatId,bankListGrouped.get(res['contract']['bankName'])[0]['accountName'] +" => "+res['description'], {"reply_markup": removeKeyBoard});
-                                }else{
+                            disrupt.checkMissing(capitalizeFirstLetter(state[chatId].whiteLabel), iterator1.next().value, false).then(res => {
+                                console.log(JSON.stringify(res));
+                                console.log(res['contract']);
+                                console.log(res['contract']['bankName']);
+                                // if(res['resultCode'] == 200){
+                                //     //bot.sendMessage(chatId,bankListGrouped.get(res['contract']['bankName'])[0]['accountName'] +" => "+res['description'], {"reply_markup": removeKeyBoard});
+                                // }else{
 
-                                }
+                                // }
                             }).catch(err => console.log(err));
                         }
                         //console.log(bankListGrouped);
