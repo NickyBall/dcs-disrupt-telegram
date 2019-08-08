@@ -1172,7 +1172,9 @@ bot.on('message', (msg) => {
                                 console.log(JSON.stringify(res));
                                 console.log(res['contract']);
                                 console.log(res['contract']['bankName']);
-                                console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountName']);
+                                console.log(bankListGrouped.get(res['contract']['bankName']));
+                                // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountNumber']);
+                                // console.log(bankListGrouped.get(res['contract']['bankName'])[0]['accountTemplate']);
                                 // if(res['resultCode'] == 200){
                                 //     //bot.sendMessage(chatId,bankListGrouped.get(res['contract']['bankName'])[0]['accountName'] +" => "+res['description'], {"reply_markup": removeKeyBoard});
                                 // }else{
