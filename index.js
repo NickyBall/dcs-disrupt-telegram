@@ -190,6 +190,7 @@ bot.onText(/\/\w+/, (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
     console.log(JSON.stringify(text));
+    console.log(chatId);
 
     if (!whiteLists.includes(chatId.toString())) {
         console.log("ChatId does not in whiteLists");
