@@ -27,7 +27,8 @@ const whiteLists = ["-339042186", "-311188887"];
 var whiteListsChatId = {
     '-339042186': 'production', 
     '-311188887': 'staging',
-    '-379846501': 'stg_aplus888'};
+    '-379846501': 'stg_aplus888',
+    '': 'stg_indigo'};
 var isFound;
 
 const firstPageCommands = [
@@ -194,6 +195,14 @@ bot.onText(/\/\w+/, (msg) => {
     var chatIdRoom = whiteListsChatId[chatId];
     if(chatIdRoom != null){
         console.log("not null");
+        if(chatIdRoom == "production" || chatIdRoom == "staging"){
+            var whiteLabel = text.toLowerCase().substring(1);
+            console.log(whiteLabel);
+        }
+        else{
+            var whiteLabel = chatIdRoom.toLowerCase().substring(1);
+            console.log(whiteLabel);
+        }
     }
     else {
         console.log("cannot found chatId");
