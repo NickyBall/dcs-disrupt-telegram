@@ -192,21 +192,46 @@ bot.onText(/\/\w+/, (msg) => {
     console.log('bot.on Text 02');
     const chatId = msg.chat.id;
     var text = msg.text;
+    console.log(text);
     var chatIdRoom = whiteListsChatId[chatId];
-    if(chatIdRoom != null){
-        console.log("not null");
-        if(chatIdRoom == "production" || chatIdRoom == "staging"){
-            var whiteLabel = text.toLowerCase().substring(1);
-            console.log(whiteLabel);
-        }
-        else{
-            var whiteLabel = chatIdRoom.toLowerCase().substring(1);
-            console.log(whiteLabel);
-        }
-    }
-    else {
-        console.log("cannot found chatId");
-    }
+
+    // if (chatIdRoom == null) {
+    //     console.log("ChatId does not in whiteLists");
+    //     return;
+    // }
+
+    // if(chatIdRoom != null){
+    //     console.log("not null");
+    //     if(chatIdRoom == "production" || chatIdRoom == "staging"){
+    //         var whiteLabel = text.toLowerCase().substring(1);
+    //         // state[chatId].state = "Start";
+    //         // state[chatId].whiteLabel = whiteLabel;
+    //         // console.log(JSON.stringify(state));
+    //         // bot.sendMessage(chatId, "เลือกคำสั่ง", {
+    //         //     "reply_markup": {
+    //         //         "keyboard": firstPageCommands,
+    //         //         resizeKeyBoard
+    //         //     }
+    //         // });
+    //     }
+    //     else{
+    //         var whiteLabel = chatIdRoom.split('_')[1];
+    //     }
+    //     state[chatId].state = "Start";
+    //     state[chatId].whiteLabel = whiteLabel;
+
+    //     console.log(JSON.stringify(state));
+    //     bot.sendMessage(chatId, "เลือกคำสั่ง", {
+    //         "reply_markup": {
+    //             "keyboard": firstPageCommands,
+    //             resizeKeyBoard
+    //         }
+    //     });
+    // }
+    // else {
+    //     console.log("ChatId does not in whiteLists");
+    //     return;
+    // }
     // console.log(chatId);
     // console.log(whiteListsChatId[chatId]);
 
