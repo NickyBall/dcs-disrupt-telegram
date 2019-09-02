@@ -191,8 +191,9 @@ bot.onText(/\/\w+/, (msg) => {
     console.log('bot.on Text 02');
     const chatId = msg.chat.id;
     var text = msg.text;
-    console.log(JSON.stringify(text));
-    console.log(chatId);
+    //console.log(JSON.stringify(text));
+    //console.log(chatId);
+    console.log(getProperty(chatId.toString()));
 
     // if (!whiteLists.includes(chatId.toString())) {
     //     console.log("ChatId does not in whiteLists");
@@ -231,9 +232,10 @@ bot.on('message', (msg) => {
     console.log('bot.on message');
     const chatId = msg.chat.id;
     var text = msg.text;
-    console.log(JSON.stringify(state));
-    console.log(text);
-    console.log(chatId)
+    console.log(getProperty(chatId.toString()));
+    // console.log(JSON.stringify(state));
+    // console.log(text);
+    // console.log(chatId)
 
     // if (!whiteLists.includes(chatId.toString())) {
     //     console.log("ChatId does not in whiteLists");
@@ -1335,6 +1337,10 @@ bot.on('message', (msg) => {
     //     //#endregion
     // }
 });
+
+var getProperty = function (propertyName) {
+    return obj[propertyName];
+};
 
 function groupBy(list, keyGetter) {
     const map = new Map();
