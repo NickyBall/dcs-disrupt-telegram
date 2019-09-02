@@ -191,12 +191,15 @@ bot.onText(/\/\w+/, (msg) => {
     console.log('bot.on Text 02');
     const chatId = msg.chat.id;
     var text = msg.text;
-    //console.log(JSON.stringify(text));
-    console.log(chatId);
-    //console.log(getProperty(chatId));
-    //console.log(getProperty(chatId.toString()));
-    console.log(whiteListsChatId[chatId]);
-
+    var chatIdRoom = whiteListsChatId[chatId];
+    if(chatIdRoom != null){
+        console.log("not null");
+    }
+    else {
+        console.log("cannot found chatId");
+    }
+    // console.log(chatId);
+    // console.log(whiteListsChatId[chatId]);
 
     // if (!whiteLists.includes(chatId.toString())) {
     //     console.log("ChatId does not in whiteLists");
@@ -238,14 +241,14 @@ bot.on('message', (msg) => {
     //console.log(getProperty(chatId.toString()));
     // console.log(JSON.stringify(state));
     // console.log(text);
-    console.log(chatId)
-    console.log(whiteListsChatId[chatId]);
-    //console.log(getProperty(chatId));
+    // console.log(chatId)
+    // console.log(whiteListsChatId[chatId]);
+    // //console.log(getProperty(chatId));
 
-    if (!whiteLists.includes(chatId.toString())) {
-        console.log("ChatId does not in whiteLists");
-        return;
-    }
+    // if (!whiteLists.includes(chatId.toString())) {
+    //     console.log("ChatId does not in whiteLists");
+    //     return;
+    // }
     if (state[chatId]) {
         //console.log(state[chatId].state);
 
