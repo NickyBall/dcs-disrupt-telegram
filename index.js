@@ -27,7 +27,7 @@ const whiteLists = ["-339042186", "-311188887"];
 var whiteListsChatId = {
     '-339042186': 'production', 
     '-311188887': 'staging',
-    '-379846501': 'aplus888'};
+    '-379846501': 'stg_aplus888'};
 var isFound;
 
 const firstPageCommands = [
@@ -176,9 +176,6 @@ const resizeKeyBoard = JSON.stringify({
 
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
-    console.log('bot.on Text 01');
-    console.log(JSON.stringify(msg));
-    console.log(JSON.stringify(match));
     // 'msg' is the received Message from Telegram
     // 'match' is the result of executing the regexp above on the text content
     // of the message
@@ -234,8 +231,9 @@ bot.on('message', (msg) => {
     console.log('bot.on message');
     const chatId = msg.chat.id;
     var text = msg.text;
-    //console.log(JSON.stringify(state));
-    //console.log(text);
+    console.log(JSON.stringify(state));
+    console.log(text);
+    console.log(chatId)
 
     // if (!whiteLists.includes(chatId.toString())) {
     //     console.log("ChatId does not in whiteLists");
