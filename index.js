@@ -195,7 +195,7 @@ bot.onText(/\/\w+/, (msg) => {
     console.log(chatId);
     //console.log(getProperty(chatId));
     //console.log(getProperty(chatId.toString()));
-    console.log(whiteListsChatId.get(chatId));
+    console.log(whiteListsChatId[chatId]);
 
 
     // if (!whiteLists.includes(chatId.toString())) {
@@ -239,7 +239,7 @@ bot.on('message', (msg) => {
     // console.log(JSON.stringify(state));
     // console.log(text);
     console.log(chatId)
-    console.log(whiteListsChatId.get(chatId));
+    console.log(whiteListsChatId[chatId]);
     //console.log(getProperty(chatId));
 
     if (!whiteLists.includes(chatId.toString())) {
