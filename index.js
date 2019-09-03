@@ -217,7 +217,7 @@ bot.onText(/\/\w+/, (msg) => {
             var whiteLabel = chatIdRoom.split('_')[1];
             console.log("client");
         }
-        state[chatId].state = "Start";
+        // state[chatId].state = "Start";
         // state[chatId].whiteLabel = whiteLabel;
 
         // //console.log(JSON.stringify(state));
