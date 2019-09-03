@@ -287,7 +287,6 @@ bot.on('message', (msg) => {
         //#region First Page Command
         if (state[chatId].state === "Start") {
             console.log("start state");
-            console.log("xxx");
             console.log(JSON.stringify(state));
 
             if (text.indexOf("จัดการทั่วไป") === 0) {
