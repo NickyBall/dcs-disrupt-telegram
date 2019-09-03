@@ -191,6 +191,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
 bot.onText(/\/\w+/, (msg) => {
     console.log('bot.on Text 02');
     const chatId = msg.chat.id;
+    console.log(chatId);
     var text = msg.text;
     var chatIdRoom = whiteListsChatId[chatId];
     console.log(text);
