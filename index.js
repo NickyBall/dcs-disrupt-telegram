@@ -274,7 +274,7 @@ bot.on('message', (msg) => {
     var text = msg.text;
     console.log(text);
     console.log(JSON.stringify(state));
-    console.log(JSON.stringify(state[chatId].state));
+    //console.log(JSON.stringify(state[chatId].state));
     //console.log(getProperty(chatId.toString()));
     // console.log(JSON.stringify(state));
     // console.log(text);
