@@ -220,6 +220,12 @@ bot.onText(/\/\w+/, (msg) => {
                 state[chatId].state = "Start";
                 state[chatId].whiteLabel = text.toLowerCase().substring(1);
                 console.log(JSON.stringify(state[chatId]));
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {
+                    "reply_markup": {
+                        "keyboard": firstPageCommands,
+                        resizeKeyBoard
+                    }
+                });
             }
         }
         else if((chatIdRoom != "production" && chatIdRoom != "staging")){
@@ -232,6 +238,12 @@ bot.onText(/\/\w+/, (msg) => {
                 state[chatId].state = "Start";
                 state[chatId].whiteLabel = chatIdRoom.split('_')[1];
                 console.log(JSON.stringify(state[chatId]));
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {
+                    "reply_markup": {
+                        "keyboard": firstPageCommands,
+                        resizeKeyBoard
+                    }
+                });
             }
             else {
                 bot.sendMessage(chatId, "Invalid command");
