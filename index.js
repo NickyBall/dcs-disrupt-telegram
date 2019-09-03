@@ -199,23 +199,28 @@ bot.onText(/\/\w+/, (msg) => {
         return;
     }
 
-    if(chatIdRoom != null){
+    else if(chatIdRoom != null){
         if((chatIdRoom == "production" || chatIdRoom == "staging") && text.toLowerCase().substring(1) != "start"){
-            var whiteLabel = text.toLowerCase().substring(1);
             console.log("Prod and Stg");
-            // state[chatId].state = "Start";
-            // state[chatId].whiteLabel = whiteLabel;
-            // console.log(JSON.stringify(state));
-            // bot.sendMessage(chatId, "เลือกคำสั่ง", {
-            //     "reply_markup": {
-            //         "keyboard": firstPageCommands,
-            //         resizeKeyBoard
-            //     }
-            // });
+            if (!whiteLabels.includes(text.toLowerCase().substring(1))) {
+                bot.sendMessage(chatId, "ไม่มีสีนี้ในระบบ");
+            }
+            else {
+                console.log("ready for disrupt");
+                state[chatId].state = "Start";
+                state[chatId].whiteLabel = text.toLowerCase().substring(1);
+            }
         }
         else{
-            var whiteLabel = chatIdRoom.split('_')[1];
             console.log("client");
+            if(text.toLocaleLowerCase().substring(1) === 'start'){
+                console.log("ready for client");
+                state[chatId].state = "Start";
+                state[chatId].whiteLabel = chatIdRoom.split('_')[1];
+            }
+            else {
+                bot.sendMessage(chatId, "invalid command");
+            }
         }
         // state[chatId].state = "Start";
         // state[chatId].whiteLabel = whiteLabel;
