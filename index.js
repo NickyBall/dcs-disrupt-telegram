@@ -217,7 +217,7 @@ bot.onText(/\/\w+/, (msg) => {
                 console.log(JSON.stringify(state[chatId]));
             }
         }
-        else{
+        else if((chatIdRoom != "production" && chatIdRoom != "staging")){
             console.log("client");
             if(text.toLocaleLowerCase().substring(1) === 'start'){
                 console.log("ready for client");
