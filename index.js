@@ -286,8 +286,9 @@ bot.on('message', (msg) => {
 
         //#region First Page Command
         if (state[chatId].state === "Start") {
-            console.log(JSON.stringify(state));
             console.log("start state");
+            console.log(JSON.stringify(state));
+
             if (text.indexOf("จัดการทั่วไป") === 0) {
                 state[chatId].state = "GeneralManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": generalCommands, "resize_keyboard" : true}});
