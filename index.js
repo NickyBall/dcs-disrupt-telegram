@@ -194,42 +194,44 @@ bot.onText(/\/\w+/, (msg) => {
     var text = msg.text;
     var chatIdRoom = whiteListsChatId[chatId];
 
-    // if (chatIdRoom == null) {
-    //     console.log("ChatId does not in whiteLists");
-    //     return;
-    // }
+    if (chatIdRoom == null) {
+        console.log("ChatId does not in whiteLists");
+        return;
+    }
 
-    // if(chatIdRoom != null){
-    //     if((chatIdRoom == "production" || chatIdRoom == "staging") && text.toLowerCase().substring(1) != "start"){
-    //         var whiteLabel = text.toLowerCase().substring(1);
-    //         // state[chatId].state = "Start";
-    //         // state[chatId].whiteLabel = whiteLabel;
-    //         // console.log(JSON.stringify(state));
-    //         // bot.sendMessage(chatId, "เลือกคำสั่ง", {
-    //         //     "reply_markup": {
-    //         //         "keyboard": firstPageCommands,
-    //         //         resizeKeyBoard
-    //         //     }
-    //         // });
-    //     }
-    //     else{
-    //         var whiteLabel = chatIdRoom.split('_')[1];
-    //     }
-    //     state[chatId].state = "Start";
-    //     state[chatId].whiteLabel = whiteLabel;
+    if(chatIdRoom != null){
+        if((chatIdRoom == "production" || chatIdRoom == "staging") && text.toLowerCase().substring(1) != "start"){
+            var whiteLabel = text.toLowerCase().substring(1);
+            console.log("Prod and Stg");
+            // state[chatId].state = "Start";
+            // state[chatId].whiteLabel = whiteLabel;
+            // console.log(JSON.stringify(state));
+            // bot.sendMessage(chatId, "เลือกคำสั่ง", {
+            //     "reply_markup": {
+            //         "keyboard": firstPageCommands,
+            //         resizeKeyBoard
+            //     }
+            // });
+        }
+        else{
+            var whiteLabel = chatIdRoom.split('_')[1];
+            console.log("client");
+        }
+        state[chatId].state = "Start";
+        state[chatId].whiteLabel = whiteLabel;
 
-    //     //console.log(JSON.stringify(state));
-    //     bot.sendMessage(chatId, "เลือกคำสั่ง", {
-    //         "reply_markup": {
-    //             "keyboard": firstPageCommands,
-    //             resizeKeyBoard
-    //         }
-    //     });
-    // }
-    // else {
-    //     console.log("ChatId does not in whiteLists");
-    //     return;
-    // }
+        //console.log(JSON.stringify(state));
+        bot.sendMessage(chatId, "เลือกคำสั่ง", {
+            "reply_markup": {
+                "keyboard": firstPageCommands,
+                resizeKeyBoard
+            }
+        });
+    }
+    else {
+        console.log("ChatId does not in whiteLists");
+        return;
+    }
     // console.log(chatId);
     // console.log(whiteListsChatId[chatId]);
 
@@ -270,6 +272,9 @@ bot.on('message', (msg) => {
     console.log('bot.on message');
     const chatId = msg.chat.id;
     var text = msg.text;
+    console.log(text);
+    console.log(JSON.stringify(state));
+    console.log(JSON.stringify(state[chatId].state));
     //console.log(getProperty(chatId.toString()));
     // console.log(JSON.stringify(state));
     // console.log(text);
@@ -281,7 +286,7 @@ bot.on('message', (msg) => {
     //     console.log("ChatId does not in whiteLists");
     //     return;
     // }
-    
+
     // if (state[chatId]) {
     //     //console.log(state[chatId].state);
 
