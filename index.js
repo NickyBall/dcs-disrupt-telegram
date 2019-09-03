@@ -193,6 +193,8 @@ bot.onText(/\/\w+/, (msg) => {
     const chatId = msg.chat.id;
     var text = msg.text;
     var chatIdRoom = whiteListsChatId[chatId];
+    console.log(text);
+    console.log(chatIdRoom);
 
     if (chatIdRoom == null) {
         console.log("ChatId does not in whiteLists");
@@ -207,7 +209,6 @@ bot.onText(/\/\w+/, (msg) => {
             }
             else {
                 console.log("ready for disrupt");
-                console.log(JSON.stringify(state[chatId]));
                 state[chatId] = {
                     id: chatId
                 };
@@ -220,7 +221,6 @@ bot.onText(/\/\w+/, (msg) => {
             console.log("client");
             if(text.toLocaleLowerCase().substring(1) === 'start'){
                 console.log("ready for client");
-                console.log(JSON.stringify(state[chatId]));
                 state[chatId] = {
                     id: chatId
                 };
