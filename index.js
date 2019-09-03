@@ -200,7 +200,7 @@ bot.onText(/\/\w+/, (msg) => {
     }
 
     else if(chatIdRoom != null){
-        if((chatIdRoom == "production" || chatIdRoom == "staging") && text.toLowerCase().substring(1) != "start"){
+        if((chatIdRoom === "production" || chatIdRoom === "staging") && text.toLowerCase().substring(1) != "start"){
             console.log("Prod and Stg");
             if (!whiteLabels.includes(text.toLowerCase().substring(1))) {
                 bot.sendMessage(chatId, "ไม่มีสีนี้ในระบบ");
