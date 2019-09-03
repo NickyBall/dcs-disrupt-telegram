@@ -207,16 +207,26 @@ bot.onText(/\/\w+/, (msg) => {
             }
             else {
                 console.log("ready for disrupt");
+                console.log(JSON.stringify(state[chatId]));
+                state[chatId] = {
+                    id: chatId
+                };
                 state[chatId].state = "Start";
                 state[chatId].whiteLabel = text.toLowerCase().substring(1);
+                console.log(JSON.stringify(state[chatId]));
             }
         }
         else{
             console.log("client");
             if(text.toLocaleLowerCase().substring(1) === 'start'){
                 console.log("ready for client");
+                console.log(JSON.stringify(state[chatId]));
+                state[chatId] = {
+                    id: chatId
+                };
                 state[chatId].state = "Start";
                 state[chatId].whiteLabel = chatIdRoom.split('_')[1];
+                console.log(JSON.stringify(state[chatId]));
             }
             else {
                 bot.sendMessage(chatId, "invalid command");
@@ -275,10 +285,10 @@ bot.onText(/\/\w+/, (msg) => {
 // messages.
 bot.on('message', (msg) => {
     console.log('bot.on message');
-    const chatId = msg.chat.id;
-    var text = msg.text;
-    console.log(text);
-    console.log(JSON.stringify(state));
+    //const chatId = msg.chat.id;
+    //var text = msg.text;
+    //console.log(text);
+    //console.log(JSON.stringify(state));
     //console.log(JSON.stringify(state[chatId].state));
     //console.log(getProperty(chatId.toString()));
     // console.log(JSON.stringify(state));
