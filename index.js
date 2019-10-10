@@ -28,9 +28,9 @@ var whiteListsChatId = {
     '-339042186': 'production',
     '-350487122': 'prod_indigo',
     '-379846501': 'prod_aplus888',
+    '-349107833': 'prod_next88',
     '-311188887': 'staging',
     '-388421114' : 'stg_grey',
-    '-349107833': 'stg_next88',
     '': 'stg_indigo'};
 var isFound;
 
