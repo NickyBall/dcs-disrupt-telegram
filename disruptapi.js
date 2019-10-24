@@ -19,6 +19,22 @@ function GetToken() {
     });
 }
 
+module.exports.clearUserOnline = (whiteLabelName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/useronline/clear')
+                        .send({
+                            ListenerName: whiteLabelName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.topupCredit = (whiteLabelName, amount) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {

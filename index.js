@@ -39,7 +39,8 @@ const firstPageCommands = [
     ["จัดการงาน"],
     ["จัดการคิว"],
     ["จัดการความปลอดภัย"],
-    ["จัดการบัญชีธนาคาร"]
+    ["จัดการบัญชีธนาคาร"],
+    ["จัดการผู้ใช้"]
 ];
 const generalCommands = [
     ["เติมเครดิต"],
@@ -65,6 +66,9 @@ const securityCommands = [
 const accountBankCommands = [
     ["แสดงรายละเอียดของบัญชีธนาคาร"],
     ["ตรวจสอบความถูกต้องของบัญชีธนาคาร"]
+];
+const userOnlineCommands = [
+    ["Clear User ที่ไม่ได้ออนไลน์"]
 ];
 const detailBankCommands = [
     ["แสดงรายละเอียดของบัญชีธนาคารที่กำหนด"],
@@ -358,7 +362,6 @@ bot.on('message', (msg) => {
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
                 state[chatId].state = "BankAccountManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": accountBankCommands, "resize_keyboard" : true}});
-
                 // accountingCommands.length = 0;
                 // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 // disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
@@ -396,6 +399,10 @@ bot.on('message', (msg) => {
                 // //         state[chatId].state = "Finish";
                 // //     }
                 // // }).catch(err => console.log(err));
+            }
+            else if (text.indexOf("จัดการผู้ใช้") === 0){
+                state[chatId].state = "UserOnlineManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": userOnlineCommands, "resize_keyboard" : true}});
             }
         }
         //#endregion
@@ -1428,6 +1435,22 @@ bot.on('message', (msg) => {
             }
         }
         //#endregion
+
+        //#region  UserOnlineManagement Command
+        else if (state[chatId].state === "UserOnlineManagement"){
+            if(text.indexOf("Clear User ที่ไม่ได้ออนไลน์") === 0) {
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.clearUserOnline(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    if(res['resultCode'] == 200){
+                        console.log(JSON.stringify(res));
+                    }
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    state[chatId].state = "Finish";
+                }).catch(err => console.log(err));
+            }
+        }
+        //#endregion
+    
     }
 });
 
