@@ -1441,7 +1441,7 @@ bot.on('message', (msg) => {
 
             if(inputText != null && inputText[0] != null && inputText[1] != null){
                     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                    disrupt.createUser(capitalizeFirstLetter(state[chatId].whiteLabel), "", state[chatId].botType, inputText[0], inputText[1])
+                    disrupt.createUser(capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].botType, inputText[0], inputText[1])
                     .then(res => {
                         if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง user เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                         else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
