@@ -19,7 +19,7 @@ function GetToken() {
     });
 }
 
-module.exports.crateUser = (whiteLabelName, userType, username, password) => {
+module.exports.createUser = (whiteLabelName, userType, username, password) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/useronline/createBot')
