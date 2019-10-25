@@ -1434,6 +1434,7 @@ bot.on('message', (msg) => {
             }
         }
         else if (state[chatId].state === "BotCreateExecute"){
+            console.log(text);
             var inputText = text.split(',')
             state[chatId].Username = inputText[0];
             state[chatId].Password = inputText[1];
