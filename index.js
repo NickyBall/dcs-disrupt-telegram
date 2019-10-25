@@ -1416,6 +1416,8 @@ bot.on('message', (msg) => {
                 disrupt.clearUserOnline(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
                     if(res['resultCode'] == 200){
                         console.log(JSON.stringify(res));
+                        res.contract.userOnlineContractList.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName}\n`
+                        , {"reply_markup": removeKeyBoard}));
                     }
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     state[chatId].state = "Finish";
