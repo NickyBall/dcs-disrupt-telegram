@@ -39,7 +39,13 @@ const firstPageCommands = [
     ["จัดการงาน"],
     ["จัดการคิว"],
     ["จัดการความปลอดภัย"],
-    ["จัดการบัญชีธนาคาร"]
+    ["จัดการบัญชีธนาคาร"],
+    ["จัดการผู้ใช้"],
+    ["semaphore"]
+];
+const semaphoreCommands = [
+    ["จำนวน Thread"],
+    ["release semaphore"]
 ];
 const generalCommands = [
     ["เติมเครดิต"],
@@ -66,6 +72,15 @@ const accountBankCommands = [
     ["แสดงรายละเอียดของบัญชีธนาคาร"],
     ["ตรวจสอบความถูกต้องของบัญชีธนาคาร"]
 ];
+const userOnlineCommands = [
+    ["สร้าง User Bot"],
+    ["Clear User ที่ไม่ได้ออนไลน์"]
+];
+const botCommands = [
+    ["BotBanker"],
+    ["BotUpdater"]
+];
+
 const detailBankCommands = [
     ["แสดงรายละเอียดของบัญชีธนาคารที่กำหนด"],
     ["แสดงรายละเอียดของบัญชีธนาคารทั้งหมด"]
@@ -358,44 +373,14 @@ bot.on('message', (msg) => {
             else if (text.indexOf("จัดการบัญชีธนาคาร") === 0){
                 state[chatId].state = "BankAccountManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": accountBankCommands, "resize_keyboard" : true}});
-
-                // accountingCommands.length = 0;
-                // bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                // disrupt.checkAllBankConsistensy(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                //     // console.log(JSON.stringify(res));
-                //     // console.log(JSON.stringify(res['contract']));
-                //     //console.log(JSON.stringify(res['contract']['accountingResultContract']));
-                //     res['contract']['accountingResultContract'].forEach(element => {
-                //         //console.log(element);
-                //         bot.sendMessage(chatId, `${element['bankName']}\n${element['deposits']}\n${element['withdraws']}\n${element['extraDeposits']}\n${element['extraWithdraws']}\n${element['extraExpenses']}\n`, {"reply_markup": removeKeyBoard});
-                //     });
-                //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                //     state[chatId].state = "Finish";
-
-                //     // if(res['resultCode'] == 200){
-                //     //     console.log(res);
-                //     // }
-                //     // else {
-                //     //     bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                //     //     state[chatId].state = "Finish";
-                //     // }
-                // }).catch(err => console.log(err));
-
-                // // disrupt.getBankList(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
-                // //     if(res['resultCode'] == 200){
-                // //         grouped = groupBy(res['contract']['bankList'], accountName => accountName.accountName);
-                // //         var iterator1 = grouped.keys();
-                // //         for(var i = 0; i < grouped.size ; i++){
-                // //             accountingCommands.push(new Array(iterator1.next().value));
-                // //         }
-                // //         state[chatId].state = "AccountRetrieved";
-                // //         bot.sendMessage(chatId, "เลือกชื่อบัญชี", {"reply_markup": {"keyboard": accountingCommands, "resize_keyboard" : true}});
-                // //     }
-                // //     else {
-                // //         bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
-                // //         state[chatId].state = "Finish";
-                // //     }
-                // // }).catch(err => console.log(err));
+            }
+            else if (text.indexOf("จัดการผู้ใช้") === 0){
+                state[chatId].state = "UserOnlineManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": userOnlineCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("semaphore") === 0){
+                state[chatId].state = "SemaphoreManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": semaphoreCommands, "resize_keyboard" : true}});
             }
         }
         //#endregion
@@ -1428,6 +1413,95 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "เสร็จสิ้น", {"reply_markup": removeKeyBoard});
                 state[chatId].state = "Finish";
             }
+        }
+        //#endregion
+
+        //#region  UserOnlineManagement Command
+        else if (state[chatId].state === "UserOnlineManagement"){
+            if(text.indexOf("สร้าง User Bot") === 0){
+                state[chatId].state = "CreateBot";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": botCommands, "resize_keyboard" : true}});
+            }
+            else if(text.indexOf("Clear User ที่ไม่ได้ออนไลน์") === 0) {
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.clearUserOnline(capitalizeFirstLetter(state[chatId].whiteLabel)).then(res => {
+                    if(res['resultCode'] == 200){
+                        console.log(JSON.stringify(res));
+                        res.contract.userOnlineContractList.map(c => bot.sendMessage(chatId, `${c.username}, ${c.computerName}\n`
+                        , {"reply_markup": removeKeyBoard}));
+                    }
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    state[chatId].state = "Finish";
+                }).catch(err => console.log(err));
+            }
+        }
+        else if (state[chatId].state === "CreateBot"){
+            state[chatId].state = "BotCreateExecute";
+            if(text.indexOf("BotBanker") === 0){
+                state[chatId].botType = "botbanker";
+                bot.sendMessage(chatId, "กรุณาระบุ Username,Password (eg. bot-user-banker,123456)", {"reply_markup": {"force_reply" : true}});
+            }
+            else if(text.indexOf("BotUpdater") === 0){
+                state[chatId].botType = "botupdater";
+                bot.sendMessage(chatId, "กรุณาระบุ Username,Password (eg. bot-user-updater,123456)", {"reply_markup": {"force_reply" : true}});
+            }
+        }
+        else if (state[chatId].state === "BotCreateExecute"){
+            console.log(text);
+            var inputText = text.split(',')
+            state[chatId].Username = inputText[0];
+            state[chatId].Password = inputText[1];
+
+            if(inputText != null && inputText[0] != null && inputText[1] != null){
+                    bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                    disrupt.createUser(capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].botType, inputText[0], inputText[1])
+                    .then(res => {
+                        if(res['resultCode'] == 200) bot.sendMessage(chatId, 'สร้าง user เสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                        else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    }).catch(err => console.log(err));
+                    state[chatId].state = "Finish";
+            }
+            else{
+                bot.sendMessage(chatId, "กรุณาระบุ Username,Password(bot-user-banker,123456) ให้ถูกต้อง", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+            }
+        }
+        //#endregion
+    
+        //#region SemaphoreManagement Command
+        else if (state[chatId].state === "SemaphoreManagement"){
+            if(text.indexOf("จำนวน Thread") === 0) state[chatId].state = "ThreadSize";
+            else if(text.indexOf("release semaphore") === 0) state[chatId].state = "ReleaseSemaphore";
+            bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": worktype, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "ThreadSize"){
+            state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "ThreadNameSize";
+            bot.sendMessage(chatId, "ระบุชื่อThread(eg.Grey_Operator_{TaskIdentityKeyTime}_{IdentityKeyTime}) หรือ สี(TaskStore)"
+            , {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "ThreadNameSize"){
+            console.log("WorkType is => " + state[chatId].WorkType);
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.GetQueueThreadSize(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+        }
+        else if (state[chatId].state === "ReleaseSemaphore"){
+            state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "ReleaseNameSemaphore";
+            bot.sendMessage(chatId, "ระบุชื่อThread(eg.Grey_Operator_{TaskIdentityKeyTime}_{IdentityKeyTime}) หรือ สี(TaskStore)"
+            , {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "ReleaseNameSemaphore"){
+            console.log("WorkType is => " + state[chatId].WorkType);
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.ReleaseSemaphore(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
         }
         //#endregion
     }

@@ -19,6 +19,41 @@ function GetToken() {
     });
 }
 
+module.exports.createUser = (whiteLabelName, userType, username, password) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/useronline/createBot')
+                        .send({
+                            ListenerName: whiteLabelName,
+                            UserType: userType,
+                            Username: username,
+                            Password: password
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.clearUserOnline = (whiteLabelName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/useronline/clear')
+                        .send({
+                            ListenerName: whiteLabelName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
 module.exports.topupCredit = (whiteLabelName, amount) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
@@ -348,6 +383,40 @@ module.exports.GetQueueSize = (workType, queueName) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/queue/getsize')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.GetQueueThreadSize = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/getthreadsize')
+                        .send({
+                            WorkType: workType,
+                            QueueName: queueName
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.ReleaseSemaphore = (workType, queueName) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/releasesemaphore')
                         .send({
                             WorkType: workType,
                             QueueName: queueName
