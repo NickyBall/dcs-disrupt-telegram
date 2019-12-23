@@ -41,7 +41,13 @@ const firstPageCommands = [
     ["จัดการความปลอดภัย"],
     ["จัดการบัญชีธนาคาร"],
     ["จัดการผู้ใช้"],
-    ["semaphore"]
+    ["semaphore"],
+    ["dataOps"]
+];
+const dataOpsCommands = [
+    ["customerfeed"],
+    ["customermember"],
+    ["customerbank"]
 ];
 const semaphoreCommands = [
     ["จำนวน Thread"],
@@ -381,6 +387,10 @@ bot.on('message', (msg) => {
             else if (text.indexOf("semaphore") === 0){
                 state[chatId].state = "SemaphoreManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": semaphoreCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("dataOps") === 0){
+                state[chatId].state = "DataOpsManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": dataOpsCommands, "resize_keyboard" : true}});
             }
         }
         //#endregion
@@ -1496,6 +1506,18 @@ bot.on('message', (msg) => {
             console.log("WorkType is => " + state[chatId].WorkType);
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.ReleaseSemaphore(state[chatId].WorkType, text).then(res => {
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region DataOpsManagement
+        else if (state[chatId].state === "DataOpsManagement"){
+            console.log("SyncName is => " + text);
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.dataOps(state[chatId].whiteLabel, text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
