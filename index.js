@@ -1518,6 +1518,7 @@ bot.on('message', (msg) => {
             console.log("SyncName is => " + text);
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.dataOps(state[chatId].whiteLabel, text).then(res => {
+                    console.log(JSON.stringify(res));
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
