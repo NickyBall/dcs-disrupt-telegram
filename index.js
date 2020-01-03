@@ -21,7 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green", "red", "aplus888", "black", "next88"];
+const whiteLabels = ["indigo", "grey", "green", "red", "aplus888", "black", "next88", "iconig"];
 const whiteLists = ["-339042186", "-311188887"];
 
 var whiteListsChatId = {
@@ -29,6 +29,7 @@ var whiteListsChatId = {
     '-350487122': 'prod_indigo',
     '-379846501': 'prod_aplus888',
     '-349107833': 'prod_next88',
+    '-369232021': 'prod_iconig',
     '-311188887': 'staging',
     '-388421114' : 'stg_grey',
     '': 'stg_indigo'};
@@ -41,7 +42,13 @@ const firstPageCommands = [
     ["จัดการความปลอดภัย"],
     ["จัดการบัญชีธนาคาร"],
     ["จัดการผู้ใช้"],
-    ["semaphore"]
+    ["semaphore"],
+    ["dataOps"]
+];
+const dataOpsCommands = [
+    ["customerfeed"],
+    ["customermember"],
+    ["customerbank"]
 ];
 const semaphoreCommands = [
     ["จำนวน Thread"],
@@ -381,6 +388,10 @@ bot.on('message', (msg) => {
             else if (text.indexOf("semaphore") === 0){
                 state[chatId].state = "SemaphoreManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": semaphoreCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("dataOps") === 0){
+                state[chatId].state = "DataOpsManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": dataOpsCommands, "resize_keyboard" : true}});
             }
         }
         //#endregion
@@ -1499,6 +1510,19 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.ReleaseSemaphore(state[chatId].WorkType, text).then(res => {
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region DataOpsManagement
+        else if (state[chatId].state === "DataOpsManagement"){
+            console.log("SyncName is => " + text);
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.dataOps(state[chatId].whiteLabel, text).then(res => {
+                    console.log(JSON.stringify(res));
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['message'], {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
