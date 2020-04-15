@@ -21,7 +21,7 @@ const token = process.env.BOT_API_KEY;
 const bot = new TelegramBot(token, { polling: true });
 
 var state = {};
-const whiteLabels = ["indigo", "grey", "green", "red", "aplus888", "black", "next88", "iconig"];
+const whiteLabels = ["indigo", "grey", "green", "red", "aplus888", "black", "next88", "iconig", "orange"];
 const whiteLists = ["-339042186", "-311188887"];
 
 var whiteListsChatId = {
@@ -32,7 +32,7 @@ var whiteListsChatId = {
     '-369232021': 'prod_iconig',
     '-311188887': 'staging',
     '-388421114' : 'stg_grey',
-    '': 'stg_indigo'};
+    '-227084945': 'prod_orange'};
 var isFound;
 
 const firstPageCommands = [
