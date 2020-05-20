@@ -182,7 +182,7 @@ const confirm = [
 ];
 
 const queueState = [
-    ["SLEEP"],
+    ["READY"],
     ["PROCESS"]
 ];
 const removeKeyBoard = JSON.stringify({
@@ -1093,7 +1093,7 @@ bot.on('message', (msg) => {
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.StartTaskStorageQueue(text, state[chatId].QueueState).then(res => {
                     if(res['resultCode'] == 200 && state[chatId].QueueState == "process") bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
-                    else if(res['resultCode'] == 200 && state[chatId].QueueState == "sleep") bot.sendMessage(chatId, "Sleep Queue Success", {"reply_markup": removeKeyBoard});
+                    else if(res['resultCode'] == 200 && state[chatId].QueueState == "ready") bot.sendMessage(chatId, "Ready Queue Success", {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
