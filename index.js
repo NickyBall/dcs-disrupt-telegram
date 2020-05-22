@@ -66,6 +66,7 @@ const workCommands = [
 ];
 const queueCommands = [
     ["ต้องการทราบจำนวนคิวที่กำหนด"],
+    ["เริ่มคิวสเตท"],
     ["จัดการคิวสเตท"],
     ["เคลียร์คิว"],
     ["คิวสเตท"],
@@ -762,7 +763,8 @@ bot.on('message', (msg) => {
             var balanceArr = text.split(',')
             state[chatId].OldBalance = balanceArr[0];
             state[chatId].NewBalance = balanceArr[1];
-            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1])){
+            // if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1])){
+            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.commitWorkBanker(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                 , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus, state[chatId].OldBalance, state[chatId].NewBalance).then(res => {
@@ -798,8 +800,9 @@ bot.on('message', (msg) => {
             state[chatId].NewBalance = balanceArr[1];
             state[chatId].OldCredit = balanceArr[2];
             state[chatId].NewCredit = balanceArr[3];
-            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null
-                && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1]) && /^\d+$/.test(balanceArr[2]) && /^\d+$/.test(balanceArr[3])){
+            // if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null
+            //     && /^\d+$/.test(balanceArr[0]) && /^\d+$/.test(balanceArr[1]) && /^\d+$/.test(balanceArr[2]) && /^\d+$/.test(balanceArr[3])){
+            if(balanceArr != null && balanceArr[0] != null && balanceArr[1] != null && balanceArr[2] != null && balanceArr[3] != null){                
                     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                     disrupt.commitWorkUpdater(capitalizeFirstLetter(state[chatId].whiteLabel), (state[chatId].Department).toLowerCase()
                     , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime, state[chatId].eventstatus
@@ -1044,7 +1047,8 @@ bot.on('message', (msg) => {
         //#region Queue Management Command
         else if (state[chatId].state === "QueueManagement"){
             if(text.indexOf("ต้องการทราบจำนวนคิวที่กำหนด") === 0) state[chatId].state = "GetQueueByType";
-            else if(text.indexOf("จัดการคิวสเตท") === 0) state[chatId].state = "StartQueueByType";
+            else if(text.indexOf("เริ่มคิวสเตท") === 0) state[chatId].state = "StartQueueByType";
+            else if(text.indexOf("จัดการคิวสเตท") === 0) state[chatId].state = "SetQueueByType";
             else if(text.indexOf("เคลียร์คิว") === 0) state[chatId].state = "ClearQueueByType";
             else if(text.indexOf("คิวสเตท") === 0) state[chatId].state = "GetQueueStateByType";
             else if(text.indexOf("แสดงคิวสเตททั้งหมด") === 0) state[chatId].state = "GetAllQueueStateByType";
@@ -1105,6 +1109,37 @@ bot.on('message', (msg) => {
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
             }
+        }
+        //#endregion
+
+        //#region  Set Queue
+        else if (state[chatId].state === "SetQueueByType"){
+            state[chatId].WorkType = text.toLowerCase();
+            state[chatId].state = "SetStateQueueChoose";
+            bot.sendMessage(chatId, "เลือกสถานะ", {"reply_markup": {"keyboard": queueState, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "StateQueueChoose"){
+            state[chatId].QueueState = text.toLowerCase();
+            state[chatId].state = "SetStartQueueName";
+            bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "SetStartQueueName"){
+            if(state[chatId].WorkType == "taskstorage"){
+                bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+                disrupt.SetTaskStorageQueue(text, state[chatId].QueueState).then(res => {
+                    if(res['resultCode'] == 200 && state[chatId].QueueState == "process") bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+                    else if(res['resultCode'] == 200 && state[chatId].QueueState == "sleep") bot.sendMessage(chatId, "Sleep Queue Success", {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+            // }else{
+            //     bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            //     disrupt.StartQueue(state[chatId].WorkType, text, state[chatId].QueueState).then(res => {
+            //         if(res['resultCode'] == 200) bot.sendMessage(chatId, res['contract']['message'], {"reply_markup": removeKeyBoard});
+            //         else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+            //     }).catch(err => console.log(err));
+            //     state[chatId].state = "Finish";
+            // }
         }
         //#endregion
 

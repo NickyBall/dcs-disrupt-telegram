@@ -482,6 +482,23 @@ module.exports.StartQueue = (workType, queueName, inputState) => {
 module.exports.StartTaskStorageQueue = (queueName, inputState) => {
     return new Promise((resolve, reject) => {
         GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/queue/starttaskstorage')
+                        .send({
+                            QueueName: queueName,
+                            InputState: inputState
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.SetTaskStorageQueue = (queueName, inputState) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
             superagent.post(endpoint + 'api/disrupt/queue/settaskstoragequeue')
                         .send({
                             QueueName: queueName,
