@@ -1118,12 +1118,12 @@ bot.on('message', (msg) => {
             state[chatId].state = "SetStateQueueChoose";
             bot.sendMessage(chatId, "เลือกสถานะ", {"reply_markup": {"keyboard": queueState, "resize_keyboard" : true}});
         }
-        else if (state[chatId].state === "StateQueueChoose"){
+        else if (state[chatId].state === "SetStateQueueChoose"){
             state[chatId].QueueState = text.toLowerCase();
-            state[chatId].state = "SetStartQueueName";
+            state[chatId].state = "SetStatusQueueName";
             bot.sendMessage(chatId, "ระบุชื่อคิว(eg.Grey_Operator_Storage)", {"reply_markup": {"force_reply" : true, "resize_keyboard" : true}});
         }
-        else if (state[chatId].state === "SetStartQueueName"){
+        else if (state[chatId].state === "SetStatusQueueName"){
             if(state[chatId].WorkType == "taskstorage"){
                 bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                 disrupt.SetTaskStorageQueue(text, state[chatId].QueueState).then(res => {
