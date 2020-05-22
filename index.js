@@ -1140,6 +1140,7 @@ bot.on('message', (msg) => {
             //     }).catch(err => console.log(err));
             //     state[chatId].state = "Finish";
             // }
+            }
         }
         //#endregion
 
