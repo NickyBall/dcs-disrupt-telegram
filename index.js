@@ -185,7 +185,7 @@ const confirm = [
 ];
 
 const choice = [
-    ["Insert"], 
+    ["Create"], 
     ["Delete"]
 ];
 const queueState = [
