@@ -1188,6 +1188,14 @@ bot.on('message', (msg) => {
                     // if(res['resultCode'] == 200) bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
                     // else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     console.log(res);
+                    if(res) {
+                        console.log(true)
+                        bot.sendMessage(chatId, 'แก้ไขเสร็จเรียบร้อย', {"reply_markup": removeKeyBoard});
+                    }
+                    else {
+                        console.log(false)
+                        bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    }
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";
         }
