@@ -553,7 +553,7 @@ bot.on('message', (msg) => {
                 state[chatId].state = "checkdataevent";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
-            else if(text.indexOf("จัดการงาน Matching")){
+            else if(text.indexOf("จัดการงาน Matching") === 0){
                 state[chatId].state = "matchingCommit";
                 bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": department, "resize_keyboard" : true}});
             }
