@@ -1072,6 +1072,8 @@ bot.on('message', (msg) => {
                 var TaskSuffix = arrTaskIdentityKeyTime[1];
                 if(TaskPrefix.toString().length == 16 && /^\d+$/.test(TaskPrefix) && TaskSuffix.toString().length == 5){
                     if(state[chatId].Department === "banker"){
+                        console.log(capitalizeFirstLetter(state[chatId].whiteLabel));
+                        console.log(text);
                         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                         disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel, "")
                         , text).then(res => {
