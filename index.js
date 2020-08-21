@@ -1077,7 +1077,7 @@ bot.on('message', (msg) => {
                         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                         disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
                         , "", text).then(res => {
-                            //console.log(res);
+                            console.log(res);
                             if(res['identityKeyTime'] != null){
                                 if(res['operatorType'] == 0){
                                     state[chatId].state = "MatchingOperationChoose";
@@ -1137,7 +1137,7 @@ bot.on('message', (msg) => {
                         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                         disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
                         , state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime).then(res => {
-                            //console.log(res)
+                            console.log(res)
                             if(res['identityKeyTime'] != null){
                                 if(res['bankerType'] == 0){
                                     state[chatId].state = "MatchingOperationChoose";
