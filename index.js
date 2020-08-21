@@ -1175,6 +1175,13 @@ bot.on('message', (msg) => {
         else if (state[chatId].state === "MatchingOperationChoose"){
             state[chatId].operationType = text;
             bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            console.log(state[chatId].TaskIdentityKeyTime);
+            console.log(state[chatId].IdentityKeyTime);
+            console.log(state[chatId].ToBankKeyTime);
+            console.log(state[chatId].TransferTime);
+            console.log(state[chatId].Amount);
+            console.log(state[chatId].OldBalance);
+            console.log(state[chatId].NewBalance);
                 disrupt.manageMatchingTable(capitalizeFirstLetter(state[chatId].whiteLabel), state[chatId].TaskIdentityKeyTime, state[chatId].IdentityKeyTime
                 , state[chatId].ToBankKeyTime, state[chatId].TransferTime, state[chatId].Amount, state[chatId].OldBalance, state[chatId].NewBalance
                 , (state[chatId].Department).toLowerCase(), state[chatId].operationType).then(res => {
