@@ -1075,8 +1075,8 @@ bot.on('message', (msg) => {
                         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
                         disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel, "")
                         , text).then(res => {
-                            if(res['identityKeyTime'] != null){
-                                console.log(res);
+                            console.log(res);
+                            //if(res['identityKeyTime'] != null){
                                 // state[chatId].state = "StatusChoose";
                                 // state[chatId].IdentityKeyTime = res['identityKeyTime'];
                                 // if(res['operatorType'] == 0 || res['operatorType'] == 4){
@@ -1087,10 +1087,10 @@ bot.on('message', (msg) => {
                                 // else{
                                 //     bot.sendMessage(chatId, "ไม่ใช่งานฝาก หรือ ฝากPercent", {"reply_markup": removeKeyBoard});
                                 // }
-                            }
-                            else{
-                                bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
-                            }
+                            //}
+                            // else{
+                            //     bot.sendMessage(chatId, "ไม่พบงาน", {"reply_markup": removeKeyBoard});
+                            // }
                         }).catch(err => console.log(err));
                         state[chatId].state = "Finish";
                     }
