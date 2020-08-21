@@ -350,13 +350,13 @@ module.exports.manageMatchingTable = (whiteLabelName, TaskIdentityKeyTime, Ident
                             ListenerName: whiteLabelName,
                             TaskIdentityKeyTime: TaskIdentityKeyTime,
                             IdentityKeyTime: IdentityKeyTime,
-                            toBankKeyTime: toBankKeyTime,
-                            transferTime: TransferTime,
-                            amount: Amount,
-                            oldBalance: OldBalance,
-                            newBalance: NewBalance,
-                            department: Department,
-                            operationType: OperationType
+                            ToBankKeyTime: toBankKeyTime,
+                            TransferTime: transferTime,
+                            Amount: amount,
+                            BankerOldBalance: oldBalance,
+                            BankerNewBalance: newBalance,
+                            Department: department,
+                            CommitStatus: operationType
                         }) // sends a JSON post body
                 .set('accept', 'json')
                 .set('Content-Type', 'application/json')
