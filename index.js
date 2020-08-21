@@ -1075,8 +1075,8 @@ bot.on('message', (msg) => {
                         console.log(capitalizeFirstLetter(state[chatId].whiteLabel));
                         console.log(text);
                         bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
-                        disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel, "")
-                        , text).then(res => {
+                        disrupt.retrieveBanker(capitalizeFirstLetter(state[chatId].whiteLabel)
+                        , "", text).then(res => {
                             console.log(res);
                             //if(res['identityKeyTime'] != null){
                                 // state[chatId].state = "StatusChoose";
