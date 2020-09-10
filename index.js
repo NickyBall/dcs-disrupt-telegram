@@ -43,7 +43,8 @@ const firstPageCommands = [
     ["จัดการบัญชีธนาคาร"],
     ["จัดการผู้ใช้"],
     ["semaphore"],
-    ["dataOps"]
+    ["dataOps"],
+    ["gcmanagement"]
 ];
 const dataOpsCommands = [
     ["customerfeed"],
@@ -71,7 +72,7 @@ const queueCommands = [
     ["จัดการคิวสเตท"],
     ["เคลียร์คิว"],
     ["คิวสเตท"],
-    ["แสดงคิวสเตททั้งหมด"],    
+    ["แสดงคิวสเตททั้งหมด"]
 ];
 const securityCommands = [
     ["แสดงรายชื่อคนที่ไม่ได้ยืนยันเครื่อง"],
@@ -104,6 +105,15 @@ const checkingBankContCommands = [
     ["แสดงรายละเอียดของบัญชีธนาคารทั้งหมด"]
 ];
 
+const gcContCommands = [
+    ["GetTotalMemory"],
+    ["ClearMemory"]
+];
+
+const gcConstStateCommands = [
+    ["True"],
+    ["False"]
+];
 var grouped;
 var bankListGrouped;
 const bankAccountGrouped = new Map();
@@ -424,6 +434,10 @@ bot.on('message', (msg) => {
             else if (text.indexOf("dataOps") === 0){
                 state[chatId].state = "DataOpsManagement";
                 bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": dataOpsCommands, "resize_keyboard" : true}});
+            }
+            else if (text.indexOf("gcmanagement") === 0){
+                state[chatId].state = "GcManagement";
+                bot.sendMessage(chatId, "เลือกคำสั่ง", {"reply_markup": {"keyboard": gcContCommands, "resize_keyboard" : true}});
             }
         }
         //#endregion
@@ -1740,6 +1754,41 @@ bot.on('message', (msg) => {
                 disrupt.dataOps(state[chatId].whiteLabel, text).then(res => {
                     console.log(JSON.stringify(res));
                     if(res['resultCode'] == 200) bot.sendMessage(chatId, res['message'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+        }
+        //#endregion
+
+        //#region gcmanagement
+        else if (state[chatId].state === "GcManagement"){
+            if(text.indexOf("GetTotalMemory") === 0) state[chatId].state = "MemoryGcGetTotal";
+            else if(text.indexOf("ClearMemory") === 0) state[chatId].state = "GcClearMemory";
+            bot.sendMessage(chatId, "เลือกแผนก Department", {"reply_markup": {"keyboard": worktype, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "MemoryGcGetTotal"){
+            state[chatId].state = "SetStatusMemoryGcGetTotal";
+            state[chatId].worktype = text;
+            bot.sendMessage(chatId, "เลือก Status", {"reply_markup": {"keyboard": gcConstStateCommands, "resize_keyboard" : true}});
+        }
+        else if (state[chatId].state === "SetStatusMemoryGcGetTotal"){
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            console.log(state[chatId].worktype);
+            console.log(text);
+                disrupt.gcGetToTalMemory(state[chatId].worktype, text).then(res => {
+                    console.log(res);
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                    else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
+                }).catch(err => console.log(err));
+                state[chatId].state = "Finish";
+        }
+        else if (state[chatId].state === "GcClearMemory"){
+            
+            bot.sendMessage(chatId, "กรุณารอสักครู่", {"reply_markup": removeKeyBoard});
+            console.log(text);
+                disrupt.gcCollectMemory(text.toLowerCase(), text).then(res => {
+                    console.log(res);
+                    if(res['resultCode'] == 200) bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                     else bot.sendMessage(chatId, res['description'], {"reply_markup": removeKeyBoard});
                 }).catch(err => console.log(err));
                 state[chatId].state = "Finish";

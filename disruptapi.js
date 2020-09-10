@@ -772,3 +772,36 @@ module.exports.checkDuplicate = (whiteLabelName, bankKeyTime, isExecute) => {
         }).catch(err => console.log(err));
     });
 };
+
+module.exports.gcGetToTalMemory = (workType, inputState) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/gc/gettotalmem')
+                        .send({
+                            WorkType: workType,
+                            InputState: inputState
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
+
+module.exports.gcCollectMemory = (workType) => {
+    return new Promise((resolve, reject) => {
+        GetToken().then(access_token => {
+            superagent.post(endpoint + 'api/disrupt/gc/collectmem')
+                        .send({
+                            WorkType: workType
+                        }) // sends a JSON post body
+                .set('accept', 'json')
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `Bearer ${access_token}`)
+                .then(res => resolve(res.body))
+                .catch(err => reject(err));
+        }).catch(err => reject(err));
+    });
+};
