@@ -32,7 +32,8 @@ var whiteListsChatId = {
     '-369232021': 'prod_iconig',
     '-311188887': 'staging',
     '-388421114' : 'stg_grey',
-    '-227084945': 'prod_orange'};
+    '-227084945': 'prod_orange',
+    '-515378479': 'prod_red'};
 var isFound;
 
 const firstPageCommands = [
